@@ -1,0 +1,5051 @@
+[
+  {
+    "name": "Malen",
+    "role": "A",
+    "team": "ROM",
+    "cqi": 34,
+    "cqa": 36,
+    "fvm": 414,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/malen/5585"
+  },
+  {
+    "name": "Martinez L.",
+    "role": "A",
+    "team": "INT",
+    "cqi": 35,
+    "cqa": 34,
+    "fvm": 367,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/martinez-l/2764"
+  },
+  {
+    "name": "Dimarco",
+    "role": "D",
+    "team": "INT",
+    "cqi": 32,
+    "cqa": 31,
+    "fvm": 253,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/dimarco/254"
+  },
+  {
+    "name": "Paz N.",
+    "role": "C",
+    "team": "COM",
+    "cqi": 30,
+    "cqa": 29,
+    "fvm": 247,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/paz-n/6875"
+  },
+  {
+    "name": "Calhanoglu",
+    "role": "C",
+    "team": "INT",
+    "cqi": 27,
+    "cqa": 28,
+    "fvm": 236,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/calhanoglu/2194"
+  },
+  {
+    "name": "Thuram",
+    "role": "A",
+    "team": "INT",
+    "cqi": 29,
+    "cqa": 28,
+    "fvm": 263,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/thuram/4871"
+  },
+  {
+    "name": "McTominay",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 28,
+    "cqa": 28,
+    "fvm": 228,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/mctominay/4777"
+  },
+  {
+    "name": "Ramos G.",
+    "role": "A",
+    "team": "MIL",
+    "cqi": 27,
+    "cqa": 27,
+    "fvm": 228,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/ramos-g/6397"
+  },
+  {
+    "name": "Hojlund",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 28,
+    "cqa": 27,
+    "fvm": 257,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/hojlund/6052"
+  },
+  {
+    "name": "Orsolini",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 26,
+    "cqa": 25,
+    "fvm": 192,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/orsolini/2167"
+  },
+  {
+    "name": "Kean",
+    "role": "A",
+    "team": "FIO",
+    "cqi": 25,
+    "cqa": 25,
+    "fvm": 187,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/kean/2097"
+  },
+  {
+    "name": "Kolo Muani",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 26,
+    "cqa": 25,
+    "fvm": 211,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/kolo-muani/5951"
+  },
+  {
+    "name": "Pulisic",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 25,
+    "cqa": 24,
+    "fvm": 160,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/pulisic/2423"
+  },
+  {
+    "name": "Rabiot",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 22,
+    "cqa": 23,
+    "fvm": 145,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/rabiot/2379"
+  },
+  {
+    "name": "Yildiz",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 23,
+    "cqa": 22,
+    "fvm": 150,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/yildiz/6434"
+  },
+  {
+    "name": "Douvikas",
+    "role": "A",
+    "team": "COM",
+    "cqi": 20,
+    "cqa": 21,
+    "fvm": 170,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/douvikas/7017"
+  },
+  {
+    "name": "Krstovic",
+    "role": "A",
+    "team": "ATA",
+    "cqi": 18,
+    "cqa": 19,
+    "fvm": 100,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/krstovic/6435"
+  },
+  {
+    "name": "Scamacca",
+    "role": "A",
+    "team": "ATA",
+    "cqi": 19,
+    "cqa": 19,
+    "fvm": 123,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/scamacca/2137"
+  },
+  {
+    "name": "Baturina",
+    "role": "C",
+    "team": "COM",
+    "cqi": 19,
+    "cqa": 19,
+    "fvm": 97,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/baturina/7126"
+  },
+  {
+    "name": "Davis K.",
+    "role": "A",
+    "team": "UDI",
+    "cqi": 19,
+    "cqa": 19,
+    "fvm": 109,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/davis-k/5637"
+  },
+  {
+    "name": "Mora",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 19,
+    "cqa": 19,
+    "fvm": 95,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/mora/7556"
+  },
+  {
+    "name": "Da Cunha",
+    "role": "C",
+    "team": "COM",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 87,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/da-cunha/5559"
+  },
+  {
+    "name": "Leao",
+    "role": "A",
+    "team": "MIL",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 75,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/leao/4510"
+  },
+  {
+    "name": "Svilar",
+    "role": "P",
+    "team": "ROM",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 75,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/svilar/5841"
+  },
+  {
+    "name": "Berardi",
+    "role": "A",
+    "team": "SAS",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 101,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/berardi/531"
+  },
+  {
+    "name": "Zaniolo",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 85,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/zaniolo/2766"
+  },
+  {
+    "name": "Molina N.",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 18,
+    "cqa": 18,
+    "fvm": 80,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/molina-n/4998"
+  },
+  {
+    "name": "De Ketelaere",
+    "role": "A",
+    "team": "ATA",
+    "cqi": 17,
+    "cqa": 17,
+    "fvm": 98,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/de-ketelaere/5995"
+  },
+  {
+    "name": "Martinez Jo.",
+    "role": "P",
+    "team": "INT",
+    "cqi": 17,
+    "cqa": 17,
+    "fvm": 63,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/martinez-jo/5116"
+  },
+  {
+    "name": "Barella",
+    "role": "C",
+    "team": "INT",
+    "cqi": 17,
+    "cqa": 17,
+    "fvm": 80,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/barella/1870"
+  },
+  {
+    "name": "Esposito F.P.",
+    "role": "A",
+    "team": "INT",
+    "cqi": 16,
+    "cqa": 17,
+    "fvm": 105,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/esposito-f-p/7071"
+  },
+  {
+    "name": "McKennie",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 17,
+    "cqa": 17,
+    "fvm": 70,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/mckennie/4973"
+  },
+  {
+    "name": "Wesley",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 17,
+    "cqa": 17,
+    "fvm": 82,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/wesley/7181"
+  },
+  {
+    "name": "Carnesecchi",
+    "role": "P",
+    "team": "ATA",
+    "cqi": 16,
+    "cqa": 16,
+    "fvm": 52,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/carnesecchi/4431"
+  },
+  {
+    "name": "Butez",
+    "role": "P",
+    "team": "COM",
+    "cqi": 16,
+    "cqa": 16,
+    "fvm": 54,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/butez/6966"
+  },
+  {
+    "name": "Atta",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 17,
+    "cqa": 16,
+    "fvm": 86,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/atta/6908"
+  },
+  {
+    "name": "Akanji",
+    "role": "D",
+    "team": "INT",
+    "cqi": 16,
+    "cqa": 16,
+    "fvm": 51,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/akanji/4159"
+  },
+  {
+    "name": "Bremer",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 15,
+    "cqa": 16,
+    "fvm": 60,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/bremer/2788"
+  },
+  {
+    "name": "Zaccagni",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 16,
+    "cqa": 16,
+    "fvm": 88,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/zaccagni/632"
+  },
+  {
+    "name": "De Bruyne",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 15,
+    "cqa": 16,
+    "fvm": 107,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/de-bruyne/2517"
+  },
+  {
+    "name": "Vicario",
+    "role": "P",
+    "team": "JUV",
+    "cqi": 16,
+    "cqa": 16,
+    "fvm": 58,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/vicario/4964"
+  },
+  {
+    "name": "Dovbyk",
+    "role": "A",
+    "team": "BOL",
+    "cqi": 16,
+    "cqa": 15,
+    "fvm": 58,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/dovbyk/6675"
+  },
+  {
+    "name": "Maignan",
+    "role": "P",
+    "team": "MIL",
+    "cqi": 15,
+    "cqa": 15,
+    "fvm": 50,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/maignan/4312"
+  },
+  {
+    "name": "Mancini",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 15,
+    "cqa": 15,
+    "fvm": 49,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/mancini/2296"
+  },
+  {
+    "name": "Dybala",
+    "role": "A",
+    "team": "ROM",
+    "cqi": 14,
+    "cqa": 15,
+    "fvm": 95,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/dybala/309"
+  },
+  {
+    "name": "Laurient&#xE8;",
+    "role": "A",
+    "team": "SAS",
+    "cqi": 15,
+    "cqa": 15,
+    "fvm": 86,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/laurient&#xE8;/6060"
+  },
+  {
+    "name": "Simeone",
+    "role": "A",
+    "team": "TOR",
+    "cqi": 15,
+    "cqa": 15,
+    "fvm": 80,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/simeone/2061"
+  },
+  {
+    "name": "Raspadori",
+    "role": "A",
+    "team": "ATA",
+    "cqi": 13,
+    "cqa": 14,
+    "fvm": 76,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/raspadori/4371"
+  },
+  {
+    "name": "Bastoni",
+    "role": "D",
+    "team": "INT",
+    "cqi": 14,
+    "cqa": 14,
+    "fvm": 43,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/bastoni/2120"
+  },
+  {
+    "name": "Pavlovic",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 14,
+    "cqa": 14,
+    "fvm": 48,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/pavlovic/5022"
+  },
+  {
+    "name": "Rrahmani",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 14,
+    "cqa": 14,
+    "fvm": 51,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/rrahmani/4409"
+  },
+  {
+    "name": "Santos A.",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 14,
+    "cqa": 14,
+    "fvm": 62,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/santos-a/7351"
+  },
+  {
+    "name": "Pellegrino M.",
+    "role": "A",
+    "team": "FIO",
+    "cqi": 15,
+    "cqa": 14,
+    "fvm": 50,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/pellegrino-m/7023"
+  },
+  {
+    "name": "Castro S.",
+    "role": "A",
+    "team": "ROM",
+    "cqi": 14,
+    "cqa": 14,
+    "fvm": 76,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/castro-s/6572"
+  },
+  {
+    "name": "Esposito Se.",
+    "role": "A",
+    "team": "SAS",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/esposito-se/4463"
+  },
+  {
+    "name": "Gudmundsson A.",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/gudmundsson-a/5800"
+  },
+  {
+    "name": "Kalulu",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 46,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/kalulu/4976"
+  },
+  {
+    "name": "Taylor K.",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 57,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/taylor-k/7314"
+  },
+  {
+    "name": "Nkunku",
+    "role": "A",
+    "team": "MIL",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/nkunku/4728"
+  },
+  {
+    "name": "N&#x27;Dicka",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 44,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/n-dicka/4317"
+  },
+  {
+    "name": "Pinamonti",
+    "role": "A",
+    "team": "LAZ",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 51,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/pinamonti/2038"
+  },
+  {
+    "name": "Vlasic",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 14,
+    "cqa": 13,
+    "fvm": 75,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/vlasic/5687"
+  },
+  {
+    "name": "Solet",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 46,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/solet/6956"
+  },
+  {
+    "name": "Kevin Carlos",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 13,
+    "cqa": 13,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/kevin-carlos/7547"
+  },
+  {
+    "name": "Ederson D.S.",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 49,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/ederson-d-s/5792"
+  },
+  {
+    "name": "Samardzic",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 41,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/samardzic/5119"
+  },
+  {
+    "name": "Rodriguez Je.",
+    "role": "C",
+    "team": "COM",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 31,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/rodriguez-je/7129"
+  },
+  {
+    "name": "De Gea",
+    "role": "P",
+    "team": "FIO",
+    "cqi": 13,
+    "cqa": 12,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/de-gea/2521"
+  },
+  {
+    "name": "Bisseck",
+    "role": "D",
+    "team": "INT",
+    "cqi": 11,
+    "cqa": 12,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/bisseck/6217"
+  },
+  {
+    "name": "Stones",
+    "role": "D",
+    "team": "INT",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/stones/2514"
+  },
+  {
+    "name": "Alajbegovic",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 50,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/alajbegovic/7436"
+  },
+  {
+    "name": "Conceicao",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 67,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/conceicao/6884"
+  },
+  {
+    "name": "Gila",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 31,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/gila/5833"
+  },
+  {
+    "name": "Modric",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 46,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/modric/2606"
+  },
+  {
+    "name": "Di Lorenzo",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/di-lorenzo/2816"
+  },
+  {
+    "name": "Soul&#xE8;",
+    "role": "A",
+    "team": "ROM",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 45,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/soul&#xE8;/5734"
+  },
+  {
+    "name": "Adams A.",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 45,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/adams-a/7484"
+  },
+  {
+    "name": "Mastantuono",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 54,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/mastantuono/7078"
+  },
+  {
+    "name": "Spence",
+    "role": "D",
+    "team": "INT",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/spence/5982"
+  },
+  {
+    "name": "Moreira",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 50,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/moreira/6372"
+  },
+  {
+    "name": "Jones C.",
+    "role": "C",
+    "team": "INT",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 48,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/jones-c/5172"
+  },
+  {
+    "name": "Kessi&#xE8;",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 12,
+    "cqa": 12,
+    "fvm": 47,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/kessi&#xE8;/1850"
+  },
+  {
+    "name": "Rowe",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 44,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/rowe/6844"
+  },
+  {
+    "name": "Diao",
+    "role": "A",
+    "team": "COM",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 47,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/diao/6967"
+  },
+  {
+    "name": "Ostigard",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 43,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/ostigard/5750"
+  },
+  {
+    "name": "Baldanzi",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/baldanzi/5823"
+  },
+  {
+    "name": "Colombo",
+    "role": "A",
+    "team": "GEN",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 55,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/colombo/4923"
+  },
+  {
+    "name": "Zielinski",
+    "role": "C",
+    "team": "INT",
+    "cqi": 10,
+    "cqa": 11,
+    "fvm": 45,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/zielinski/152"
+  },
+  {
+    "name": "Meret",
+    "role": "P",
+    "team": "NAP",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 53,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/meret/572"
+  },
+  {
+    "name": "Zambo Anguissa",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 47,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/zambo-anguissa/4220"
+  },
+  {
+    "name": "Ekkelenkamp",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 10,
+    "cqa": 11,
+    "fvm": 45,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/ekkelenkamp/6684"
+  },
+  {
+    "name": "Tour&#xE8; E.",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 43,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/tour&#xE8;-e/6229"
+  },
+  {
+    "name": "Gonzalez N.",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 11,
+    "cqa": 11,
+    "fvm": 41,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/gonzalez-n/4179"
+  },
+  {
+    "name": "Scalvini",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 28,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/scalvini/5526"
+  },
+  {
+    "name": "Skorupski",
+    "role": "P",
+    "team": "BOL",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 36,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/skorupski/133"
+  },
+  {
+    "name": "Caprile",
+    "role": "P",
+    "team": "CAG",
+    "cqi": 9,
+    "cqa": 10,
+    "fvm": 28,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/caprile/4360"
+  },
+  {
+    "name": "Ramon",
+    "role": "D",
+    "team": "COM",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 32,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/ramon/6869"
+  },
+  {
+    "name": "Perrone",
+    "role": "C",
+    "team": "COM",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/perrone/6151"
+  },
+  {
+    "name": "Dod&#xF2;",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/dod&#xF2;/5885"
+  },
+  {
+    "name": "Thuram K.",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 35,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/thuram-k/5562"
+  },
+  {
+    "name": "Mandas",
+    "role": "P",
+    "team": "LAZ",
+    "cqi": 9,
+    "cqa": 10,
+    "fvm": 32,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/mandas/6482"
+  },
+  {
+    "name": "Dia",
+    "role": "A",
+    "team": "LAZ",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/dia/5672"
+  },
+  {
+    "name": "Ratkov",
+    "role": "A",
+    "team": "LAZ",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/ratkov/7313"
+  },
+  {
+    "name": "Saelemaekers",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 35,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/saelemaekers/4892"
+  },
+  {
+    "name": "Politano",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/politano/536"
+  },
+  {
+    "name": "Vergara",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 8,
+    "cqa": 10,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/vergara/7223"
+  },
+  {
+    "name": "Lukaku",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 45,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/lukaku/2531"
+  },
+  {
+    "name": "Hermoso",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/hermoso/4807"
+  },
+  {
+    "name": "Kon&#xE8; M.",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 42,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/kon&#xE8;-m/5589"
+  },
+  {
+    "name": "Thorstvedt",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 40,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/thorstvedt/5844"
+  },
+  {
+    "name": "Bowie",
+    "role": "A",
+    "team": "SAS",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 39,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/bowie/7347"
+  },
+  {
+    "name": "Casadei",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 32,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/casadei/5888"
+  },
+  {
+    "name": "Adams C.",
+    "role": "A",
+    "team": "TOR",
+    "cqi": 9,
+    "cqa": 10,
+    "fvm": 33,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/adams-c/6646"
+  },
+  {
+    "name": "Pellegrini Lo.",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/pellegrini-lo/530"
+  },
+  {
+    "name": "Romero D.",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 10,
+    "cqa": 10,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/romero-d/7554"
+  },
+  {
+    "name": "Pasalic",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 24,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/pasalic/2077"
+  },
+  {
+    "name": "Bernardeschi",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/bernardeschi/184"
+  },
+  {
+    "name": "Mandragora",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/mandragora/1933"
+  },
+  {
+    "name": "Ghedjemis",
+    "role": "A",
+    "team": "FRO",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/ghedjemis/6530"
+  },
+  {
+    "name": "Vasquez",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 32,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/vasquez/5514"
+  },
+  {
+    "name": "Diouf",
+    "role": "C",
+    "team": "INT",
+    "cqi": 8,
+    "cqa": 9,
+    "fvm": 44,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/diouf/6274"
+  },
+  {
+    "name": "Frattesi",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 7,
+    "cqa": 9,
+    "fvm": 68,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/frattesi/2848"
+  },
+  {
+    "name": "Di Gregorio",
+    "role": "P",
+    "team": "JUV",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/di-gregorio/5876"
+  },
+  {
+    "name": "Cambiaso",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/cambiaso/5520"
+  },
+  {
+    "name": "David",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/david/5544"
+  },
+  {
+    "name": "Cancellieri",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 28,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/cancellieri/5500"
+  },
+  {
+    "name": "Isaksen",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/isaksen/6398"
+  },
+  {
+    "name": "Falcone",
+    "role": "P",
+    "team": "LEC",
+    "cqi": 8,
+    "cqa": 9,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/falcone/2134"
+  },
+  {
+    "name": "Tiago Gabriel",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 7,
+    "cqa": 9,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/tiago-gabriel/6989"
+  },
+  {
+    "name": "Geubbels",
+    "role": "A",
+    "team": "LEC",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/geubbels/5029"
+  },
+  {
+    "name": "Cutrone",
+    "role": "A",
+    "team": "MON",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/cutrone/2155"
+  },
+  {
+    "name": "Kon&#xE8; I.",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/kon&#xE8;-i/6717"
+  },
+  {
+    "name": "Okoye",
+    "role": "P",
+    "team": "UDI",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 29,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/okoye/6462"
+  },
+  {
+    "name": "Chalobah T.",
+    "role": "D",
+    "team": "COM",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/chalobah-t/5641"
+  },
+  {
+    "name": "Bobcek",
+    "role": "A",
+    "team": "FRO",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 38,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/bobcek/7612"
+  },
+  {
+    "name": "Perri",
+    "role": "P",
+    "team": "TOR",
+    "cqi": 9,
+    "cqa": 9,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/perri/6534"
+  },
+  {
+    "name": "Hien",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/hien/6046"
+  },
+  {
+    "name": "Zappacosta",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/zappacosta/554"
+  },
+  {
+    "name": "Gaetano",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 7,
+    "cqa": 8,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/gaetano/4364"
+  },
+  {
+    "name": "Lucum&#xEC;",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/lucum&#xEC;/6042"
+  },
+  {
+    "name": "Miranda J.",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 24,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/miranda-j/4734"
+  },
+  {
+    "name": "Odgaard",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/odgaard/2765"
+  },
+  {
+    "name": "Cambiaghi",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/cambiaghi/4436"
+  },
+  {
+    "name": "Dallinga",
+    "role": "A",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/dallinga/6643"
+  },
+  {
+    "name": "Mina",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/mina/4210"
+  },
+  {
+    "name": "Jimenez A.",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/jimenez-a/6531"
+  },
+  {
+    "name": "Fagioli",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/fagioli/4465"
+  },
+  {
+    "name": "Ndour",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/ndour/6294"
+  },
+  {
+    "name": "Piccoli",
+    "role": "A",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 37,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/piccoli/4359"
+  },
+  {
+    "name": "Bijlow",
+    "role": "P",
+    "team": "GEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/bijlow/7332"
+  },
+  {
+    "name": "Norton-Cuffy",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/norton-cuffy/6814"
+  },
+  {
+    "name": "Vitinha O.",
+    "role": "A",
+    "team": "GEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/vitinha-o/6164"
+  },
+  {
+    "name": "Sucic P.",
+    "role": "C",
+    "team": "INT",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/sucic-p/7070"
+  },
+  {
+    "name": "Celik",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/celik/4657"
+  },
+  {
+    "name": "Locatelli",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 33,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/locatelli/827"
+  },
+  {
+    "name": "Doekhi",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 7,
+    "cqa": 8,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/doekhi/6320"
+  },
+  {
+    "name": "Bartesaghi",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/bartesaghi/6496"
+  },
+  {
+    "name": "Colpani",
+    "role": "C",
+    "team": "MON",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/colpani/5878"
+  },
+  {
+    "name": "Gutierrez",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/gutierrez/5427"
+  },
+  {
+    "name": "Spinazzola",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/spinazzola/1852"
+  },
+  {
+    "name": "Lobotka",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 7,
+    "cqa": 8,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/lobotka/4287"
+  },
+  {
+    "name": "Delprato",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/delprato/6664"
+  },
+  {
+    "name": "Valeri",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 24,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/valeri/5862"
+  },
+  {
+    "name": "Koulierakis",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/koulierakis/7529"
+  },
+  {
+    "name": "Cristante",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 29,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/cristante/779"
+  },
+  {
+    "name": "Volpato",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 7,
+    "cqa": 8,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/volpato/5735"
+  },
+  {
+    "name": "Vojvoda",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/vojvoda/4994"
+  },
+  {
+    "name": "Kamara H.",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 6,
+    "cqa": 8,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/kamara-h/5555"
+  },
+  {
+    "name": "Yeboah J.",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 27,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/yeboah-j/6904"
+  },
+  {
+    "name": "Rrahmani Al.",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/rrahmani-al/7449"
+  },
+  {
+    "name": "Couto",
+    "role": "D",
+    "team": "COM",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/couto/6727"
+  },
+  {
+    "name": "Schmid",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 28,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/schmid/7551"
+  },
+  {
+    "name": "Osmajic",
+    "role": "A",
+    "team": "GEN",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 30,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/osmajic/7600"
+  },
+  {
+    "name": "Theate",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 8,
+    "cqa": 8,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/theate/5675"
+  },
+  {
+    "name": "Djimsiti",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/djimsiti/787"
+  },
+  {
+    "name": "Ferguson",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/ferguson/5858"
+  },
+  {
+    "name": "Obert",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/obert/5701"
+  },
+  {
+    "name": "Adopo",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 6,
+    "cqa": 7,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/adopo/4870"
+  },
+  {
+    "name": "Romano",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 5,
+    "cqa": 7,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/romano/7311"
+  },
+  {
+    "name": "Fazzini",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 24,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/fazzini/6010"
+  },
+  {
+    "name": "Kaiki",
+    "role": "D",
+    "team": "COM",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/kaiki/7414"
+  },
+  {
+    "name": "Dragusin",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 8,
+    "cqa": 7,
+    "fvm": 27,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/dragusin/5365"
+  },
+  {
+    "name": "Cal&#xF2;",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/cal&#xF2;/7472"
+  },
+  {
+    "name": "Raimondo",
+    "role": "A",
+    "team": "FRO",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/raimondo/5436"
+  },
+  {
+    "name": "Frendrup",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/frendrup/5791"
+  },
+  {
+    "name": "Carlos Augusto",
+    "role": "D",
+    "team": "INT",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/carlos-augusto/5877"
+  },
+  {
+    "name": "Bonny",
+    "role": "A",
+    "team": "INT",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/bonny/6669"
+  },
+  {
+    "name": "Romagnoli",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/romagnoli/460"
+  },
+  {
+    "name": "Rovella",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 6,
+    "cqa": 7,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/rovella/4459"
+  },
+  {
+    "name": "Coulibaly L.",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 6,
+    "cqa": 7,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/coulibaly-l/5504"
+  },
+  {
+    "name": "Stulic",
+    "role": "A",
+    "team": "LEC",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/stulic/7252"
+  },
+  {
+    "name": "Gabbia",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 24,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/gabbia/4401"
+  },
+  {
+    "name": "Tomori",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/tomori/4751"
+  },
+  {
+    "name": "Chukwueze",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 6,
+    "cqa": 7,
+    "fvm": 22,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/chukwueze/4856"
+  },
+  {
+    "name": "Pessina",
+    "role": "C",
+    "team": "MON",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/pessina/2741"
+  },
+  {
+    "name": "Buongiorno",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/buongiorno/2724"
+  },
+  {
+    "name": "Daffara",
+    "role": "P",
+    "team": "PAR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/daffara/7411"
+  },
+  {
+    "name": "Suzuki",
+    "role": "P",
+    "team": "PAR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/suzuki/6641"
+  },
+  {
+    "name": "Bernab&#xE8;",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 35,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/bernab&#xE8;/6666"
+  },
+  {
+    "name": "Pisilli",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 5,
+    "cqa": 7,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/pisilli/6190"
+  },
+  {
+    "name": "Muric",
+    "role": "P",
+    "team": "SAS",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/muric/4236"
+  },
+  {
+    "name": "Idzes",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/idzes/6672"
+  },
+  {
+    "name": "Coco",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/coco/6642"
+  },
+  {
+    "name": "Ismajli",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/ismajli/5010"
+  },
+  {
+    "name": "Oristanio",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/oristanio/6218"
+  },
+  {
+    "name": "Zapata D.",
+    "role": "A",
+    "team": "TOR",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/zapata-d/608"
+  },
+  {
+    "name": "Kristensen T.",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/kristensen-t/6485"
+  },
+  {
+    "name": "Karlstrom",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 6,
+    "cqa": 7,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/karlstrom/6680"
+  },
+  {
+    "name": "Unai Gomez",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/unai-gomez/6783"
+  },
+  {
+    "name": "Sow",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/sow/5946"
+  },
+  {
+    "name": "Elmas",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 28,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/elmas/4479"
+  },
+  {
+    "name": "Badiashile",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/badiashile/4664"
+  },
+  {
+    "name": "Sutalo J.",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 7,
+    "cqa": 7,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/sutalo-j/7580"
+  },
+  {
+    "name": "Ahanor",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/ahanor/6916"
+  },
+  {
+    "name": "Bellanova",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/bellanova/4887"
+  },
+  {
+    "name": "Bernasconi",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/bernasconi/7219"
+  },
+  {
+    "name": "Zalewski",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/zalewski/5422"
+  },
+  {
+    "name": "Sulemana K.",
+    "role": "A",
+    "team": "ATA",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/sulemana-k/5918"
+  },
+  {
+    "name": "Heggem",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/heggem/7212"
+  },
+  {
+    "name": "Zortea",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/zortea/4433"
+  },
+  {
+    "name": "Pobega",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/pobega/5298"
+  },
+  {
+    "name": "Winks",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/winks/4260"
+  },
+  {
+    "name": "Mutandwa",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/mutandwa/6598"
+  },
+  {
+    "name": "Valle",
+    "role": "D",
+    "team": "COM",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/valle/6867"
+  },
+  {
+    "name": "Milla",
+    "role": "C",
+    "team": "COM",
+    "cqi": 5,
+    "cqa": 6,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/milla/7412"
+  },
+  {
+    "name": "Caqueret",
+    "role": "C",
+    "team": "COM",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/caqueret/5036"
+  },
+  {
+    "name": "Liberali",
+    "role": "C",
+    "team": "COM",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/liberali/6678"
+  },
+  {
+    "name": "Valdepenas",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/valdepenas/7294"
+  },
+  {
+    "name": "Viery",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/viery/7410"
+  },
+  {
+    "name": "Oulai",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/oulai/7464"
+  },
+  {
+    "name": "Monterisi",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/monterisi/4952"
+  },
+  {
+    "name": "Marcandalli",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/marcandalli/6660"
+  },
+  {
+    "name": "Ellertsson",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/ellertsson/6020"
+  },
+  {
+    "name": "Pavard",
+    "role": "D",
+    "team": "INT",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/pavard/4177"
+  },
+  {
+    "name": "Perin",
+    "role": "P",
+    "team": "JUV",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/perin/218"
+  },
+  {
+    "name": "Zhegrova",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/zhegrova/5761"
+  },
+  {
+    "name": "Boga",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 26,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/boga/2832"
+  },
+  {
+    "name": "Tavares N.",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/tavares-n/5620"
+  },
+  {
+    "name": "Marusic",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/marusic/2188"
+  },
+  {
+    "name": "Noslin",
+    "role": "A",
+    "team": "LAZ",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/noslin/6556"
+  },
+  {
+    "name": "Gaspar K.",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 5,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/gaspar-k/6632"
+  },
+  {
+    "name": "Veiga D.",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 5,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/veiga-d/6990"
+  },
+  {
+    "name": "Gallo",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/gallo/4502"
+  },
+  {
+    "name": "Pierotti",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/pierotti/6549"
+  },
+  {
+    "name": "Gimenez",
+    "role": "A",
+    "team": "MIL",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/gimenez/7008"
+  },
+  {
+    "name": "Mangas",
+    "role": "D",
+    "team": "MON",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/mangas/7485"
+  },
+  {
+    "name": "Akinsanmiro",
+    "role": "C",
+    "team": "MON",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/akinsanmiro/6593"
+  },
+  {
+    "name": "Beukema",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/beukema/6202"
+  },
+  {
+    "name": "Neres",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/neres/6831"
+  },
+  {
+    "name": "Circati",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/circati/6663"
+  },
+  {
+    "name": "Nicolussi Caviglia",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/nicolussi-caviglia/4349"
+  },
+  {
+    "name": "Matic",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 5,
+    "cqa": 6,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/matic/2528"
+  },
+  {
+    "name": "Comuzzo",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/comuzzo/6495"
+  },
+  {
+    "name": "Gineitis",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 5,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/gineitis/6170"
+  },
+  {
+    "name": "Stankovic F.",
+    "role": "P",
+    "team": "VEN",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/stankovic-f/6248"
+  },
+  {
+    "name": "Bella-Kotchap",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/bella-kotchap/7253"
+  },
+  {
+    "name": "Basic",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 19,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/basic/5674"
+  },
+  {
+    "name": "Obrador",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/obrador/7329"
+  },
+  {
+    "name": "Tour&#xE8; I.",
+    "role": "C",
+    "team": "MON",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/tour&#xE8;-i/7146"
+  },
+  {
+    "name": "Balerdi",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 6,
+    "cqa": 6,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/balerdi/4705"
+  },
+  {
+    "name": "Kolasinac",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/kolasinac/2640"
+  },
+  {
+    "name": "Maldini",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 21,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/maldini/4896"
+  },
+  {
+    "name": "Vitik",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/vitik/7068"
+  },
+  {
+    "name": "Holm",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/holm/5678"
+  },
+  {
+    "name": "Amondarain",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/amondarain/7528"
+  },
+  {
+    "name": "Kofler",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/kofler/7532"
+  },
+  {
+    "name": "Z&#xE8; Pedro",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/z&#xE8;-pedro/7274"
+  },
+  {
+    "name": "Felici",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/felici/6640"
+  },
+  {
+    "name": "Kempf",
+    "role": "D",
+    "team": "COM",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/kempf/6893"
+  },
+  {
+    "name": "Addai",
+    "role": "C",
+    "team": "COM",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/addai/7127"
+  },
+  {
+    "name": "Parisi",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/parisi/5449"
+  },
+  {
+    "name": "Palmisani",
+    "role": "P",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/palmisani/6415"
+  },
+  {
+    "name": "Bracaglia",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/bracaglia/7469"
+  },
+  {
+    "name": "Oyono A.",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/oyono-a/6238"
+  },
+  {
+    "name": "Zerbin",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/zerbin/5998"
+  },
+  {
+    "name": "Martin",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/martin/2593"
+  },
+  {
+    "name": "Amorim",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/amorim/7341"
+  },
+  {
+    "name": "Meichtry",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/meichtry/7409"
+  },
+  {
+    "name": "Traor&#xE8; Hj.",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/traor&#xE8;-hj/2857"
+  },
+  {
+    "name": "Mkhitaryan",
+    "role": "C",
+    "team": "INT",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/mkhitaryan/2529"
+  },
+  {
+    "name": "Kelly L.",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/kelly-l/6766"
+  },
+  {
+    "name": "Koopmeiners",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/koopmeiners/5685"
+  },
+  {
+    "name": "Pedraza",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/pedraza/4817"
+  },
+  {
+    "name": "Dele-Bashiru",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/dele-bashiru/6629"
+  },
+  {
+    "name": "Siebert",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/siebert/7240"
+  },
+  {
+    "name": "Berisha M.",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/berisha-m/6015"
+  },
+  {
+    "name": "Gandelman",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/gandelman/7318"
+  },
+  {
+    "name": "Fofana Y.",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/fofana-y/4686"
+  },
+  {
+    "name": "Jashari",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/jashari/7203"
+  },
+  {
+    "name": "Camarda",
+    "role": "A",
+    "team": "MIL",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/camarda/6519"
+  },
+  {
+    "name": "Thiam",
+    "role": "P",
+    "team": "MON",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/thiam/4485"
+  },
+  {
+    "name": "Mota",
+    "role": "A",
+    "team": "MON",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/mota/5882"
+  },
+  {
+    "name": "Varela G.",
+    "role": "A",
+    "team": "MON",
+    "cqi": 3,
+    "cqa": 5,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/varela-g/7523"
+  },
+  {
+    "name": "Milinkovic-Savic V.",
+    "role": "P",
+    "team": "NAP",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/milinkovic-savic-v/2170"
+  },
+  {
+    "name": "Olivera",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/olivera/5840"
+  },
+  {
+    "name": "Keita M.",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/keita-m/6898"
+  },
+  {
+    "name": "Ondrejka",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/ondrejka/6984"
+  },
+  {
+    "name": "Frigan",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/frigan/7213"
+  },
+  {
+    "name": "Rensch",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/rensch/6986"
+  },
+  {
+    "name": "Adzic",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 16,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/adzic/6677"
+  },
+  {
+    "name": "Bakola",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/bakola/7036"
+  },
+  {
+    "name": "Pedersen",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/pedersen/6426"
+  },
+  {
+    "name": "Cacciamani",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 20,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/cacciamani/7060"
+  },
+  {
+    "name": "Njie",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 23,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/njie/6827"
+  },
+  {
+    "name": "Piotrowski",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/piotrowski/7198"
+  },
+  {
+    "name": "Moreno M.",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 6,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/moreno-m/6890"
+  },
+  {
+    "name": "Correia T.",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 4,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/correia-t/4845"
+  },
+  {
+    "name": "Haps",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/haps/5695"
+  },
+  {
+    "name": "Busio",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/busio/5507"
+  },
+  {
+    "name": "Sohm",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/sohm/5319"
+  },
+  {
+    "name": "Perez K.",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/perez-k/6994"
+  },
+  {
+    "name": "Adorante",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/adorante/4387"
+  },
+  {
+    "name": "Grillitsch",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/grillitsch/7550"
+  },
+  {
+    "name": "Milik",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/milik/2012"
+  },
+  {
+    "name": "Ciss&#xE8; A.",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 3,
+    "cqa": 5,
+    "fvm": 25,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/ciss&#xE8;-a/6618"
+  },
+  {
+    "name": "Fortini",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/fortini/7069"
+  },
+  {
+    "name": "Leysen F.",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/leysen-f/7564"
+  },
+  {
+    "name": "Birligea",
+    "role": "A",
+    "team": "FRO",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/birligea/7610"
+  },
+  {
+    "name": "Ngonge",
+    "role": "A",
+    "team": "MON",
+    "cqi": 5,
+    "cqa": 5,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/ngonge/6145"
+  },
+  {
+    "name": "De Roon",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/de-roon/22"
+  },
+  {
+    "name": "Moro N.",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/moro-n/6054"
+  },
+  {
+    "name": "Dominguez B.",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/dominguez-b/6895"
+  },
+  {
+    "name": "Rodriguez Ju.",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/rodriguez-ju/7268"
+  },
+  {
+    "name": "Zappa",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/zappa/4461"
+  },
+  {
+    "name": "Deiola",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/deiola/1871"
+  },
+  {
+    "name": "Prati",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/prati/6424"
+  },
+  {
+    "name": "Borrelli",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 9,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/borrelli/6243"
+  },
+  {
+    "name": "Mendy P.",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/mendy-p/7374"
+  },
+  {
+    "name": "Smolcic I.",
+    "role": "D",
+    "team": "COM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/smolcic-i/7014"
+  },
+  {
+    "name": "Morata",
+    "role": "A",
+    "team": "COM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/morata/313"
+  },
+  {
+    "name": "Pongracic",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/pongracic/5603"
+  },
+  {
+    "name": "Fabbian",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/fabbian/6206"
+  },
+  {
+    "name": "Calvani",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/calvani/7467"
+  },
+  {
+    "name": "Cichella",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/cichella/7473"
+  },
+  {
+    "name": "Koutsoupias",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/koutsoupias/7474"
+  },
+  {
+    "name": "Fini ",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/fini/6506"
+  },
+  {
+    "name": "Kvernadze",
+    "role": "A",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/kvernadze/6204"
+  },
+  {
+    "name": "Mitaj",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/mitaj/7537"
+  },
+  {
+    "name": "Messias",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/messias/4970"
+  },
+  {
+    "name": "Havel",
+    "role": "A",
+    "team": "GEN",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 9,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/havel/7453"
+  },
+  {
+    "name": "Luis Henrique",
+    "role": "C",
+    "team": "INT",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/luis-henrique/5301"
+  },
+  {
+    "name": "Gatti",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/gatti/5831"
+  },
+  {
+    "name": "Douglas Luiz",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/douglas-luiz/4911"
+  },
+  {
+    "name": "Cataldi",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/cataldi/333"
+  },
+  {
+    "name": "Ngom",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/ngom/7322"
+  },
+  {
+    "name": "De Winter",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/de-winter/5739"
+  },
+  {
+    "name": "Estupinan",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/estupinan/5273"
+  },
+  {
+    "name": "Ricci S.",
+    "role": "C",
+    "team": "COM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/ricci-s/5453"
+  },
+  {
+    "name": "Loftus-Cheek",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/loftus-cheek/4199"
+  },
+  {
+    "name": "Delli Carri",
+    "role": "D",
+    "team": "MON",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/delli-carri/2115"
+  },
+  {
+    "name": "Lucchesi",
+    "role": "D",
+    "team": "MON",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/lucchesi/6659"
+  },
+  {
+    "name": "Birindelli",
+    "role": "D",
+    "team": "MON",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/birindelli/5838"
+  },
+  {
+    "name": "Folorunsho",
+    "role": "C",
+    "team": "MON",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/folorunsho/6252"
+  },
+  {
+    "name": "Giovane",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/giovane/7162"
+  },
+  {
+    "name": "Lang",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/lang/7120"
+  },
+  {
+    "name": "Lucca",
+    "role": "A",
+    "team": "NAP",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/lucca/6215"
+  },
+  {
+    "name": "Troilo",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/troilo/7235"
+  },
+  {
+    "name": "Valenti",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/valenti/5307"
+  },
+  {
+    "name": "Almqvist",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/almqvist/6207"
+  },
+  {
+    "name": "Diallo O.",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/diallo-o/7536"
+  },
+  {
+    "name": "Ghilardi",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/ghilardi/6631"
+  },
+  {
+    "name": "El Aynaoui",
+    "role": "C",
+    "team": "ROM",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/el-aynaoui/6271"
+  },
+  {
+    "name": "Walukiewicz",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/walukiewicz/4374"
+  },
+  {
+    "name": "Doig",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/doig/5851"
+  },
+  {
+    "name": "Comert",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/comert/7526"
+  },
+  {
+    "name": "Fitz-Jim",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 18,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/fitz-jim/7535"
+  },
+  {
+    "name": "Ilkhan",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/ilkhan/6005"
+  },
+  {
+    "name": "Kulenovic",
+    "role": "A",
+    "team": "TOR",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 9,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/kulenovic/7349"
+  },
+  {
+    "name": "Kabasele",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/kabasele/4263"
+  },
+  {
+    "name": "Bertola",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/bertola/5820"
+  },
+  {
+    "name": "Zanoli",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/zanoli/5527"
+  },
+  {
+    "name": "Arizala",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/arizala/7312"
+  },
+  {
+    "name": "Miller L.",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 3,
+    "cqa": 4,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/miller-l/7208"
+  },
+  {
+    "name": "Gueye",
+    "role": "A",
+    "team": "UDI",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/gueye/7272"
+  },
+  {
+    "name": "Halhal",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/halhal/7538"
+  },
+  {
+    "name": "Robinson J.",
+    "role": "A",
+    "team": "MON",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/robinson-j/7546"
+  },
+  {
+    "name": "Terzic",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/terzic/4375"
+  },
+  {
+    "name": "Favasuli",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/favasuli/7563"
+  },
+  {
+    "name": "Fatah",
+    "role": "A",
+    "team": "LEC",
+    "cqi": 4,
+    "cqa": 4,
+    "fvm": 17,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/fatah/7602"
+  },
+  {
+    "name": "Kossounou",
+    "role": "D",
+    "team": "ATA",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/kossounou/5578"
+  },
+  {
+    "name": "Sulemana I.",
+    "role": "C",
+    "team": "ATA",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/sulemana-i/6024"
+  },
+  {
+    "name": "Casale",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/casale/5498"
+  },
+  {
+    "name": "Helland",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/helland/7326"
+  },
+  {
+    "name": "Idrissi R.",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/idrissi-r/7125"
+  },
+  {
+    "name": "Kuhn",
+    "role": "A",
+    "team": "COM",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/kuhn/7128"
+  },
+  {
+    "name": "Ranieri L.",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/ranieri-l/4378"
+  },
+  {
+    "name": "Joao Mario",
+    "role": "D",
+    "team": "FIO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/joao-mario/7175"
+  },
+  {
+    "name": "Brescianini",
+    "role": "C",
+    "team": "FIO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/brescianini/4947"
+  },
+  {
+    "name": "Akpoguma",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 6,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/akpoguma/7540"
+  },
+  {
+    "name": "Cittadini",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/cittadini/5757"
+  },
+  {
+    "name": "Gelli F.",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/gelli-f/6241"
+  },
+  {
+    "name": "Hasa",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/hasa/6903"
+  },
+  {
+    "name": "Masini",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/masini/6917"
+  },
+  {
+    "name": "Stankovic A.",
+    "role": "C",
+    "team": "INT",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/stankovic-a/6503"
+  },
+  {
+    "name": "Miretti",
+    "role": "C",
+    "team": "JUV",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/miretti/5813"
+  },
+  {
+    "name": "Ekhator",
+    "role": "A",
+    "team": "JUV",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/ekhator/6822"
+  },
+  {
+    "name": "Provstgaard",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/provstgaard/7012"
+  },
+  {
+    "name": "Floriani Mussolini",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/floriani-mussolini/7131"
+  },
+  {
+    "name": "Gorter",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/gorter/7248"
+  },
+  {
+    "name": "Maleh",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/maleh/5457"
+  },
+  {
+    "name": "N&#x27;Dri",
+    "role": "A",
+    "team": "LEC",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/n-dri/7001"
+  },
+  {
+    "name": "Athekame",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/athekame/7211"
+  },
+  {
+    "name": "Musah",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 15,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/musah/5295"
+  },
+  {
+    "name": "Kouadio",
+    "role": "D",
+    "team": "MON",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 14,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/kouadio/7238"
+  },
+  {
+    "name": "Carboni A.",
+    "role": "D",
+    "team": "MON",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 9,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/carboni-a/4925"
+  },
+  {
+    "name": "Colombo L.",
+    "role": "C",
+    "team": "MON",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/colombo-l/7477"
+  },
+  {
+    "name": "Gilmour",
+    "role": "C",
+    "team": "NAP",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/gilmour/5131"
+  },
+  {
+    "name": "Britschgi",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/britschgi/7255"
+  },
+  {
+    "name": "Ordonez C.",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/ordonez-c/7138"
+  },
+  {
+    "name": "Sorensen O.",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/sorensen-o/7209"
+  },
+  {
+    "name": "Elphege",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/elphege/7342"
+  },
+  {
+    "name": "Angelino",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/angelino/4772"
+  },
+  {
+    "name": "Cand&#xE8;",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/cand&#xE8;/6985"
+  },
+  {
+    "name": "Aboukhlal",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/aboukhlal/7183"
+  },
+  {
+    "name": "Palma",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 11,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/palma/6925"
+  },
+  {
+    "name": "Ebosse",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 2,
+    "cqa": 3,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/ebosse/5994"
+  },
+  {
+    "name": "Schingtienne",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/schingtienne/6892"
+  },
+  {
+    "name": "Sverko",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/sverko/6673"
+  },
+  {
+    "name": "Hainaut",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/hainaut/6821"
+  },
+  {
+    "name": "Helgason",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/helgason/5872"
+  },
+  {
+    "name": "Odenthal",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/odenthal/7154"
+  },
+  {
+    "name": "Tchato",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/tchato/7605"
+  },
+  {
+    "name": "Kambwala",
+    "role": "D",
+    "team": "COM",
+    "cqi": 3,
+    "cqa": 3,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/kambwala/6601"
+  },
+  {
+    "name": "Alhassane",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 6,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/alhassane/7483"
+  },
+  {
+    "name": "El Azzouzi O.",
+    "role": "C",
+    "team": "BOL",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/el-azzouzi-o/6225"
+  },
+  {
+    "name": "Van Der Brempt",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/van-der-brempt/6896"
+  },
+  {
+    "name": "Fadera",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/fadera/6815"
+  },
+  {
+    "name": "Desplanches",
+    "role": "P",
+    "team": "FRO",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/desplanches/7463"
+  },
+  {
+    "name": "Otoa",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/otoa/6977"
+  },
+  {
+    "name": "Puczka",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/puczka/7413"
+  },
+  {
+    "name": "Sabelli",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/sabelli/791"
+  },
+  {
+    "name": "Venturino",
+    "role": "C",
+    "team": "GEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/venturino/6980"
+  },
+  {
+    "name": "Provedel",
+    "role": "P",
+    "team": "INT",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/provedel/2814"
+  },
+  {
+    "name": "Lazzari",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/lazzari/2263"
+  },
+  {
+    "name": "Pellegrini Lu.",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/pellegrini-lu/2728"
+  },
+  {
+    "name": "Jean",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/jean/6883"
+  },
+  {
+    "name": "Ndaba",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/ndaba/7182"
+  },
+  {
+    "name": "Diawara S.",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/diawara-s/7525"
+  },
+  {
+    "name": "Bakoune",
+    "role": "D",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/bakoune/7476"
+  },
+  {
+    "name": "Ciurria",
+    "role": "C",
+    "team": "MON",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 6,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/ciurria/5880"
+  },
+  {
+    "name": "Petagna",
+    "role": "A",
+    "team": "MON",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/petagna/383"
+  },
+  {
+    "name": "Marin R.",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/marin-r/6638"
+  },
+  {
+    "name": "Ndiaye",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/ndiaye/7202"
+  },
+  {
+    "name": "Boloca",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/boloca/6219"
+  },
+  {
+    "name": "Lipani",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/lipani/6246"
+  },
+  {
+    "name": "Biraghi",
+    "role": "D",
+    "team": "TOR",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/biraghi/252"
+  },
+  {
+    "name": "Abankwah",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/abankwah/6021"
+  },
+  {
+    "name": "Chakvetadze",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 6,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/chakvetadze/7418"
+  },
+  {
+    "name": "Buksa",
+    "role": "A",
+    "team": "UDI",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/buksa/7249"
+  },
+  {
+    "name": "Franjic",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 7,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/franjic/7478"
+  },
+  {
+    "name": "Sagrado",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/sagrado/6681"
+  },
+  {
+    "name": "Duncan",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/duncan/526"
+  },
+  {
+    "name": "Aurelio",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/aurelio/7548"
+  },
+  {
+    "name": "Lontani",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/lontani/7561"
+  },
+  {
+    "name": "Forson O.",
+    "role": "C",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/forson-o/6592"
+  },
+  {
+    "name": "Cinquegrano",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/cinquegrano/7573"
+  },
+  {
+    "name": "Terracciano F.",
+    "role": "D",
+    "team": "MIL",
+    "cqi": 2,
+    "cqa": 2,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/terracciano-f/5812"
+  },
+  {
+    "name": "Rossi F.",
+    "role": "P",
+    "team": "ATA",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/rossi-f/2297"
+  },
+  {
+    "name": "Sportiello",
+    "role": "P",
+    "team": "ATA",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/sportiello/4"
+  },
+  {
+    "name": "Happonen",
+    "role": "P",
+    "team": "BOL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/happonen/7533"
+  },
+  {
+    "name": "Pessina Mas.",
+    "role": "P",
+    "team": "BOL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/pessina-mas/7172"
+  },
+  {
+    "name": "De Silvestri",
+    "role": "D",
+    "team": "BOL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/bologna/de-silvestri/487"
+  },
+  {
+    "name": "Ciocci",
+    "role": "P",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/ciocci/4929"
+  },
+  {
+    "name": "Sherri",
+    "role": "P",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/sherri/6650"
+  },
+  {
+    "name": "Raterink",
+    "role": "D",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/raterink/7346"
+  },
+  {
+    "name": "Liteta",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/liteta/7165"
+  },
+  {
+    "name": "Albarracin",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/albarracin/7338"
+  },
+  {
+    "name": "Trepy",
+    "role": "A",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/trepy/7317"
+  },
+  {
+    "name": "Tornqvist",
+    "role": "P",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/tornqvist/7301"
+  },
+  {
+    "name": "Vigorito",
+    "role": "P",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/vigorito/2809"
+  },
+  {
+    "name": "Goldaniga",
+    "role": "D",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/goldaniga/418"
+  },
+  {
+    "name": "Cuenca A.",
+    "role": "D",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/cuenca-a/7407"
+  },
+  {
+    "name": "Lahdo",
+    "role": "C",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/lahdo/7357"
+  },
+  {
+    "name": "Azon",
+    "role": "A",
+    "team": "COM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/como/azon/7027"
+  },
+  {
+    "name": "Christensen O.",
+    "role": "P",
+    "team": "FIO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/christensen-o/6403"
+  },
+  {
+    "name": "Lezzerini",
+    "role": "P",
+    "team": "FIO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/fiorentina/lezzerini/158"
+  },
+  {
+    "name": "Lolic",
+    "role": "P",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/lolic/7466"
+  },
+  {
+    "name": "Amey",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/amey/5424"
+  },
+  {
+    "name": "Gelli J.",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/gelli-j/7468"
+  },
+  {
+    "name": "Oyono J.",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/oyono-j/7470"
+  },
+  {
+    "name": "Corrado",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/corrado/7471"
+  },
+  {
+    "name": "El Azzouzi A.",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/el-azzouzi-a/7456"
+  },
+  {
+    "name": "Kone B.",
+    "role": "C",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/kone-b/5725"
+  },
+  {
+    "name": "Sommariva",
+    "role": "P",
+    "team": "GEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/sommariva/219"
+  },
+  {
+    "name": "Stolz",
+    "role": "P",
+    "team": "GEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/stolz/6569"
+  },
+  {
+    "name": "Vogliacco",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/vogliacco/6245"
+  },
+  {
+    "name": "Matturro",
+    "role": "D",
+    "team": "GEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/genoa/matturro/6244"
+  },
+  {
+    "name": "Di Gennaro",
+    "role": "P",
+    "team": "INT",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/inter/di-gennaro/1926"
+  },
+  {
+    "name": "Pinsoglio",
+    "role": "P",
+    "team": "JUV",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/pinsoglio/1930"
+  },
+  {
+    "name": "Rugani",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/rugani/294"
+  },
+  {
+    "name": "Cabal",
+    "role": "D",
+    "team": "JUV",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/cabal/6039"
+  },
+  {
+    "name": "Motta",
+    "role": "P",
+    "team": "LAZ",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/motta/7337"
+  },
+  {
+    "name": "Renzetti",
+    "role": "P",
+    "team": "LAZ",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/renzetti/7534"
+  },
+  {
+    "name": "Patric",
+    "role": "D",
+    "team": "LAZ",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/patric/327"
+  },
+  {
+    "name": "Belahyane",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/belahyane/6191"
+  },
+  {
+    "name": "Przyborek",
+    "role": "C",
+    "team": "LAZ",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 5,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lazio/przyborek/7345"
+  },
+  {
+    "name": "Fruchtl",
+    "role": "P",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/fruchtl/2401"
+  },
+  {
+    "name": "Samooja",
+    "role": "P",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/samooja/6523"
+  },
+  {
+    "name": "Perez M.",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/perez-m/7164"
+  },
+  {
+    "name": "Kaba",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/kaba/6410"
+  },
+  {
+    "name": "Fofana Sa.",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/fofana-sa/7319"
+  },
+  {
+    "name": "Terracciano",
+    "role": "P",
+    "team": "MIL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/terracciano/2815"
+  },
+  {
+    "name": "Torriani",
+    "role": "P",
+    "team": "MIL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/torriani/6813"
+  },
+  {
+    "name": "Pizzignacco",
+    "role": "P",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/pizzignacco/6682"
+  },
+  {
+    "name": "Strajnar",
+    "role": "P",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/strajnar/7475"
+  },
+  {
+    "name": "Antov",
+    "role": "D",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/antov/5399"
+  },
+  {
+    "name": "Contini",
+    "role": "P",
+    "team": "NAP",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/contini/2845"
+  },
+  {
+    "name": "Marianucci",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/marianucci/6809"
+  },
+  {
+    "name": "Mazzocchi",
+    "role": "D",
+    "team": "NAP",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/napoli/mazzocchi/5481"
+  },
+  {
+    "name": "Corvi",
+    "role": "P",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 10,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/corvi/6662"
+  },
+  {
+    "name": "Carboni F.",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/carboni-f/6149"
+  },
+  {
+    "name": "Cremaschi",
+    "role": "C",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/cremaschi/7276"
+  },
+  {
+    "name": "De Marzi",
+    "role": "P",
+    "team": "ROM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/de-marzi/7048"
+  },
+  {
+    "name": "Gollini",
+    "role": "P",
+    "team": "ROM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/gollini/610"
+  },
+  {
+    "name": "Ziolkowski",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/ziolkowski/7260"
+  },
+  {
+    "name": "Vaz",
+    "role": "A",
+    "team": "ROM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/vaz/6981"
+  },
+  {
+    "name": "Russo A.",
+    "role": "P",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/russo-a/4518"
+  },
+  {
+    "name": "Turati",
+    "role": "P",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/turati/4867"
+  },
+  {
+    "name": "Missori",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/missori/6189"
+  },
+  {
+    "name": "Pieragnolo",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/pieragnolo/7156"
+  },
+  {
+    "name": "Iannoni",
+    "role": "C",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/iannoni/7157"
+  },
+  {
+    "name": "Moro L.",
+    "role": "A",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/moro-l/7158"
+  },
+  {
+    "name": "Mascardi",
+    "role": "P",
+    "team": "TOR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 13,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/mascardi/7457"
+  },
+  {
+    "name": "Paleari",
+    "role": "P",
+    "team": "TOR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/paleari/5320"
+  },
+  {
+    "name": "Siviero",
+    "role": "P",
+    "team": "TOR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/siviero/7363"
+  },
+  {
+    "name": "Ilic",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 8,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/ilic/5007"
+  },
+  {
+    "name": "Anjorin",
+    "role": "C",
+    "team": "TOR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/torino/anjorin/6889"
+  },
+  {
+    "name": "Padelli",
+    "role": "P",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/padelli/543"
+  },
+  {
+    "name": "Piana",
+    "role": "P",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/piana/5707"
+  },
+  {
+    "name": "Mlacic",
+    "role": "D",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/mlacic/7356"
+  },
+  {
+    "name": "Camara A.",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/camara-a/7392"
+  },
+  {
+    "name": "Zarraga",
+    "role": "C",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 4,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/zarraga/6212"
+  },
+  {
+    "name": "Bayo V.",
+    "role": "A",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/bayo-v/7161"
+  },
+  {
+    "name": "Grandi",
+    "role": "P",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/grandi/6671"
+  },
+  {
+    "name": "Pozzi",
+    "role": "P",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/pozzi/7531"
+  },
+  {
+    "name": "Gomes",
+    "role": "D",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/gomes/7454"
+  },
+  {
+    "name": "Bjarkason",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/bjarkason/5485"
+  },
+  {
+    "name": "Dagasso",
+    "role": "C",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/dagasso/7481"
+  },
+  {
+    "name": "Lisman",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/lisman/7408"
+  },
+  {
+    "name": "Lauberbach",
+    "role": "A",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/lauberbach/7482"
+  },
+  {
+    "name": "Vismara",
+    "role": "P",
+    "team": "ATA",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/atalanta/vismara/7545"
+  },
+  {
+    "name": "Satalino",
+    "role": "P",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/satalino/2127"
+  },
+  {
+    "name": "Penev",
+    "role": "P",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/penev/7557"
+  },
+  {
+    "name": "Pisseri",
+    "role": "P",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/pisseri/7560"
+  },
+  {
+    "name": "Radunovic",
+    "role": "P",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/radunovic/3"
+  },
+  {
+    "name": "De Martis",
+    "role": "A",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/de-martis/7568"
+  },
+  {
+    "name": "Montip&#xF2;",
+    "role": "P",
+    "team": "VEN",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/venezia/montip&#xF2;/4957"
+  },
+  {
+    "name": "Omar Fayed",
+    "role": "D",
+    "team": "FRO",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/frosinone/omar-fayed/7553"
+  },
+  {
+    "name": "Bleve",
+    "role": "P",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/bleve/4468"
+  },
+  {
+    "name": "Laerke",
+    "role": "C",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/laerke/7571"
+  },
+  {
+    "name": "Comotto",
+    "role": "C",
+    "team": "MIL",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/milan/comotto/7572"
+  },
+  {
+    "name": "Macchioni",
+    "role": "D",
+    "team": "SAS",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/sassuolo/macchioni/7396"
+  },
+  {
+    "name": "Foe Ondoa",
+    "role": "C",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/foe-ondoa/7574"
+  },
+  {
+    "name": "Mout",
+    "role": "C",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 12,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/mout/7575"
+  },
+  {
+    "name": "Ciervo",
+    "role": "C",
+    "team": "CAG",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/cagliari/ciervo/5462"
+  },
+  {
+    "name": "Lulli",
+    "role": "D",
+    "team": "ROM",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 3,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/roma/lulli/7599"
+  },
+  {
+    "name": "Grabara",
+    "role": "P",
+    "team": "JUV",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/juventus/grabara/7603"
+  },
+  {
+    "name": "Maye",
+    "role": "D",
+    "team": "MON",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/monza/maye/7604"
+  },
+  {
+    "name": "Mrozek",
+    "role": "P",
+    "team": "UDI",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/udinese/mrozek/7611"
+  },
+  {
+    "name": "Drobnic",
+    "role": "D",
+    "team": "PAR",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 1,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/parma/drobnic/7615"
+  },
+  {
+    "name": "Dembel&#xE8; A.",
+    "role": "D",
+    "team": "LEC",
+    "cqi": 1,
+    "cqa": 1,
+    "fvm": 2,
+    "url": "https://www.fantacalcio.it/serie-a/squadre/lecce/dembel&#xE8;-a/6826"
+  }
+]

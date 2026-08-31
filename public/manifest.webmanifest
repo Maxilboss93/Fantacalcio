@@ -1,0 +1,17 @@
+{
+  "name": "Asta Fantacalcio 2026/27",
+  "short_name": "Asta Fanta",
+  "description": "Cockpit live per asta Fantacalcio con budget, massimali e rosa acquistata.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#111827",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
