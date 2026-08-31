@@ -3,7 +3,7 @@ import stats25Raw from "./data/stats_2025_26.json";
 import stats26Raw from "./data/stats_2026_27.json";
 
 export type Role = "P" | "D" | "C" | "A";
-export type Status = "Da chiamare" | "Monitor" | "Comprato" | "Perso" | "Evita";
+export type Status = "Da chiamare" | "Monitor" | "Comprato" | "Perso" | "Evita" | "Consigliato";
 
 export type RawPlayer = {
   name: string;
@@ -34,6 +34,7 @@ export type RawStats = {
 export type Player = RawPlayer & {
   stars: number;
   tier: string;
+  profile: string;
   maxBid: number;
   openBid: number;
   score: number;
@@ -49,6 +50,11 @@ export type AuctionPick = {
   paid?: number;
   owner?: string;
   liveNote?: string;
+};
+
+export type EditorialAvoidSignal = {
+  reason: string;
+  source: string;
 };
 
 export type BudgetRow = {
@@ -72,6 +78,8 @@ export const sources = [
   ["Rigoristi Fantacalcio.it", "https://www.fantacalcio.it/rigoristi-serie-a"],
   ["Risultati Sky Sport", "https://sport.sky.it/calcio/serie-a/calendario-risultati"],
   ["SOS Fanta guida asta", "https://www.sosfanta.com/guida-asta-fantacalcio/guida-asta-fantacalcio-2026-2027-tutti-consigli-fasce-chi-prendere/"],
+  ["Fantacalcio.it trappole asta 26/27", "https://www.fantacalcio.it/consigli-fantacalcio/19_08_2026/trappole-asta-fantacalcio-26-27-496633"],
+  ["Fantacalcio.it antiscommesse 26/27", "https://www.fantacalcio.it/amp/consigli-fantacalcio/10_08_2026/fantacalcio-scommesse-antiscommesse-495816"],
   ["Goal guida asta", "https://www.goal.com/it/liste/consigli-fantacalcio-serie-a-2026-2027-chi-prendere-all-asta-la-guida-completa-divisione-in-fasce-e-ruoli/blt990f9f2a29ab947d"],
   ["Gazzetta FantaNews", "https://www.gazzetta.it/calcio/fantanews/11-08-2026/guida-fantacalcio-2026-2027-migliori-giocatori-da-comprare-all-asta.shtml"],
   ["Fantacalcio-Online prezzi reali", "https://www.fantacalcio-online.com/it/i-piu-comprati"],
@@ -81,13 +89,113 @@ export const sources = [
   ["Fantamagazine", "https://www.fantamagazine.com/"]
 ] as const;
 
+export const editorialAvoidSignals: Record<string, EditorialAvoidSignal> = {
+  "Maldini": {
+    reason: "Rischio continuita e gerarchie offensive ancora poco stabili.",
+    source: "Fantacalcio.it, 3 trappole da evitare all'asta 26/27"
+  },
+  "Diao": {
+    reason: "Rischio turnover, problemi fisici ricorrenti e prezzo da tenere molto basso.",
+    source: "Fantacalcio.it, 3 trappole da evitare all'asta 26/27"
+  },
+  "Soul&#xE8;": {
+    reason: "Rientro da una seconda parte di stagione negativa e concorrenza aumentata.",
+    source: "Fantacalcio.it, 3 trappole da evitare all'asta 26/27"
+  },
+  "De Roon": {
+    reason: "Concorrenza in mediana: rischio di perdere terreno e diventare una riserva.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Pobega": {
+    reason: "Concorrenza e posizione piu arretrata: bonus attesi in calo.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Borrelli": {
+    reason: "Parte avanti ma potrebbe perdere presto terreno nelle gerarchie.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Addai": {
+    reason: "Problemi fisici e concorrenza folta sulla trequarti.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Oulai": {
+    reason: "Profilo piu da regista che da mezzala: pochi bonus attesi rispetto al prezzo.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Grillitsch": {
+    reason: "Condizione da ritrovare e profilo poco incline ai bonus.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Mkhitaryan": {
+    reason: "Titolarita meno certa, tanta concorrenza e bonus in calo.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Thuram K.": {
+    reason: "Concorrenza in mediana e preparazione estiva condizionata.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Noslin": {
+    reason: "Parte dietro nelle gerarchie offensive: minutaggio difficile da gestire.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Gandelman": {
+    reason: "Condizione non ottimale e posizione leggermente indietro nelle gerarchie.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Chukwueze": {
+    reason: "Adattamento tattico e attese basse per bonus e voti.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Pessina": {
+    reason: "Rischio fisico e prezzo gonfiato dai rigori per un centrocampista arretrato.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Buongiorno": {
+    reason: "Rientro fisico graduale dopo una preparazione condizionata.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Almqvist": {
+    reason: "Titolarita non solida e rischio di perdere terreno durante la stagione.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "El Aynaoui": {
+    reason: "Alternativa ai titolarissimi con compiti difensivi e pochi bonus.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Dominguez B.": {
+    reason: "Parte dietro nelle gerarchie e rischia di essere soprattutto un subentrante.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Zapata D.": {
+    reason: "Concorrenza offensiva molto alta e rischio fisico rilevante.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Chakvetadze": {
+    reason: "Gerarchie non consolidate, adattamento e bonus non abbastanza freddi.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  },
+  "Adorante": {
+    reason: "Il mercato ha aumentato la concorrenza e puo diventare un comprimario.",
+    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
+  }
+};
+
+export function defaultStatusFor(player: Pick<RawPlayer, "name">): Status {
+  return editorialAvoidSignals[player.name] ? "Evita" : "Da chiamare";
+}
+
 export const budgetPlan: BudgetRow[] = [
-  { role: "P", label: "Portieri", slots: 3, budget: 40 },
-  { role: "D", label: "Difensori", slots: 8, budget: 100 },
-  { role: "C", label: "Centrocampisti", slots: 8, budget: 130 },
-  { role: "A", label: "Attaccanti", slots: 6, budget: 210 },
-  { role: "R", label: "Riserva tattica", slots: 0, budget: 20 }
+  { role: "P", label: "Portieri", slots: 3, budget: 45 },
+  { role: "D", label: "Difensori", slots: 8, budget: 80 },
+  { role: "C", label: "Centrocampisti", slots: 8, budget: 150 },
+  { role: "A", label: "Attaccanti", slots: 6, budget: 225 },
+  { role: "R", label: "Riserva tattica", slots: 0, budget: 0 }
 ];
+
+export const auctionRules = {
+  participants: 10,
+  firstBandAttackMin: 100
+} as const;
 
 export const rosterSlots: Record<Role, number> = { P: 3, D: 8, C: 8, A: 6 };
 
@@ -148,9 +256,9 @@ export const takers = [
 const manualNotes: Record<string, { note: string; maxBid: number; tier: string }> = {
   "Malen": { note: "Top assoluto; rigorista Roma, 14 gol nel 2025/26 e avvio 2026/27 molto caldo.", maxBid: 148, tier: "Fascia 1" },
   "Martinez L.": { note: "Primo slot stabile: 17 gol e 6 assist nel 2025/26, alta affidabilita Inter.", maxBid: 132, tier: "Fascia 1" },
-  "Thuram": { note: "Primo slot basso/secondo slot deluxe: 13 gol e 6 assist 2025/26.", maxBid: 96, tier: "Fascia 1" },
-  "Ramos G.": { note: "Obiettivo Milan, primo rigorista indicato: prendere senza pagare tassa rossonera.", maxBid: 86, tier: "Fascia 1" },
-  "Hojlund": { note: "Attaccante Napoli con doppia cifra realistica; 12 gol e 5 assist 2025/26.", maxBid: 94, tier: "Fascia 1" },
+  "Thuram": { note: "Primo slot basso/secondo slot deluxe: 13 gol e 6 assist 2025/26.", maxBid: 100, tier: "Fascia 1" },
+  "Ramos G.": { note: "Obiettivo Milan, primo rigorista indicato: prendere senza pagare tassa rossonera.", maxBid: 100, tier: "Fascia 1" },
+  "Hojlund": { note: "Attaccante Napoli con doppia cifra realistica; 12 gol e 5 assist 2025/26.", maxBid: 100, tier: "Fascia 1" },
   "Douvikas": { note: "Assimilato nel Como di Fabregas, doppia cifra alla portata.", maxBid: 68, tier: "Fascia 2" },
   "Kolo Muani": { note: "Titolare Juve e primo rigorista; prezzo giusto, non inseguire hype.", maxBid: 76, tier: "Fascia 2" },
   "Kean": { note: "Potenziale doppia cifra, ma dipende da contesto e concorrenza.", maxBid: 58, tier: "Fascia 2" },
@@ -221,7 +329,10 @@ function scorePlayer(q: RawPlayer): number {
 
 function calculatedMaxBid(q: RawPlayer): number {
   const manual = manualNotes[q.name];
-  if (manual) return manual.maxBid;
+  if (manual) {
+    const marketFloor = q.role === "A" && manual.tier === "Fascia 1" ? auctionRules.firstBandAttackMin : 0;
+    return Math.max(marketFloor, manual.maxBid);
+  }
   const s25 = stats25.get(q.name);
   const s26 = stats26.get(q.name);
   let value = q.fvm * roleMultiplier[q.role];
@@ -256,9 +367,33 @@ function tierFor(q: RawPlayer, stars: number): string {
   return "Riempitivo";
 }
 
+function profileFor(q: RawPlayer, stars: number): string {
+  const teammates = quotazioni
+    .filter((player) => player.team === q.team && player.role === q.role)
+    .sort((a, b) => b.fvm - a.fvm || b.cqi - a.cqi);
+  const rank = teammates.findIndex((player) => player.name === q.name);
+
+  if (q.role === "P") {
+    if (rank === 0) return "Titolare";
+    if (rank === 1) return "Secondo portiere";
+    if (rank === 2) return "Terzo portiere";
+    return "Riserva";
+  }
+
+  if (stars >= 5) return "Titolare";
+  if (stars === 4) return "Titolare low cost";
+  if (stars === 3) {
+    const rival = teammates.find((player) => player.name !== q.name && Math.abs(player.fvm - q.fvm) <= 45);
+    return rival ? `Ballottaggio con ${rival.name}` : "Titolare low cost";
+  }
+  return "Riserva";
+}
+
 function noteFor(q: RawPlayer): string {
   const manual = manualNotes[q.name];
   if (manual) return manual.note;
+  const editorialAvoid = editorialAvoidSignals[q.name];
+  if (editorialAvoid) return `${editorialAvoid.reason} Fonte: ${editorialAvoid.source}.`;
   const s25 = stats25.get(q.name);
   const bits: string[] = [];
   if (penaltyRank(q.name) === 1) bits.push("primo rigorista");
@@ -279,6 +414,7 @@ export const allPlayers: Player[] = quotazioni.map((q) => {
     openBid: Math.max(1, Math.round(maxBid * 0.45)),
     stars,
     tier: tierFor(q, stars),
+    profile: profileFor(q, stars),
     note: noteFor(q),
     penaltyRank: penaltyRank(q.name),
     setPieceRank: setPieceRank(q.name),
@@ -289,10 +425,12 @@ export const allPlayers: Player[] = quotazioni.map((q) => {
 
 export const selectedPlayers: Player[] = ["P", "D", "C", "A"].flatMap((role) => {
   const limit: Record<Role, number> = { P: 28, D: 55, C: 55, A: 45 };
-  return allPlayers
+  const targets = allPlayers
     .filter((player) => player.role === role)
     .sort((a, b) => b.stars - a.stars || b.score - a.score || b.fvm - a.fvm)
     .slice(0, limit[role as Role]);
+  const editorialAvoids = allPlayers.filter((player) => player.role === role && defaultStatusFor(player) === "Evita");
+  return Array.from(new Map([...targets, ...editorialAvoids].map((player) => [player.name, player])).values());
 }) as Player[];
 
 export function starsText(stars: number): string {

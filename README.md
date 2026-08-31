@@ -5,10 +5,11 @@ Cockpit live per gestire l'asta:
 - ricerca istantanea nel listone;
 - ordinamento cliccabile sulle colonne principali;
 - layout mobile con righe trasformate in schede operative;
-- filtri per ruolo, fascia, rigorista e Milan;
+- filtri per ruolo, profilo operativo, rigorista e Milan;
 - massimale, offerta apertura e alert sovrapprezzo;
 - tracker budget e slot per reparto;
-- stato giocatore: Da chiamare, Monitor, Comprato, Perso, Evita;
+- stato giocatore: Da chiamare, Monitor, Comprato, Perso, Evita, Consigliato;
+- precompilazione dei nomi da evitare da segnali editoriali aggiornati e suggeritore live basato su acquisti, slot, budget e obiettivi di reparto;
 - pagina Rosa con acquistati, spesa totale, delta dal massimale, gol, assist, fantamedia e tiratori;
 - export CSV ed export/import JSON dello stato live;
 - supporto PWA leggero per riaprire l'app dopo il primo caricamento anche con rete instabile;

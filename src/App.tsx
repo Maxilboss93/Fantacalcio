@@ -13,18 +13,22 @@ import {
   Star,
   Trophy,
   Upload,
-  Users
+  Users,
+  X
 } from "lucide-react";
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "react";
 import {
   allPlayers,
   AuctionPick,
+  auctionRules,
   budgetPlan,
+  defaultStatusFor,
   goalkeeperPairs,
   numberFromStat,
   Player,
   results,
   Role,
+  roleLabels,
   selectedPlayers,
   sources,
   starsText,
@@ -34,13 +38,15 @@ import {
 
 type View = "cockpit" | "listone" | "rosa" | "portieri" | "rigoristi" | "risultati" | "fonti";
 type SortDirection = "asc" | "desc";
-type SortKey = "priority" | "role" | "name" | "team" | "tier" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
+type SortKey = "priority" | "role" | "name" | "team" | "profile" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
 type SortState = { key: SortKey; direction: SortDirection };
 
 const storageKey = "fantacalcio-asta-2026-27-state";
 const views: View[] = ["cockpit", "listone", "rosa", "portieri", "rigoristi", "risultati", "fonti"];
-const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita"];
+const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
+const profileOptions = ["Tutti", "Titolare", "Titolare low cost", "Ballottaggio", "Secondo portiere", "Terzo portiere", "Riserva"];
+const recommendationBlockedStatuses = new Set<Status>(["Comprato", "Perso", "Evita", "Consigliato"]);
 
 function viewFromHash(): View {
   const hash = window.location.hash.replace("#", "") as View;
@@ -85,16 +91,108 @@ function formatMoney(value: number) {
   return value.toLocaleString("it-IT", { maximumFractionDigits: 0 });
 }
 
+function playerStatus(player: Player, auction: Record<string, AuctionPick>): Status {
+  return auction[pickKey(player)]?.status ?? defaultStatusFor(player);
+}
+
+type Recommendation = {
+  player: Player;
+  liveMax: number;
+  reason: string;
+};
+
+function recommendNextPlayer(auction: Record<string, AuctionPick>, excludeKey = ""): Recommendation | null {
+  const bought = allPlayers.filter((player) => playerStatus(player, auction) === "Comprato");
+  const spentByRole = roleOrder.reduce<Record<Role, number>>((totals, role) => {
+    totals[role] = bought
+      .filter((player) => player.role === role)
+      .reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+    return totals;
+  }, { P: 0, D: 0, C: 0, A: 0 });
+  const boughtCountByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+    counts[role] = bought.filter((player) => player.role === role).length;
+    return counts;
+  }, { P: 0, D: 0, C: 0, A: 0 });
+  const remaining = 500 - bought.reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+  const activeRole = roleOrder.find((role) => boughtCountByRole[role] < (budgetPlan.find((row) => row.role === role)?.slots ?? 0));
+  const completed = roleOrder.filter((role) => boughtCountByRole[role] >= (budgetPlan.find((row) => row.role === role)?.slots ?? 0));
+
+  function liveMaxFor(player: Player) {
+    const plan = budgetPlan.find((row) => row.role === player.role);
+    if (!plan) return 0;
+    const otherNeeds = roleOrder
+      .filter((otherRole) => otherRole !== player.role)
+      .reduce((sum, otherRole) => {
+        const otherPlan = budgetPlan.find((row) => row.role === otherRole);
+        if (!otherPlan) return sum;
+        const slotsLeft = Math.max(0, otherPlan.slots - boughtCountByRole[otherRole]);
+        if (!slotsLeft) return sum;
+        return sum + Math.max(slotsLeft, Math.max(0, otherPlan.budget - spentByRole[otherRole]));
+      }, 0);
+    const slotsAfterPurchase = Math.max(0, plan.slots - boughtCountByRole[player.role] - 1);
+    return Math.max(0, remaining - otherNeeds - slotsAfterPurchase);
+  }
+
+  const centerBonusBought = bought.filter((player) => player.role === "C" && (player.penaltyRank === 1 || player.setPieceRank === 1 || player.stars >= 4)).length;
+  const attackTopBought = bought.some((player) => player.role === "A" && player.stars >= 5);
+  const attackSemiTopBought = bought.some((player) => player.role === "A" && player.stars >= 4);
+
+  const candidates = selectedPlayers
+    .filter((player) => pickKey(player) !== excludeKey)
+    .filter((player) => !recommendationBlockedStatuses.has(playerStatus(player, auction)))
+    .filter((player) => activeRole ? player.role === activeRole : false)
+    .filter((player) => {
+      const plan = budgetPlan.find((row) => row.role === player.role);
+      return plan ? boughtCountByRole[player.role] < plan.slots : false;
+    })
+    .map((player) => {
+      const liveMax = liveMaxFor(player);
+      const marketCommitment = player.role === "A" && player.stars >= 5 ? auctionRules.firstBandAttackMin : player.openBid;
+      const affordable = liveMax >= marketCommitment;
+      const roleNeed = (budgetPlan.find((row) => row.role === player.role)?.slots ?? 0) - boughtCountByRole[player.role];
+      const attackStructure = player.role === "A"
+        ? (!attackTopBought && player.stars >= 5 ? 160 : !attackSemiTopBought && player.stars >= 4 ? 110 : 0)
+        : 0;
+      const midfieldStructure = player.role === "C" && centerBonusBought < 3 && (player.penaltyRank === 1 || player.setPieceRank === 1 || player.stars >= 4) ? 34 : 0;
+      const quality = player.stars * 13 + Math.min(30, player.score / 4);
+      const rolePriority = player.role === activeRole ? 45 : 0;
+      const budgetFit = Math.min(24, (liveMax / Math.max(1, player.maxBid)) * 24);
+      const bonusSignal = (player.penaltyRank === 1 ? 12 : 0) + (player.setPieceRank === 1 ? 8 : 0);
+      return {
+        player,
+        liveMax,
+        affordable,
+        rank: (affordable ? 300 : -200) + rolePriority + roleNeed * 7 + attackStructure + midfieldStructure + quality + budgetFit + bonusSignal
+      };
+    })
+    .filter((candidate) => candidate.affordable)
+    .sort((a, b) => b.rank - a.rank || b.player.score - a.player.score || a.player.name.localeCompare(b.player.name));
+
+  const choice = candidates[0];
+  if (!choice) return null;
+
+  const { player, liveMax } = choice;
+  const reasons = [activeRole === player.role ? `reparto prioritario: ${roleLabels[player.role]}` : `completa il reparto ${roleLabels[player.role]}`];
+  if (player.role === "A" && !attackTopBought && player.stars >= 5) reasons.push(`copre il top di fascia 1: in lega da ${auctionRules.participants} il mercato parte da ${auctionRules.firstBandAttackMin}+`);
+  else if (player.role === "A" && !attackSemiTopBought && player.stars >= 4) reasons.push("copre il target semitop in attacco");
+  if (player.role === "C" && centerBonusBought < 3 && (player.penaltyRank === 1 || player.setPieceRank === 1 || player.stars >= 4)) reasons.push("aiuta l'obiettivo bonus a centrocampo");
+  if (player.penaltyRank === 1) reasons.push("primo rigorista");
+  else if (player.setPieceRank === 1) reasons.push("piazzati importanti");
+  reasons.push(`massimo live ${formatMoney(liveMax)}`);
+  return { player, liveMax, reason: reasons.join(" · ") };
+}
+
 export function App() {
   const [view, setView] = useState<View>(() => viewFromHash());
   const [auction, setAuction] = useState<Record<string, AuctionPick>>(() => loadAuction());
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<Role | "Tutti">("Tutti");
-  const [tier, setTier] = useState("Tutte");
+  const [profile, setProfile] = useState("Tutti");
   const [onlyTargets, setOnlyTargets] = useState(true);
   const [onlyPenalty, setOnlyPenalty] = useState(false);
   const [onlyMilan, setOnlyMilan] = useState(false);
   const [sortState, setSortState] = useState<SortState>({ key: "priority", direction: "desc" });
+  const [selectedGoalkeeper, setSelectedGoalkeeper] = useState<Player | null>(null);
 
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(auction));
@@ -113,19 +211,19 @@ export function App() {
     const text = query.trim().toLowerCase();
     return basePlayers
       .filter((player) => role === "Tutti" || player.role === role)
-      .filter((player) => tier === "Tutte" || player.tier === tier)
+      .filter((player) => profile === "Tutti" || (profile === "Ballottaggio" ? player.profile.startsWith("Ballottaggio con") : player.profile === profile))
       .filter((player) => !onlyPenalty || player.penaltyRank === 1)
       .filter((player) => !onlyMilan || player.team === "MIL")
       .filter((player) => {
         if (!text) return true;
-        return [player.name, player.team, player.role, player.note, player.tier].some((value) =>
+        return [player.name, player.team, player.role, player.note, player.profile].some((value) =>
           String(value).toLowerCase().includes(text)
         );
       })
       .sort((a, b) => {
         return comparePlayers(a, b, sortState, auction);
       });
-  }, [auction, basePlayers, onlyMilan, onlyPenalty, query, role, sortState, tier]);
+  }, [auction, basePlayers, onlyMilan, onlyPenalty, profile, query, role, sortState]);
 
   const bought = useMemo(() => {
     return allPlayers
@@ -137,30 +235,120 @@ export function App() {
   const totalBudget = 500;
   const remaining = totalBudget - totalSpent;
 
+  const spentByRole = roleOrder.reduce<Record<Role, number>>((totals, role) => {
+    totals[role] = bought
+      .filter((player) => player.role === role)
+      .reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+    return totals;
+  }, { P: 0, D: 0, C: 0, A: 0 });
+  const boughtCountByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+    counts[role] = bought.filter((player) => player.role === role).length;
+    return counts;
+  }, { P: 0, D: 0, C: 0, A: 0 });
+  const activeRole = roleOrder.find((role) => boughtCountByRole[role] < (budgetPlan.find((row) => row.role === role)?.slots ?? 0));
+  const completedRoles = roleOrder.filter((role) => boughtCountByRole[role] >= (budgetPlan.find((row) => row.role === role)?.slots ?? 0));
+  const reallocationPool = completedRoles.reduce((sum, role) => {
+    const planned = budgetPlan.find((row) => row.role === role)?.budget ?? 0;
+    return sum + planned - spentByRole[role];
+  }, 0);
+
+  function smartMaxForRole(role: Role) {
+    const otherNeeds = roleOrder
+      .filter((otherRole) => otherRole !== role)
+      .reduce((sum, otherRole) => {
+        const plan = budgetPlan.find((row) => row.role === otherRole);
+        if (!plan) return sum;
+        const slotsLeft = Math.max(0, plan.slots - boughtCountByRole[otherRole]);
+        if (slotsLeft === 0) return sum;
+        return sum + Math.max(slotsLeft, Math.max(0, plan.budget - spentByRole[otherRole]));
+      }, 0);
+    return Math.max(0, remaining - otherNeeds);
+  }
+
+  function smartMaxBid(player: Player) {
+    const pick = auction[pickKey(player)];
+    if (pick?.status === "Comprato") return pick.paid ?? player.maxBid;
+    const slotsAfterPurchase = Math.max(0, (budgetPlan.find((row) => row.role === player.role)?.slots ?? 0) - boughtCountByRole[player.role] - 1);
+    return Math.max(0, smartMaxForRole(player.role) - slotsAfterPurchase);
+  }
+
+  const recommendation = useMemo(() => {
+    const explicit = selectedPlayers.find((player) => playerStatus(player, auction) === "Consigliato" && (!activeRole || player.role === activeRole));
+    if (explicit) {
+      return {
+        player: explicit,
+        liveMax: smartMaxBid(explicit),
+        reason: `scelta mantenuta dopo gli acquisti · reparto ${roleLabels[explicit.role]} · massimo live ${formatMoney(smartMaxBid(explicit))}`
+      };
+    }
+    return recommendNextPlayer(auction);
+  }, [activeRole, auction]);
+
+  const protectedFuture = activeRole
+    ? roleOrder.slice(roleOrder.indexOf(activeRole) + 1).reduce((sum, role) => {
+        const plan = budgetPlan.find((row) => row.role === role);
+        if (!plan) return sum;
+        const slotsLeft = Math.max(0, plan.slots - boughtCountByRole[role]);
+        return sum + (slotsLeft ? Math.max(slotsLeft, Math.max(0, plan.budget - spentByRole[role])) : 0);
+      }, 0)
+    : 0;
+  const activeBudget = activeRole ? Math.max(0, remaining - protectedFuture) : 0;
+
   const roleStats = budgetPlan.map((row) => {
     if (row.role === "R") {
-      return { ...row, bought: 0, spent: 0, remaining: row.budget, fill: 0 };
+      return { ...row, bought: 0, spent: 0, remaining: row.budget, smartRemaining: 0, fill: 0 };
     }
-    const boughtByRole = bought.filter((player) => player.role === row.role);
-    const spent = boughtByRole.reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+    const boughtByRole = boughtCountByRole[row.role];
+    const spent = spentByRole[row.role];
+    const remainingSlots = Math.max(0, row.slots - boughtByRole);
     return {
       ...row,
-      bought: boughtByRole.length,
+      bought: boughtByRole,
       spent,
       remaining: row.budget - spent,
-      fill: Math.min(100, Math.round((boughtByRole.length / row.slots) * 100))
+      smartRemaining: remainingSlots && row.role === activeRole ? activeBudget : Math.max(0, row.budget - spent),
+      fill: Math.min(100, Math.round((boughtByRole / row.slots) * 100))
     };
   });
 
   function updatePick(player: Player, patch: Partial<AuctionPick>) {
     const key = pickKey(player);
-    setAuction((current) => ({
-      ...current,
-      [key]: {
-        ...(current[key] ?? { status: "Da chiamare" }),
-        ...patch
+    const current = auction[key];
+    if (patch.status === "Comprato" && current?.status !== "Comprato") {
+      const paid = patch.paid ?? current?.paid ?? player.openBid;
+      const allowed = smartMaxBid(player);
+      if (paid > allowed) {
+        window.alert(`${player.name} non e sostenibile a ${formatMoney(paid)} crediti: il piano lascia al massimo ${formatMoney(allowed)} per questo acquisto, proteggendo i reparti successivi.`);
+        return;
       }
-    }));
+    }
+    setAuction((previousAuction) => {
+      const nextAuction: Record<string, AuctionPick> = {
+        ...previousAuction,
+        [key]: {
+          ...(previousAuction[key] ?? { status: defaultStatusFor(player) }),
+          ...patch
+        }
+      };
+
+      if (patch.status === "Comprato" && current?.status !== "Comprato") {
+        Object.entries(nextAuction).forEach(([pickKeyValue, pick]) => {
+          if (pick.status === "Consigliato") {
+            nextAuction[pickKeyValue] = { ...pick, status: "Da chiamare" };
+          }
+        });
+        const nextRecommendation = recommendNextPlayer(nextAuction, key);
+        if (nextRecommendation) {
+          const nextKey = pickKey(nextRecommendation.player);
+          nextAuction[nextKey] = {
+            ...(nextAuction[nextKey] ?? { status: defaultStatusFor(nextRecommendation.player) }),
+            status: "Consigliato"
+          };
+        }
+      }
+
+      return nextAuction;
+    });
   }
 
   function quickBuy(player: Player) {
@@ -173,18 +361,18 @@ export function App() {
   }
 
   function exportCsv() {
-    const header = ["Ruolo", "Calciatore", "Squadra", "Fascia", "Stars", "Max", "Pagato", "Status", "Owner", "Note"];
+    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Note"];
     const rows = selectedPlayers.map((player) => {
       const pick = auction[pickKey(player)];
       return [
         player.role,
         player.name,
         player.team,
-        player.tier,
+        player.profile,
         starsText(player.stars),
         player.maxBid,
         pick?.paid ?? "",
-        pick?.status ?? "Da chiamare",
+        pick?.status ?? defaultStatusFor(player),
         pick?.owner ?? "",
         pick?.liveNote ?? player.note
       ];
@@ -304,6 +492,42 @@ export function App() {
               <MetricCard label="Target visibili" value={filteredPlayers.length} detail={onlyTargets ? "lista corta" : "listone completo"} tone="red" />
             </section>
 
+            <section className={reallocationPool < 0 || remaining < protectedFuture ? "budget-intelligence risk" : "budget-intelligence"} aria-label="Gestione intelligente del budget">
+              <div className="budget-intelligence-head">
+                <div>
+                  <p className="eyebrow">Piano budget live</p>
+                  <h2>{activeRole ? `Reparto attivo: ${roleLabels[activeRole]}` : "Rosa completata"}</h2>
+                </div>
+                <strong className={reallocationPool < 0 ? "negative" : "positive"}>
+                  {reallocationPool < 0 ? `-${formatMoney(Math.abs(reallocationPool))} da recuperare` : `+${formatMoney(reallocationPool)} liberati`}
+                </strong>
+              </div>
+              <div className="budget-intelligence-grid">
+                <div>
+                  <span>Disponibile reparto</span>
+                  <strong>{formatMoney(activeBudget)}</strong>
+                  <small>senza intaccare gli obiettivi successivi</small>
+                </div>
+                <div>
+                  <span>Attacco protetto</span>
+                  <strong>{formatMoney(Math.max(0, (budgetPlan.find((row) => row.role === "A")?.budget ?? 0) - spentByRole.A))}</strong>
+                  <small>budget residuo per top + semitop</small>
+                </div>
+                <div>
+                  <span>Da tenere da parte</span>
+                  <strong>{formatMoney(protectedFuture)}</strong>
+                  <small>per completare i reparti successivi</small>
+                </div>
+              </div>
+              <p className="budget-intelligence-note">
+                {remaining < protectedFuture
+                  ? `Attenzione: mancano ${formatMoney(protectedFuture - remaining)} crediti per proteggere il piano dei reparti successivi.`
+                  : activeRole
+                    ? `Il reparto si considera chiuso quando raggiunge tutti gli slot: da quel momento l'avanzo si libera automaticamente.`
+                    : "Tutti i reparti sono completi e il budget e stato distribuito."}
+              </p>
+            </section>
+
             <section className="budget-strip">
               {roleStats.map((row) => (
                 <article key={row.label} className="budget-card">
@@ -318,9 +542,32 @@ export function App() {
                     {formatMoney(row.spent)} / {formatMoney(row.budget)}
                     <small className={row.remaining < 0 ? "negative" : ""}> residuo {formatMoney(row.remaining)}</small>
                   </p>
+                  {row.role !== "R" && row.role === activeRole ? <small className="smart-budget">disponibili ora {formatMoney(row.smartRemaining)}</small> : null}
                 </article>
               ))}
             </section>
+
+            {recommendation ? (
+              <section className="recommendation-panel" aria-label="Prossimo giocatore consigliato">
+                <div className="recommendation-icon"><Star size={18} /></div>
+                <div className="recommendation-copy">
+                  <span className="eyebrow">Prossima chiamata consigliata</span>
+                  <strong>{recommendation.player.name}</strong>
+                  <small>{recommendation.player.team} · {roleLabels[recommendation.player.role]} · Max modello {formatMoney(recommendation.player.maxBid)} · Asta live {formatMoney(recommendation.liveMax)}</small>
+                  <p>{recommendation.reason}</p>
+                </div>
+                <button
+                  className="recommendation-action"
+                  onClick={() => {
+                    setQuery(recommendation.player.name);
+                    setOnlyTargets(false);
+                    setSortState({ key: "priority", direction: "desc" });
+                  }}
+                >
+                  <Search size={15} /> Apri giocatore
+                </button>
+              </section>
+            ) : null}
 
             <section className="filters">
               <label className="searchbox">
@@ -338,9 +585,9 @@ export function App() {
                 </select>
               </label>
               <label>
-                Fascia
-                <select value={tier} onChange={(event) => setTier(event.target.value)}>
-                  {["Tutte", "Fascia 1", "Fascia 2", "Fascia 3", "Low cost", "Riempitivo"].map((item) => (
+                Profilo
+                <select value={profile} onChange={(event) => setProfile(event.target.value)}>
+                  {profileOptions.map((item) => (
                     <option key={item}>{item}</option>
                   ))}
                 </select>
@@ -356,6 +603,14 @@ export function App() {
               </button>
             </section>
 
+            {selectedGoalkeeper ? (
+              <GoalkeeperCompanions
+                selected={selectedGoalkeeper}
+                onSelect={setSelectedGoalkeeper}
+                onClose={() => setSelectedGoalkeeper(null)}
+              />
+            ) : null}
+
             <PlayerTable
               players={filteredPlayers}
               auction={auction}
@@ -363,6 +618,9 @@ export function App() {
               quickBuy={quickBuy}
               sortState={sortState}
               setSortState={setSortState}
+              selectedGoalkeeper={selectedGoalkeeper}
+              onSelectGoalkeeper={setSelectedGoalkeeper}
+              smartMaxBid={smartMaxBid}
             />
           </>
         ) : null}
@@ -395,18 +653,29 @@ function comparePlayers(a: Player, b: Player, sortState: SortState, auction: Rec
   const pickB = auction[pickKey(b)];
 
   if (sortState.key === "priority") {
-    return roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role) || b.stars - a.stars || b.score - a.score;
+    const statusPriority: Record<Status, number> = {
+      Consigliato: 0,
+      "Da chiamare": 1,
+      Monitor: 2,
+      Comprato: 3,
+      Perso: 4,
+      Evita: 5
+    };
+    return statusPriority[playerStatus(a, auction)] - statusPriority[playerStatus(b, auction)]
+      || roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role)
+      || b.stars - a.stars
+      || b.score - a.score;
   }
 
   const values: Record<Exclude<SortKey, "priority">, [string | number, string | number]> = {
     role: [roleOrder.indexOf(a.role), roleOrder.indexOf(b.role)],
     name: [a.name, b.name],
     team: [a.team, b.team],
-    tier: [a.tier, b.tier],
+    profile: [a.profile, b.profile],
     stars: [a.stars, b.stars],
     maxBid: [a.maxBid, b.maxBid],
     paid: [pickA?.paid ?? -1, pickB?.paid ?? -1],
-    status: [pickA?.status ?? "Da chiamare", pickB?.status ?? "Da chiamare"],
+    status: [playerStatus(a, auction), playerStatus(b, auction)],
     goals: [numberFromStat(a.stats25?.gol), numberFromStat(b.stats25?.gol)],
     assists: [numberFromStat(a.stats25?.ass), numberFromStat(b.stats25?.ass)],
     fm: [numberFromStat(a.stats25?.fm), numberFromStat(b.stats25?.fm)],
@@ -443,7 +712,10 @@ function PlayerTable({
   updatePick,
   quickBuy,
   sortState,
-  setSortState
+  setSortState,
+  selectedGoalkeeper,
+  onSelectGoalkeeper,
+  smartMaxBid
 }: {
   players: Player[];
   auction: Record<string, AuctionPick>;
@@ -451,6 +723,9 @@ function PlayerTable({
   quickBuy: (player: Player) => void;
   sortState: SortState;
   setSortState: (sortState: SortState) => void;
+  selectedGoalkeeper: Player | null;
+  onSelectGoalkeeper: (player: Player | null) => void;
+  smartMaxBid: (player: Player) => number;
 }) {
   function SortHeader({ sortKey, children }: { sortKey?: SortKey; children?: ReactNode }) {
     if (!sortKey) return <th>{children}</th>;
@@ -474,7 +749,7 @@ function PlayerTable({
             <SortHeader sortKey="role">R</SortHeader>
             <SortHeader sortKey="name">Calciatore</SortHeader>
             <SortHeader sortKey="team">Sq</SortHeader>
-            <SortHeader sortKey="tier">Fascia</SortHeader>
+            <SortHeader sortKey="profile">Profilo</SortHeader>
             <SortHeader sortKey="stars">Stars</SortHeader>
             <SortHeader sortKey="maxBid">Max</SortHeader>
             <SortHeader sortKey="paid">Pagato</SortHeader>
@@ -487,22 +762,46 @@ function PlayerTable({
         <tbody>
           {players.map((player) => {
             const key = pickKey(player);
-            const pick = auction[key] ?? { status: "Da chiamare" };
+            const pick = auction[key] ?? { status: defaultStatusFor(player) };
             const over = isOverpaid(player, pick);
+            const liveMax = smartMaxBid(player);
+            const smartOver = pick.status !== "Comprato" && pick.paid !== undefined && pick.paid > liveMax;
             return (
               <tr key={key} className={`${pick.status.toLowerCase().replaceAll(" ", "-")} ${player.team === "MIL" ? "milan-row" : ""}`}>
                 <td data-label="Ruolo"><span className={`role role-${player.role}`}>{player.role}</span></td>
                 <td data-label="Calciatore">
-                  <a href={player.url} target="_blank" rel="noreferrer" className="player-link">
-                    {player.name}
-                    <ExternalLink size={13} />
-                  </a>
+                  <div className="player-cell">
+                    {player.role === "P" ? (
+                      <button
+                        className={selectedGoalkeeper && pickKey(selectedGoalkeeper) === key ? "player-link player-trigger selected" : "player-link player-trigger"}
+                        onClick={() => onSelectGoalkeeper(player)}
+                        aria-label={`Mostra copertura portieri ${player.team}`}
+                      >
+                        {player.name}
+                      </button>
+                    ) : (
+                      <a href={player.url} target="_blank" rel="noreferrer" className="player-link">
+                        {player.name}
+                        <ExternalLink size={13} />
+                      </a>
+                    )}
+                    {player.role === "P" ? (
+                      <a href={player.url} target="_blank" rel="noreferrer" className="external-player-link" aria-label={`Apri scheda ${player.name}`}>
+                        <ExternalLink size={13} />
+                      </a>
+                    ) : null}
+                  </div>
                 </td>
                 <td data-label="Squadra">{player.team}</td>
-                <td data-label="Fascia">{player.tier}</td>
+                <td data-label="Profilo">{player.profile}</td>
                 <td data-label="Stars" className="stars">{starsText(player.stars)}</td>
-                <td data-label="Max" className="max">{player.maxBid}</td>
-                <td data-label="Pagato">
+                <td data-label="Max" className="max">
+                  <div className="max-stack">
+                    <span>{player.maxBid}</span>
+                    <small className="smart-max">asta {liveMax}</small>
+                  </div>
+                </td>
+                <td data-label="Pagato" className={smartOver ? "smart-over" : undefined}>
                   <input
                     className={over ? "overpay" : ""}
                     type="number"
@@ -512,6 +811,7 @@ function PlayerTable({
                     onChange={(event) => updatePick(player, { paid: event.target.value === "" ? undefined : Number(event.target.value) })}
                   />
                   {over ? <AlertTriangle className="inline-alert" size={14} /> : null}
+                  {smartOver ? <small className="smart-warning">Piano max {liveMax}</small> : null}
                 </td>
                 <td data-label="Status">
                   <select value={pick.status} onChange={(event) => updatePick(player, { status: event.target.value as Status })}>
@@ -674,6 +974,42 @@ function GoalkeeperView() {
           <p>{note}</p>
         </article>
       ))}
+    </section>
+  );
+}
+
+function GoalkeeperCompanions({ selected, onSelect, onClose }: { selected: Player; onSelect: (player: Player) => void; onClose: () => void }) {
+  const group = allPlayers.filter((player) => player.role === "P" && player.team === selected.team).slice(0, 3);
+
+  return (
+    <section className="goalkeeper-focus" aria-label={`Copertura portieri ${selected.team}`}>
+      <header className="goalkeeper-focus-header">
+        <div>
+          <p className="eyebrow">Copertura porta {selected.team}</p>
+          <h2>{selected.name} e alternative di squadra</h2>
+        </div>
+        <button className="icon-button" onClick={onClose} aria-label="Chiudi copertura portieri" title="Chiudi">
+          <X size={17} />
+        </button>
+      </header>
+      <div className="goalkeeper-trio">
+        {group.map((player, index) => (
+          <article key={pickKey(player)} className={pickKey(player) === pickKey(selected) ? "goalkeeper-card active" : "goalkeeper-card"}>
+            <div className="goalkeeper-card-top">
+              <span>Portiere {index + 1}</span>
+              <span className={`role role-${player.role}`}>{player.role}</span>
+            </div>
+            <button className="goalkeeper-name" onClick={() => onSelect(player)}>{player.name}</button>
+            <div className="goalkeeper-meta">
+              <span>{player.profile}</span>
+              <strong>Max {player.maxBid}</strong>
+            </div>
+            <a href={player.url} target="_blank" rel="noreferrer" className="external-player-link">
+              Apri scheda <ExternalLink size={13} />
+            </a>
+          </article>
+        ))}
+      </div>
     </section>
   );
 }

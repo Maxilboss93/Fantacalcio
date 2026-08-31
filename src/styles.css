@@ -239,6 +239,163 @@ h2 {
   font-weight: 700;
 }
 
+.recommendation-panel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 13px 14px;
+  border: 1px solid #a7f3d0;
+  border-left: 5px solid #059669;
+  border-radius: 8px;
+  background: #ecfdf5;
+}
+
+.recommendation-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: #047857;
+  background: #d1fae5;
+}
+
+.recommendation-copy {
+  min-width: 0;
+}
+
+.recommendation-copy .eyebrow {
+  margin: 0 0 2px;
+  color: #047857;
+}
+
+.recommendation-copy strong,
+.recommendation-copy small,
+.recommendation-copy p {
+  display: block;
+}
+
+.recommendation-copy strong {
+  color: #064e3b;
+  font-size: 17px;
+}
+
+.recommendation-copy small {
+  margin-top: 2px;
+  color: #166534;
+  font-size: 12px;
+}
+
+.recommendation-copy p {
+  margin: 5px 0 0;
+  color: #365314;
+  font-size: 12px;
+}
+
+.recommendation-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 8px 11px;
+  border: 1px solid #6ee7b7;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #047857;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.recommendation-action:hover {
+  border-color: #059669;
+  background: #f0fdf4;
+}
+
+.budget-intelligence {
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid #bfdbfe;
+  border-left: 5px solid #2563eb;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.budget-intelligence.risk {
+  border-color: #fda4af;
+  border-left-color: #e11d48;
+  background: #fff1f2;
+}
+
+.budget-intelligence-head,
+.budget-intelligence-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.budget-intelligence-head {
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  margin-bottom: 12px;
+}
+
+.budget-intelligence-head h2 {
+  margin: 2px 0 0;
+}
+
+.budget-intelligence-head > strong {
+  margin-top: 4px;
+  text-align: right;
+}
+
+.budget-intelligence-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.budget-intelligence-grid > div {
+  padding: 10px;
+  border: 1px solid rgba(147, 197, 253, 0.75);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.budget-intelligence-grid span,
+.budget-intelligence-grid strong,
+.budget-intelligence-grid small {
+  display: block;
+}
+
+.budget-intelligence-grid span {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.budget-intelligence-grid strong {
+  margin: 2px 0;
+  color: #0f172a;
+  font-size: 22px;
+}
+
+.budget-intelligence-grid small,
+.budget-intelligence-note {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.budget-intelligence-note {
+  margin: 11px 0 0;
+}
+
+.smart-budget {
+  display: block;
+  margin-top: 4px;
+  color: #2563eb !important;
+  font-weight: 800;
+}
+
 .negative {
   color: #be123c;
   margin-left: 5px;
@@ -398,9 +555,20 @@ tr:hover td {
   background: #f0fdf4;
 }
 
+.consigliato td {
+  background: #eff6ff;
+}
+
 .perso td,
 .evita td {
   color: #64748b;
+}
+
+.consigliato td[data-label="Status"] select {
+  border-color: #60a5fa;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-weight: 800;
 }
 
 .role {
@@ -432,12 +600,179 @@ tr:hover td {
   color: #2563eb;
 }
 
+.player-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-trigger {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.player-trigger.selected,
+.player-trigger:focus-visible {
+  color: #2563eb;
+}
+
+.external-player-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.external-player-link:hover {
+  color: #1d4ed8;
+}
+
+.goalkeeper-focus {
+  margin: 0 0 14px;
+  padding: 14px;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #2563eb;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.goalkeeper-focus-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.goalkeeper-focus-header h2 {
+  margin: 2px 0 0;
+  color: #0f172a;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1e3a8a;
+}
+
+.icon-button:hover {
+  background: #dbeafe;
+}
+
+.goalkeeper-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.goalkeeper-card {
+  min-width: 0;
+  padding: 11px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.goalkeeper-card.active {
+  border-color: #2563eb;
+  box-shadow: inset 0 0 0 1px #2563eb;
+}
+
+.goalkeeper-card-top,
+.goalkeeper-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.goalkeeper-card-top {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.goalkeeper-card .role {
+  width: 23px;
+  height: 23px;
+  font-size: 11px;
+}
+
+.goalkeeper-name {
+  display: block;
+  max-width: 100%;
+  margin: 9px 0 7px;
+  overflow: hidden;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #0f172a;
+  font-weight: 800;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.goalkeeper-name:hover,
+.goalkeeper-name:focus-visible {
+  color: #2563eb;
+}
+
+.goalkeeper-meta {
+  margin-bottom: 8px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.goalkeeper-meta strong {
+  color: #be123c;
+}
+
 .stars {
   color: #b45309;
   font-weight: 800;
 }
 
 .max {
+  font-weight: 800;
+}
+
+.max-stack {
+  display: grid;
+  gap: 2px;
+}
+
+.smart-max {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.smart-over input {
+  border-color: #e11d48;
+  background: #fff1f2;
+}
+
+.smart-warning {
+  display: block;
+  margin-top: 4px;
+  color: #be123c;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -881,6 +1216,16 @@ textarea {
     gap: 8px;
   }
 
+  .recommendation-panel {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .recommendation-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+
   .metric,
   .budget-card,
   .role-summary,
@@ -1019,6 +1364,44 @@ textarea {
   .player-link {
     justify-content: flex-end;
     text-align: right;
+  }
+
+  .player-cell {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .goalkeeper-focus {
+    padding: 10px;
+  }
+
+  .goalkeeper-focus-header h2 {
+    font-size: 17px;
+  }
+
+  .goalkeeper-trio {
+    grid-template-columns: 1fr;
+  }
+
+  .goalkeeper-card {
+    padding: 10px;
+  }
+
+  .budget-intelligence {
+    padding: 10px;
+  }
+
+  .budget-intelligence-head {
+    grid-template-columns: 1fr;
+  }
+
+  .budget-intelligence-head > strong {
+    margin-top: 0;
+    text-align: left;
+  }
+
+  .budget-intelligence-grid {
+    grid-template-columns: 1fr;
   }
 
   .stars,
