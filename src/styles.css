@@ -1136,6 +1136,65 @@ textarea {
   margin-top: 5px;
 }
 
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.market-card {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.market-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.market-card-head .role {
+  width: 26px;
+  height: 26px;
+  font-size: 12px;
+}
+
+.market-card-head strong {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 11px;
+}
+
+.market-card h2 {
+  margin: 10px 0 2px;
+}
+
+.market-team {
+  margin: 0 0 8px;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.market-card p:not(.market-team) {
+  margin: 0 0 9px;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.market-card small {
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .sources {
   display: grid;
   gap: 14px;
@@ -1310,6 +1369,7 @@ textarea {
 
   .panel-grid,
   .postponed-grid,
+  .market-grid,
   .source-grid {
     grid-template-columns: 1fr;
     gap: 8px;

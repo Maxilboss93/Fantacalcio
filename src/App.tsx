@@ -6,6 +6,7 @@ import {
   Download,
   ExternalLink,
   Goal,
+  RefreshCw,
   RotateCcw,
   Search,
   Shield,
@@ -24,6 +25,7 @@ import {
   budgetPlan,
   defaultStatusFor,
   goalkeeperPairs,
+  marketUpdates,
   numberFromStat,
   Player,
   postponedMatchInsights,
@@ -37,13 +39,13 @@ import {
   takers
 } from "./fantaModel";
 
-type View = "cockpit" | "listone" | "rosa" | "portieri" | "rigoristi" | "risultati" | "fonti";
+type View = "cockpit" | "listone" | "rosa" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
 type SortDirection = "asc" | "desc";
 type SortKey = "priority" | "role" | "name" | "team" | "profile" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
 type SortState = { key: SortKey; direction: SortDirection };
 
 const storageKey = "fantacalcio-asta-2026-27-state";
-const views: View[] = ["cockpit", "listone", "rosa", "portieri", "rigoristi", "risultati", "fonti"];
+const views: View[] = ["cockpit", "listone", "rosa", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
 const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
 const profileOptions = ["Tutti", "Titolare", "Titolare low cost", "Ballottaggio", "Secondo portiere", "Terzo portiere", "Riserva"];
@@ -451,6 +453,7 @@ export function App() {
             ["portieri", Shield, "Portieri"],
             ["rigoristi", Goal, "Rigoristi"],
             ["risultati", Star, "Risultati"],
+            ["mercato", RefreshCw, "Mercato"],
             ["fonti", ExternalLink, "Fonti"]
           ].map(([id, Icon, label]) => (
             <button key={String(id)} className={view === id ? "active" : ""} onClick={() => changeView(id as View)}>
@@ -634,6 +637,7 @@ export function App() {
         {view === "portieri" ? <GoalkeeperView /> : null}
         {view === "rigoristi" ? <TakersView /> : null}
         {view === "risultati" ? <ResultsView /> : null}
+        {view === "mercato" ? <MarketView /> : null}
         {view === "fonti" ? <SourcesView /> : null}
       </main>
     </div>
@@ -648,6 +652,7 @@ function viewLabel(view: View) {
     portieri: "Portieri e griglie",
     rigoristi: "Rigoristi e piazzati",
     risultati: "Risultati prime giornate",
+    mercato: "Mercato aggiornato",
     fonti: "Fonti e metodo"
   }[view];
 }
@@ -1102,6 +1107,25 @@ function ResultsView() {
         <p className="footnote">Aggiornato al 31/08/2026: i posticipi risultano 0-0 dalle fonti consultate; voti ufficiali e tabellini completi da consolidare appena pubblicati.</p>
       </section>
     </>
+  );
+}
+
+function MarketView() {
+  return (
+    <section className="market-grid" aria-label="Aggiornamenti mercato">
+      {marketUpdates.map((item) => (
+        <article className="market-card" key={`${item.name}-${item.team}`}>
+          <div className="market-card-head">
+            <span className={`role role-${item.role}`}>{item.role}</span>
+            <strong>{item.action}</strong>
+          </div>
+          <h2>{item.name}</h2>
+          <p className="market-team">{item.team}</p>
+          <p>{item.update}</p>
+          <small>{item.source}</small>
+        </article>
+      ))}
+    </section>
   );
 }
 

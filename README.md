@@ -11,11 +11,13 @@ Cockpit live per gestire l'asta:
 - stato giocatore: Da chiamare, Monitor, Comprato, Perso, Evita, Consigliato;
 - precompilazione dei nomi da evitare da segnali editoriali aggiornati e suggeritore live basato su acquisti, slot, budget e obiettivi di reparto;
 - badge infortunio nel listone con tempi di recupero, sconto automatico sul massimale e penalizzazione nei consigli;
+- listone e statistiche 2026/27 riallineati al Fantacalcio.it live del 31/08/2026, con nuovi ingressi e cambi squadra;
 - pagina Rosa con acquistati, spesa totale, delta dal massimale, gol, assist, fantamedia e tiratori;
 - export CSV ed export/import JSON dello stato live;
 - supporto PWA leggero per riaprire l'app dopo il primo caricamento anche con rete instabile;
-- viste portieri, rigoristi, risultati e fonti.
+- viste portieri, rigoristi, risultati, mercato e fonti.
 - vista Risultati aggiornata con i posticipi del 31/08/2026 e note operative quando voti/tabellini non sono ancora consolidati.
+- vista Mercato con gli ultimi movimenti verificati e lo stato dell'aggiornamento nel listone.
 
 ## Sviluppo locale
 

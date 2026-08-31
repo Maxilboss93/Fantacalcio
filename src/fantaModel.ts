@@ -83,6 +83,15 @@ export type MatchInsight = {
   notes: string[];
 };
 
+export type MarketUpdate = {
+  name: string;
+  role: Role;
+  team: string;
+  update: string;
+  action: "Inserito" | "Aggiornato" | "Verificato";
+  source: string;
+};
+
 export const roleLabels: Record<Role, string> = {
   P: "Portieri",
   D: "Difensori",
@@ -97,6 +106,8 @@ export const sources = [
   ["Rigoristi Fantacalcio.it", "https://www.fantacalcio.it/rigoristi-serie-a"],
   ["Risultati Sky Sport", "https://sport.sky.it/calcio/serie-a/calendario-risultati"],
   ["SOS Fanta guida asta", "https://www.sosfanta.com/guida-asta-fantacalcio/guida-asta-fantacalcio-2026-2027-tutti-consigli-fasce-chi-prendere/"],
+  ["Fantacalcio.it trasferimenti ufficiali", "https://www.fantacalcio.it/calciomercato/trasferimenti-ufficiali"],
+  ["Lega Serie A calciomercato", "https://www.legaseriea.it/serie-a/calciomercato"],
   ["Fantacalcio.it trappole asta 26/27", "https://www.fantacalcio.it/consigli-fantacalcio/19_08_2026/trappole-asta-fantacalcio-26-27-496633"],
   ["Fantacalcio.it antiscommesse 26/27", "https://www.fantacalcio.it/amp/consigli-fantacalcio/10_08_2026/fantacalcio-scommesse-antiscommesse-495816"],
   ["Fantacalcio.it indisponibili Serie A", "https://www.fantacalcio.it/serie-a/indisponibili"],
@@ -121,7 +132,7 @@ export const editorialAvoidSignals: Record<string, EditorialAvoidSignal> = {
     reason: "Rischio turnover, problemi fisici ricorrenti e prezzo da tenere molto basso.",
     source: "Fantacalcio.it, 3 trappole da evitare all'asta 26/27"
   },
-  "Soul&#xE8;": {
+  "Soulè": {
     reason: "Rientro da una seconda parte di stagione negativa e concorrenza aumentata.",
     source: "Fantacalcio.it, 3 trappole da evitare all'asta 26/27"
   },
@@ -483,6 +494,81 @@ export const postponedMatchInsights: MatchInsight[] = [
   }
 ] as const;
 
+export const marketUpdates: MarketUpdate[] = [
+  {
+    name: "Massolin",
+    role: "C",
+    team: "CAG",
+    update: "Nuovo ingresso nel listone ufficiale Fantacalcio.it: Cagliari, quotazione 4, FVM 12.",
+    action: "Inserito",
+    source: "Fantacalcio.it quotazioni, controllo 31/08/2026"
+  },
+  {
+    name: "Fini",
+    role: "C",
+    team: "FRO",
+    update: "Nome ripulito dallo spazio finale; resta Frosinone, quotazione 4, FVM 13.",
+    action: "Aggiornato",
+    source: "Fantacalcio.it quotazioni, controllo 31/08/2026"
+  },
+  {
+    name: "Ziolkowski",
+    role: "D",
+    team: "MON",
+    update: "Squadra aggiornata a Monza nel listone ufficiale, quotazione 1, FVM 2.",
+    action: "Aggiornato",
+    source: "Fantacalcio.it quotazioni e Lega Serie A calciomercato, 31/08/2026"
+  },
+  {
+    name: "De Roon",
+    role: "C",
+    team: "ROM",
+    update: "Movimento Roma verificato: presente nel listone come centrocampista ROM, quotazione 4.",
+    action: "Verificato",
+    source: "Sky Sport, Fantacalcio.it trasferimenti ufficiali"
+  },
+  {
+    name: "Balerdi",
+    role: "D",
+    team: "ROM",
+    update: "Nuovo difensore Roma gia presente nel listone ufficiale, quotazione 6, FVM 11.",
+    action: "Verificato",
+    source: "Sky Sport, Fantacalcio.it trasferimenti ufficiali"
+  },
+  {
+    name: "Theate",
+    role: "D",
+    team: "BOL",
+    update: "Ritorno al Bologna verificato nel listone: quotazione 8, FVM 20.",
+    action: "Verificato",
+    source: "Sky Sport, Fantacalcio.it trasferimenti ufficiali"
+  },
+  {
+    name: "Van Der Brempt",
+    role: "D",
+    team: "SAS",
+    update: "Passaggio al Sassuolo verificato nel listone: quotazione 2, FVM 5.",
+    action: "Verificato",
+    source: "Sky Sport, Lega Serie A calciomercato"
+  },
+  {
+    name: "Dembelè A.",
+    role: "D",
+    team: "LEC",
+    update: "Difensore Lecce verificato nel listone ufficiale, quotazione 1, FVM 2.",
+    action: "Verificato",
+    source: "Sky Sport, Fantacalcio.it trasferimenti ufficiali"
+  },
+  {
+    name: "Njie",
+    role: "C",
+    team: "FIO",
+    update: "Passaggio alla Fiorentina verificato nel listone: quotazione 5, FVM 23.",
+    action: "Verificato",
+    source: "Sky Sport, Fantacalcio.it trasferimenti ufficiali"
+  }
+] as const;
+
 export const goalkeeperPairs = [
   ["Alta", "Como + Fiorentina", "35-45", "Copertura forte, Como molto appetibile per clean sheet."],
   ["Alta", "Atalanta + Udinese", "30-40", "Buona alternanza e valore modificatore."],
@@ -506,9 +592,9 @@ export const takers = [
   ["Milan", "Ramos G.", "Pulisic", "Modric", "Modric", "Pulisic", "Saelemaekers"],
   ["Monza", "Pessina", "Cutrone", "Petagna", "Pessina", "Colpani", "Mota"],
   ["Napoli", "De Bruyne", "Hojlund", "Politano", "De Bruyne", "Politano", "Neres"],
-  ["Parma", "Pellegrino M.", "Toure E.", "Valeri", "Bernabe", "Nicolussi Caviglia", "Valeri"],
+  ["Parma", "Pellegrino M.", "Tourè E.", "Valeri", "Bernabè", "Nicolussi Caviglia", "Valeri"],
   ["Roma", "Malen", "Dybala", "Castro S.", "Dybala", "Malen", "Pellegrini Lo."],
-  ["Sassuolo", "Berardi", "Pinamonti", "Lauriente", "Berardi", "Lauriente", "Adzic"],
+  ["Sassuolo", "Berardi", "Pinamonti", "Laurientè", "Berardi", "Laurientè", "Adzic"],
   ["Torino", "Vlasic", "Kulenovic", "Simeone", "Vlasic", "Oristanio", "Gineitis"],
   ["Udinese", "Davis K.", "Solet", "Zaniolo", "Zaniolo", "Ekkelenkamp", "Unai Gomez"],
   ["Venezia", "Busio", "Adams A.", "Adorante", "Busio", "Yeboah J.", "Perez K."]

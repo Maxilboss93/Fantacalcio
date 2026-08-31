@@ -525,7 +525,7 @@
     "esp": "0"
   },
   {
-    "name": "Ciss&#xE8; A.",
+    "name": "Cissè A.",
     "role": "C",
     "team": "MIL",
     "pv": "2",
@@ -750,7 +750,7 @@
     "esp": "0"
   },
   {
-    "name": "Cal&#xF2;",
+    "name": "Calò",
     "role": "C",
     "team": "FRO",
     "pv": "2",
@@ -1950,7 +1950,7 @@
     "esp": "0"
   },
   {
-    "name": "Fini ",
+    "name": "Fini",
     "role": "C",
     "team": "FRO",
     "pv": "2",
@@ -2520,7 +2520,7 @@
     "esp": "0"
   },
   {
-    "name": "N&#x27;Dicka",
+    "name": "N'Dicka",
     "role": "D",
     "team": "ROM",
     "pv": "1",
@@ -2535,7 +2535,7 @@
     "esp": "0"
   },
   {
-    "name": "Soul&#xE8;",
+    "name": "Soulè",
     "role": "A",
     "team": "ROM",
     "pv": "1",
@@ -2640,7 +2640,7 @@
     "esp": "0"
   },
   {
-    "name": "Laurient&#xE8;",
+    "name": "Laurientè",
     "role": "A",
     "team": "SAS",
     "pv": "2",
@@ -3225,7 +3225,7 @@
     "esp": "0"
   },
   {
-    "name": "Bernab&#xE8;",
+    "name": "Bernabè",
     "role": "C",
     "team": "PAR",
     "pv": "2",
@@ -3495,7 +3495,7 @@
     "esp": "0"
   },
   {
-    "name": "Z&#xE8; Pedro",
+    "name": "Zè Pedro",
     "role": "D",
     "team": "CAG",
     "pv": "2",
@@ -3840,7 +3840,7 @@
     "esp": "0"
   },
   {
-    "name": "N&#x27;Dri",
+    "name": "N'Dri",
     "role": "A",
     "team": "LEC",
     "pv": "1",
@@ -3975,7 +3975,7 @@
     "esp": "0"
   },
   {
-    "name": "Kon&#xE8; M.",
+    "name": "Konè M.",
     "role": "C",
     "team": "ROM",
     "pv": "1",
@@ -4125,7 +4125,7 @@
     "esp": "0"
   },
   {
-    "name": "Tour&#xE8; E.",
+    "name": "Tourè E.",
     "role": "A",
     "team": "PAR",
     "pv": "2",
@@ -4380,7 +4380,7 @@
     "esp": "0"
   },
   {
-    "name": "Lucum&#xEC;",
+    "name": "Lucumì",
     "role": "D",
     "team": "JUV",
     "pv": "1",
@@ -4500,7 +4500,7 @@
     "esp": "0"
   },
   {
-    "name": "Dod&#xF2;",
+    "name": "Dodò",
     "role": "D",
     "team": "FIO",
     "pv": "1",
@@ -5955,7 +5955,7 @@
     "esp": "0"
   },
   {
-    "name": "Traor&#xE8; Hj.",
+    "name": "Traorè Hj.",
     "role": "C",
     "team": "GEN",
     "pv": "0",
@@ -7097,7 +7097,7 @@
   {
     "name": "Ziolkowski",
     "role": "D",
-    "team": "ROM",
+    "team": "MON",
     "pv": "0",
     "mv": "0,0",
     "fm": "0,0",
@@ -7215,7 +7215,7 @@
     "esp": "0"
   },
   {
-    "name": "Cand&#xE8;",
+    "name": "Candè",
     "role": "D",
     "team": "SAS",
     "pv": "0",
@@ -7305,7 +7305,7 @@
     "esp": "0"
   },
   {
-    "name": "Kon&#xE8; I.",
+    "name": "Konè I.",
     "role": "C",
     "team": "SAS",
     "pv": "0",
@@ -8010,7 +8010,7 @@
     "esp": "0"
   },
   {
-    "name": "Montip&#xF2;",
+    "name": "Montipò",
     "role": "P",
     "team": "VEN",
     "pv": "0",
@@ -8070,7 +8070,7 @@
     "esp": "0"
   },
   {
-    "name": "Tour&#xE8; I.",
+    "name": "Tourè I.",
     "role": "C",
     "team": "MON",
     "pv": "0",
@@ -8340,7 +8340,7 @@
     "esp": "0"
   },
   {
-    "name": "Kessi&#xE8;",
+    "name": "Kessiè",
     "role": "C",
     "team": "ATA",
     "pv": "0",
@@ -8400,9 +8400,24 @@
     "esp": "0"
   },
   {
-    "name": "Dembel&#xE8; A.",
+    "name": "Dembelè A.",
     "role": "D",
     "team": "LEC",
+    "pv": "0",
+    "mv": "0,0",
+    "fm": "0,0",
+    "gol": "0",
+    "gs": "0",
+    "rig": "0 / 0",
+    "rp": "0",
+    "ass": "0",
+    "amm": "0",
+    "esp": "0"
+  },
+  {
+    "name": "Massolin",
+    "role": "C",
+    "team": "CAG",
     "pv": "0",
     "mv": "0,0",
     "fm": "0,0",
