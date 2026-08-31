@@ -133,6 +133,9 @@ export const sources = [
   ["PSG Ramos al Milan", "https://www.psg.fr/en/content/pr-goncalo-ramos-joins-ac-milan"],
   ["Goal guida asta", "https://www.goal.com/it/liste/consigli-fantacalcio-serie-a-2026-2027-chi-prendere-all-asta-la-guida-completa-divisione-in-fasce-e-ruoli/blt990f9f2a29ab947d"],
   ["Gazzetta FantaNews", "https://www.gazzetta.it/calcio/fantanews/11-08-2026/guida-fantacalcio-2026-2027-migliori-giocatori-da-comprare-all-asta.shtml"],
+  ["Fantacalcio.it Chukwueze 2026/27", "https://www.fantacalcio.it/serie-a/squadre/milan/chukwueze/4856/2026-27/italia"],
+  ["SOS Fanta formazioni tipo 2026/27", "https://www.sosfanta.com/asta-fantacalcio/seriea-tutte-formazioni-tipo-fantacalcio-2026-2027-asta-consigli-chi-prendere/"],
+  ["DAZN probabile formazione Milan", "https://www.dazn.com/it-IT/news/calcio/probabile-formazione-milan-modulo-titolari-ballottaggi/1ovtpo3fat0e412ic9xn9kpicw"],
   ["Fantacalcio-Online prezzi reali", "https://www.fantacalcio-online.com/it/i-piu-comprati"],
   ["Fantacalcio.dev fasce oneste", "https://fantacalcio.dev/report/fasce-oneste-2026-27"],
   ["Fantacalciopedia", "https://www.fantacalciopedia.com/"],
@@ -191,10 +194,6 @@ export const editorialAvoidSignals: Record<string, EditorialAvoidSignal> = {
   },
   "Gandelman": {
     reason: "Condizione non ottimale e posizione leggermente indietro nelle gerarchie.",
-    source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
-  },
-  "Chukwueze": {
-    reason: "Adattamento tattico e attese basse per bonus e voti.",
     source: "Fantacalcio.it, scommesse e antiscommesse 26/27"
   },
   "Pessina": {
@@ -732,7 +731,7 @@ export const takers = [
   ["Venezia", "Busio", "Adams A.", "Adorante", "Busio", "Yeboah J.", "Perez K."]
 ] as const;
 
-const manualNotes: Record<string, { note: string; maxBid: number; tier: string }> = {
+const manualNotes: Record<string, { note: string; maxBid: number; tier: string; profile?: string }> = {
   "Malen": { note: "Top assoluto; rigorista Roma, 14 gol nel 2025/26 e avvio 2026/27 molto caldo.", maxBid: 148, tier: "Fascia 1" },
   "Martinez L.": { note: "Primo slot stabile: 17 gol e 6 assist nel 2025/26, alta affidabilita Inter.", maxBid: 132, tier: "Fascia 1" },
   "Thuram": { note: "Primo slot basso/secondo slot deluxe: 13 gol e 6 assist 2025/26.", maxBid: 100, tier: "Fascia 1" },
@@ -752,6 +751,7 @@ const manualNotes: Record<string, { note: string; maxBid: number; tier: string }
   "Orsolini": { note: "Rigorista e piazzati Bologna: 10 gol nel 2025/26.", maxBid: 64, tier: "Fascia 1" },
   "Kessiè": { note: "Atalanta, ritorno da profilo pesante: non e piu il vecchio rigorista Milan, ma resta centrocampista da inserimenti.", maxBid: 42, tier: "Fascia 2" },
   "Pulisic": { note: "Milan, alternativa rigori: 8 gol e 4 assist 2025/26. Target se resta sotto i top.", maxBid: 54, tier: "Fascia 2" },
+  "Chukwueze": { note: "Titolare Milan al momento: 2 presenze a voto, 1 assist e FM 7,25 nel 2026/27. Scommessa viva, ma da prendere solo se resta low cost.", maxBid: 18, tier: "Low cost", profile: "Titolare low cost" },
   "Rabiot": { note: "Titolare Milan da voto e inserimenti, utile ma non da strapagare.", maxBid: 38, tier: "Fascia 2" },
   "Barella": { note: "Voti e assist: 9 assist 2025/26, meno gol di un top puro.", maxBid: 34, tier: "Fascia 2" },
   "De Bruyne": { note: "Rigorista e piazzati Napoli, avvio gia da bonus: top tecnico, ma gestire rischio eta/minuti.", maxBid: 62, tier: "Fascia 1" },
@@ -862,6 +862,9 @@ function tierFor(q: RawPlayer, stars: number): string {
 }
 
 function profileFor(q: RawPlayer, stars: number): string {
+  const manual = manualNotes[q.name];
+  if (manual?.profile) return manual.profile;
+
   const teammates = activeQuotazioni
     .filter((player) => player.team === q.team && player.role === q.role)
     .sort((a, b) => b.fvm - a.fvm || b.cqi - a.cqi);
@@ -938,7 +941,8 @@ export const selectedPlayers: Player[] = ["P", "D", "C", "A"].flatMap((role) => 
   const editorialAvoids = allPlayers.filter((player) => player.role === role && defaultStatusFor(player) === "Evita");
   const injuryWatch = allPlayers.filter((player) => player.role === role && Boolean(player.injury));
   const scoutingWatch = allPlayers.filter((player) => player.role === role && Boolean(player.scouting));
-  return Array.from(new Map([...targets, ...editorialAvoids, ...injuryWatch, ...scoutingWatch].map((player) => [player.name, player])).values());
+  const manualWatch = allPlayers.filter((player) => player.role === role && Boolean(manualNotes[player.name]));
+  return Array.from(new Map([...targets, ...editorialAvoids, ...injuryWatch, ...scoutingWatch, ...manualWatch].map((player) => [player.name, player])).values());
 }) as Player[];
 
 export function starsText(stars: number): string {
