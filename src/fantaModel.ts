@@ -98,7 +98,7 @@ export type MarketUpdate = {
   role: Role;
   team: string;
   update: string;
-  action: "Inserito" | "Aggiornato" | "Verificato";
+  action: "Inserito" | "Aggiornato" | "Verificato" | "Rimosso";
   source: string;
 };
 
@@ -118,6 +118,8 @@ export const sources = [
   ["SOS Fanta guida asta", "https://www.sosfanta.com/guida-asta-fantacalcio/guida-asta-fantacalcio-2026-2027-tutti-consigli-fasce-chi-prendere/"],
   ["Fantacalcio.it trasferimenti ufficiali", "https://www.fantacalcio.it/calciomercato/trasferimenti-ufficiali"],
   ["Lega Serie A calciomercato", "https://www.legaseriea.it/serie-a/calciomercato"],
+  ["AC Milan comunicato Leao", "https://www.acmilan.com/it/news/articoli/media/2026-08-30/comunicato-ufficiale-rafael-leao"],
+  ["Galatasaray comunicato Leao", "https://www.galatasaray.org/haber/gs-sportif-a-s/rafael-leao-galatasarayda/60848"],
   ["Fantacalcio.it trappole asta 26/27", "https://www.fantacalcio.it/consigli-fantacalcio/19_08_2026/trappole-asta-fantacalcio-26-27-496633"],
   ["Fantacalcio.it antiscommesse 26/27", "https://www.fantacalcio.it/amp/consigli-fantacalcio/10_08_2026/fantacalcio-scommesse-antiscommesse-495816"],
   ["Fantacalcio.it indisponibili Serie A", "https://www.fantacalcio.it/serie-a/indisponibili"],
@@ -578,6 +580,14 @@ export const postponedMatchInsights: MatchInsight[] = [
 
 export const marketUpdates: MarketUpdate[] = [
   {
+    name: "Leao",
+    role: "A",
+    team: "GAL",
+    update: "Cessione ufficiale a titolo definitivo dal Milan al Galatasaray il 30/08/2026: rimosso dal listone attivo Serie A e non acquistabile all'asta.",
+    action: "Rimosso",
+    source: "AC Milan e Galatasaray, comunicati ufficiali 30/08/2026"
+  },
+  {
     name: "Kessiè",
     role: "C",
     team: "ATA",
@@ -758,6 +768,8 @@ const roleMultiplier: Record<Role, number> = { P: 0.65, D: 0.22, C: 0.31, A: 0.3
 const roleCaps: Record<Role, number> = { P: 55, D: 58, C: 86, A: 150 };
 
 const quotazioni = quotazioniRaw as RawPlayer[];
+const transferredOutPlayerNames = new Set(["Leao"]);
+const activeQuotazioni = quotazioni.filter((player) => !transferredOutPlayerNames.has(player.name));
 const stats25 = new Map((stats25Raw as RawStats[]).map((row) => [row.name, row]));
 const stats26 = new Map((stats26Raw as RawStats[]).map((row) => [row.name, row]));
 
@@ -850,7 +862,7 @@ function tierFor(q: RawPlayer, stars: number): string {
 }
 
 function profileFor(q: RawPlayer, stars: number): string {
-  const teammates = quotazioni
+  const teammates = activeQuotazioni
     .filter((player) => player.team === q.team && player.role === q.role)
     .sort((a, b) => b.fvm - a.fvm || b.cqi - a.cqi);
   const rank = teammates.findIndex((player) => player.name === q.name);
@@ -896,7 +908,7 @@ function noteFor(q: RawPlayer): string {
   return bits.length ? `${bits.join("; ")}.` : "Profilo da valutare a prezzo, senza rilanci emotivi.";
 }
 
-export const allPlayers: Player[] = quotazioni.map((q) => {
+export const allPlayers: Player[] = activeQuotazioni.map((q) => {
   const maxBid = calculatedMaxBid(q);
   const stars = starsFor(q.role, maxBid);
   return {
