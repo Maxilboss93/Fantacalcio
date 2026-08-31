@@ -44,6 +44,7 @@ export type Player = RawPlayer & {
   stats25?: RawStats;
   stats26?: RawStats;
   injury?: InjurySignal;
+  scouting?: ExternalScoutingSignal;
 };
 
 export type AuctionPick = {
@@ -65,6 +66,15 @@ export type InjurySignal = {
   source: string;
   maxBidDiscount: number;
   scorePenalty: number;
+};
+
+export type ExternalScoutingSignal = {
+  origin: string;
+  lastSeason: string;
+  verdict: string;
+  source: string;
+  maxBidBoost: number;
+  scoreBoost: number;
 };
 
 export type BudgetRow = {
@@ -114,6 +124,11 @@ export const sources = [
   ["SOS Fanta indisponibili Serie A", "https://www.sosfanta.com/indisponibili-e-squalificati/tabella-indisponibili-seriea-fantacalcio-asta-infortunati-tempi-recupero-squalificati-diffidati/"],
   ["Fantacalcio.it Lecce-Roma 31/08", "https://www.fantacalcio.it/serie-a/calendario/2/2026-27/lecce-roma/17970"],
   ["Lega Serie A Atalanta-Bologna stats", "https://www.legaseriea.it/serie-a/match/871c6bbab9df419cbf03467af7a82599/atalanta-vs-bologna"],
+  ["FotMob profili giocatori", "https://www.fotmob.com/"],
+  ["FootyStats profili giocatori", "https://footystats.org/"],
+  ["StatMuse calcio", "https://www.statmuse.com/fc"],
+  ["Toronto FC Bernardeschi 2025", "https://www.torontofc.ca/news/toronto-fc-agree-to-mutual-termination-with-winger-federico-bernardeschi"],
+  ["PSG Ramos al Milan", "https://www.psg.fr/en/content/pr-goncalo-ramos-joins-ac-milan"],
   ["Goal guida asta", "https://www.goal.com/it/liste/consigli-fantacalcio-serie-a-2026-2027-chi-prendere-all-asta-la-guida-completa-divisione-in-fasce-e-ruoli/blt990f9f2a29ab947d"],
   ["Gazzetta FantaNews", "https://www.gazzetta.it/calcio/fantanews/11-08-2026/guida-fantacalcio-2026-2027-migliori-giocatori-da-comprare-all-asta.shtml"],
   ["Fantacalcio-Online prezzi reali", "https://www.fantacalcio-online.com/it/i-piu-comprati"],
@@ -425,6 +440,73 @@ export const injurySignals: Record<string, InjurySignal> = {
   }
 };
 
+export const externalScoutingSignals: Record<string, ExternalScoutingSignal> = {
+  "Kessiè": {
+    origin: "Al-Ahli, Saudi Pro League",
+    lastSeason: "2025/26: 26 partite, 5 gol, 3 assist, 2173 minuti, rating FotMob 7.28.",
+    verdict: "Rilancio vero: da prendere se resta sotto i top di centrocampo. Non e il Kessiè rigorista del Milan, ma porta fisico, titolarita e inserimenti.",
+    source: "FotMob e FootyStats, controllo 31/08/2026",
+    maxBidBoost: 17,
+    scoreBoost: 16
+  },
+  "De Bruyne": {
+    origin: "Manchester City / Napoli",
+    lastSeason: "Storico elite City; avvio Serie A 2026/27: 1 gol e 1 assist in 57 minuti secondo FotMob.",
+    verdict: "Top tecnico e piazzati: valore alto, ma va protetto dal rischio eta/minutaggio.",
+    source: "FotMob, controllo 31/08/2026",
+    maxBidBoost: 0,
+    scoreBoost: 0
+  },
+  "Ramos G.": {
+    origin: "Paris Saint-Germain",
+    lastSeason: "2025/26 PSG: 45 presenze, 12 gol, 2 assist; in Ligue 1 6 gol e 0.56 xG/90 secondo FootyStats.",
+    verdict: "Profilo da semitop/top basso: lo paghi per ruolo Milan e rigori, non per stagione estera dominante.",
+    source: "PSG e FootyStats, controllo 31/08/2026",
+    maxBidBoost: 0,
+    scoreBoost: 0
+  },
+  "Bernardeschi": {
+    origin: "Toronto FC, MLS",
+    lastSeason: "2025 MLS: 4 gol e 4 assist in 15 partite prima della risoluzione col Toronto FC.",
+    verdict: "Interessante per piazzati e ruolo da C, ma va trattato da bonus intermittente, non da top.",
+    source: "Toronto FC, controllo 31/08/2026",
+    maxBidBoost: 6,
+    scoreBoost: 7
+  },
+  "Theate": {
+    origin: "Eintracht Frankfurt, Bundesliga",
+    lastSeason: "2025/26 Bundesliga: 24 partite da titolare, 1 gol, 2143 minuti, rating 6.70.",
+    verdict: "Difensore affidabile da voto/minutaggio, poco bonus: buono a prezzo controllato.",
+    source: "FotMob, controllo 31/08/2026",
+    maxBidBoost: 7,
+    scoreBoost: 8
+  },
+  "Balerdi": {
+    origin: "Marsiglia, Ligue 1",
+    lastSeason: "2025/26 Marsiglia: 26 presenze in Ligue 1, 0 gol; 36 presenze e 1 gol in tutte le competizioni.",
+    verdict: "Centrale da rotazione/copertura: non alzare per il nome Roma, bonus molto limitati.",
+    source: "Wikipedia e StatMuse, controllo 31/08/2026",
+    maxBidBoost: 4,
+    scoreBoost: 5
+  },
+  "Van Der Brempt": {
+    origin: "Como / passaggio Sassuolo",
+    lastSeason: "2025/26 Serie A: 14 presenze Fantacalcio, media voto 5.96, 1 assist.",
+    verdict: "Low cost difensivo: puo dare minuti, ma non va confuso con un profilo da modificatore.",
+    source: "Fantacalcio.it statistiche 2025/26",
+    maxBidBoost: 1,
+    scoreBoost: 2
+  },
+  "Njie": {
+    origin: "Torino / passaggio Fiorentina",
+    lastSeason: "2025/26 Serie A: 10 presenze Fantacalcio, 1 gol, 1 assist.",
+    verdict: "Scommessa giovane: ruolo C interessante, ma minutaggio ancora da verificare.",
+    source: "Fantacalcio.it statistiche 2025/26",
+    maxBidBoost: 3,
+    scoreBoost: 4
+  }
+};
+
 export function defaultStatusFor(player: Pick<RawPlayer, "name">): Status {
   if (editorialAvoidSignals[player.name]) return "Evita";
   if (injurySignals[player.name]?.impact === "Alta") return "Monitor";
@@ -495,6 +577,46 @@ export const postponedMatchInsights: MatchInsight[] = [
 ] as const;
 
 export const marketUpdates: MarketUpdate[] = [
+  {
+    name: "Kessiè",
+    role: "C",
+    team: "ATA",
+    update: "Arrivo dall'estero verificato nel listone: quotazione 12, FVM 47. Massimale rivalutato con scouting 2025/26.",
+    action: "Verificato",
+    source: "Fantacalcio.it quotazioni, FotMob, FootyStats"
+  },
+  {
+    name: "De Bruyne",
+    role: "C",
+    team: "NAP",
+    update: "Profilo estero/elite gia nel listone: quotazione 16, FVM 107. Alzato a top di centrocampo ma con controllo su eta e minuti.",
+    action: "Verificato",
+    source: "Fantacalcio.it quotazioni, FotMob"
+  },
+  {
+    name: "Ramos G.",
+    role: "A",
+    team: "MIL",
+    update: "Arrivo PSG verificato nel listone Milan: quotazione 27, FVM 228. Prezzo da top basso/semitop alto in lega a 10.",
+    action: "Verificato",
+    source: "Fantacalcio.it quotazioni, PSG, FootyStats"
+  },
+  {
+    name: "Modric",
+    role: "C",
+    team: "MIL",
+    update: "Profilo Milan verificato nel listone: quotazione 12, FVM 46. Tenuto basso per bonus attesi limitati.",
+    action: "Verificato",
+    source: "Fantacalcio.it quotazioni, StatMuse"
+  },
+  {
+    name: "Bernardeschi",
+    role: "C",
+    team: "BOL",
+    update: "Rientro MLS gia nel listone Bologna: quotazione 9, FVM 30. Valutato per piazzati e bonus intermittenti.",
+    action: "Verificato",
+    source: "Fantacalcio.it quotazioni, Toronto FC"
+  },
   {
     name: "Massolin",
     role: "C",
@@ -612,15 +734,18 @@ const manualNotes: Record<string, { note: string; maxBid: number; tier: string }
   "Yildiz": { note: "Talento e piazzati Juve: 10 gol e 6 assist 2025/26.", maxBid: 60, tier: "Fascia 2" },
   "Scamacca": { note: "Rigorista Atalanta; upside alto, controllare prezzo e tenuta fisica.", maxBid: 48, tier: "Fascia 3" },
   "Dybala": { note: "Piazzati Roma, classe enorme ma rischio minutaggio: solo a sconto.", maxBid: 40, tier: "Fascia 3" },
+  "Dovbyk": { note: "Bologna, prima punta fisica ma posticipi senza squillo e 2025/26 Roma non esplosivo: prendere solo a prezzo da terzo slot.", maxBid: 34, tier: "Fascia 3" },
   "Dimarco": { note: "Difensore top da bonus: 7 gol e 17 assist 2025/26, perfetto col modificatore.", maxBid: 55, tier: "Fascia 1" },
   "Calhanoglu": { note: "Rigorista Inter: 9 gol, 4 assist e 4/5 rigori nel 2025/26.", maxBid: 80, tier: "Fascia 1" },
   "Paz N.": { note: "12 gol e 5 assist 2025/26; talento Como da pagare ma senza asta folle.", maxBid: 78, tier: "Fascia 1" },
   "McTominay": { note: "10 gol 2025/26, peso fisico e titolarita Napoli.", maxBid: 70, tier: "Fascia 1" },
   "Orsolini": { note: "Rigorista e piazzati Bologna: 10 gol nel 2025/26.", maxBid: 64, tier: "Fascia 1" },
+  "Kessiè": { note: "Atalanta, ritorno da profilo pesante: non e piu il vecchio rigorista Milan, ma resta centrocampista da inserimenti.", maxBid: 42, tier: "Fascia 2" },
   "Pulisic": { note: "Milan, alternativa rigori: 8 gol e 4 assist 2025/26. Target se resta sotto i top.", maxBid: 54, tier: "Fascia 2" },
   "Rabiot": { note: "Titolare Milan da voto e inserimenti, utile ma non da strapagare.", maxBid: 38, tier: "Fascia 2" },
   "Barella": { note: "Voti e assist: 9 assist 2025/26, meno gol di un top puro.", maxBid: 34, tier: "Fascia 2" },
-  "De Bruyne": { note: "Rigorista e piazzati Napoli, valore alto se minutaggio stabile.", maxBid: 56, tier: "Fascia 2" },
+  "De Bruyne": { note: "Rigorista e piazzati Napoli, avvio gia da bonus: top tecnico, ma gestire rischio eta/minuti.", maxBid: 62, tier: "Fascia 1" },
+  "Modric": { note: "Regia e piazzati Milan, ma bonus strutturalmente bassi: utile da voto, non da asta emotiva.", maxBid: 24, tier: "Fascia 3" },
   "Svilar": { note: "Portiere super top per clean sheet e rendimento Roma.", maxBid: 52, tier: "Fascia 1" },
   "Maignan": { note: "Porta Milan: utile col modificatore, ma non superare il prezzo top.", maxBid: 42, tier: "Fascia 1" },
   "Martinez Jo.": { note: "Porta Inter, investimento da primo slot se gerarchie confermate.", maxBid: 46, tier: "Fascia 1" },
@@ -664,6 +789,7 @@ function scorePlayer(q: RawPlayer): number {
   const s25 = stats25.get(q.name);
   const s26 = stats26.get(q.name);
   const injury = injurySignals[q.name];
+  const scouting = externalScoutingSignals[q.name];
   let score = q.fvm / 7;
   score += num(s25?.gol) * (q.role === "C" || q.role === "A" ? 4 : 2);
   score += num(s25?.ass) * (q.role === "D" || q.role === "C" ? 3 : 2);
@@ -672,6 +798,7 @@ function scorePlayer(q: RawPlayer): number {
   if (penaltyRank(q.name) === 1) score += 18;
   if (setPieceRank(q.name)) score += 8;
   if (q.team === "MIL") score += 2;
+  score += scouting?.scoreBoost ?? 0;
   score -= injury?.scorePenalty ?? 0;
   return Math.max(0, Math.round(score * 10) / 10);
 }
@@ -679,6 +806,7 @@ function scorePlayer(q: RawPlayer): number {
 function calculatedMaxBid(q: RawPlayer): number {
   const manual = manualNotes[q.name];
   const injury = injurySignals[q.name];
+  const scouting = externalScoutingSignals[q.name];
   let value: number;
   if (manual) {
     const marketFloor = q.role === "A" && manual.tier === "Fascia 1" ? auctionRules.firstBandAttackMin : 0;
@@ -693,6 +821,7 @@ function calculatedMaxBid(q: RawPlayer): number {
   value += penaltyRank(q.name) === 1 && q.role !== "P" ? 8 : 0;
   value += setPieceRank(q.name) && (q.role === "D" || q.role === "C") ? 4 : 0;
   value += Math.min(8, num(s26?.gol) * 2 + num(s26?.ass));
+  value += scouting?.maxBidBoost ?? 0;
   value -= injury?.maxBidDiscount ?? 0;
   return Math.max(1, Math.min(roleCaps[q.role], Math.round(value)));
 }
@@ -744,13 +873,17 @@ function profileFor(q: RawPlayer, stars: number): string {
 
 function noteFor(q: RawPlayer): string {
   const injury = injurySignals[q.name];
+  const scouting = externalScoutingSignals[q.name];
   const injuryNote = injury
     ? `Infortunio ${injury.impact.toLowerCase()}: ${injury.concern} Recupero: ${injury.recovery}. Fonte: ${injury.source}.`
     : "";
+  const scoutingNote = scouting
+    ? `Scouting estero: ${scouting.lastSeason} ${scouting.verdict} Fonte: ${scouting.source}.`
+    : "";
   const manual = manualNotes[q.name];
-  if (manual) return [manual.note, injuryNote].filter(Boolean).join(" ");
+  if (manual) return [manual.note, scoutingNote, injuryNote].filter(Boolean).join(" ");
   const editorialAvoid = editorialAvoidSignals[q.name];
-  if (editorialAvoid) return [editorialAvoid.reason, `Fonte: ${editorialAvoid.source}.`, injuryNote].filter(Boolean).join(" ");
+  if (editorialAvoid) return [editorialAvoid.reason, `Fonte: ${editorialAvoid.source}.`, scoutingNote, injuryNote].filter(Boolean).join(" ");
   const s25 = stats25.get(q.name);
   const bits: string[] = [];
   if (penaltyRank(q.name) === 1) bits.push("primo rigorista");
@@ -758,6 +891,7 @@ function noteFor(q: RawPlayer): string {
   if (num(s25?.gol) >= 8) bits.push(`${num(s25?.gol)} gol 2025/26`);
   if (num(s25?.ass) >= 5) bits.push(`${num(s25?.ass)} assist 2025/26`);
   if (q.team === "MIL") bits.push("Milan: ok solo entro massimale");
+  if (scoutingNote) bits.push(scoutingNote);
   if (injuryNote) bits.push(injuryNote);
   return bits.length ? `${bits.join("; ")}.` : "Profilo da valutare a prezzo, senza rilanci emotivi.";
 }
@@ -778,7 +912,8 @@ export const allPlayers: Player[] = quotazioni.map((q) => {
     setPieceRank: setPieceRank(q.name),
     stats25: stats25.get(q.name),
     stats26: stats26.get(q.name),
-    injury: injurySignals[q.name]
+    injury: injurySignals[q.name],
+    scouting: externalScoutingSignals[q.name]
   };
 });
 
@@ -790,7 +925,8 @@ export const selectedPlayers: Player[] = ["P", "D", "C", "A"].flatMap((role) => 
     .slice(0, limit[role as Role]);
   const editorialAvoids = allPlayers.filter((player) => player.role === role && defaultStatusFor(player) === "Evita");
   const injuryWatch = allPlayers.filter((player) => player.role === role && Boolean(player.injury));
-  return Array.from(new Map([...targets, ...editorialAvoids, ...injuryWatch].map((player) => [player.name, player])).values());
+  const scoutingWatch = allPlayers.filter((player) => player.role === role && Boolean(player.scouting));
+  return Array.from(new Map([...targets, ...editorialAvoids, ...injuryWatch, ...scoutingWatch].map((player) => [player.name, player])).values());
 }) as Player[];
 
 export function starsText(stars: number): string {

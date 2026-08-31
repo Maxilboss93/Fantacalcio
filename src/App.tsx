@@ -221,7 +221,18 @@ export function App() {
       .filter((player) => !onlyMilan || player.team === "MIL")
       .filter((player) => {
         if (!text) return true;
-        return [player.name, player.team, player.role, player.note, player.profile, player.injury?.concern, player.injury?.recovery].some((value) =>
+        return [
+          player.name,
+          player.team,
+          player.role,
+          player.note,
+          player.profile,
+          player.injury?.concern,
+          player.injury?.recovery,
+          player.scouting?.origin,
+          player.scouting?.lastSeason,
+          player.scouting?.verdict
+        ].some((value) =>
           String(value).toLowerCase().includes(text)
         );
       })
@@ -366,7 +377,7 @@ export function App() {
   }
 
   function exportCsv() {
-    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Note"];
+    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Scouting", "Note"];
     const rows = selectedPlayers.map((player) => {
       const pick = auction[pickKey(player)];
       return [
@@ -381,6 +392,7 @@ export function App() {
         pick?.owner ?? "",
         player.injury ? player.injury.impact : "",
         player.injury?.recovery ?? "",
+        player.scouting ? `${player.scouting.origin}: ${player.scouting.lastSeason}` : "",
         pick?.liveNote ?? player.note
       ];
     });
@@ -800,6 +812,11 @@ function PlayerTable({
                         INF {player.injury.impact}
                       </span>
                     ) : null}
+                    {player.scouting ? (
+                      <span className="scouting-badge" title={`${player.scouting.origin}: ${player.scouting.lastSeason}`}>
+                        EST
+                      </span>
+                    ) : null}
                     {player.role === "P" ? (
                       <a href={player.url} target="_blank" rel="noreferrer" className="external-player-link" aria-label={`Apri scheda ${player.name}`}>
                         <ExternalLink size={13} />
@@ -843,6 +860,11 @@ function PlayerTable({
                   {player.injury ? (
                     <div className="injury-note">
                       {player.injury.concern} Recupero: {player.injury.recovery}.
+                    </div>
+                  ) : null}
+                  {player.scouting ? (
+                    <div className="scouting-note">
+                      {player.scouting.lastSeason} {player.scouting.verdict}
                     </div>
                   ) : null}
                   <textarea
@@ -1122,11 +1144,19 @@ function MarketView() {
           <h2>{item.name}</h2>
           <p className="market-team">{item.team}</p>
           <p>{item.update}</p>
+          {marketScouting(item.name) ? (
+            <p className="market-scouting">{marketScouting(item.name)}</p>
+          ) : null}
           <small>{item.source}</small>
         </article>
       ))}
     </section>
   );
+}
+
+function marketScouting(name: string) {
+  const player = allPlayers.find((player) => player.name === name);
+  return player?.scouting ? `${player.scouting.origin}: ${player.scouting.lastSeason} ${player.scouting.verdict}` : "";
 }
 
 function SourcesView() {

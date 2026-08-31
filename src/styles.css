@@ -666,6 +666,21 @@ tr:hover td {
   color: #1d4ed8;
 }
 
+.scouting-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  background: #f0fdf4;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
 .injury-note {
   margin-bottom: 6px;
   padding: 6px 8px;
@@ -673,6 +688,17 @@ tr:hover td {
   border-radius: 7px;
   background: #fff7ed;
   color: #9a3412;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.scouting-note {
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  background: #f0fdf4;
+  color: #166534;
   font-size: 12px;
   line-height: 1.35;
 }
@@ -1189,6 +1215,14 @@ textarea {
   line-height: 1.45;
 }
 
+.market-card .market-scouting {
+  padding: 7px 8px;
+  border: 1px solid #bbf7d0;
+  border-radius: 7px;
+  background: #f0fdf4;
+  color: #166534;
+}
+
 .market-card small {
   color: #64748b;
   font-size: 11px;
@@ -1534,7 +1568,15 @@ textarea {
     font-size: 10px;
   }
 
+  .scouting-badge {
+    font-size: 10px;
+  }
+
   .injury-note {
+    font-size: 12px;
+  }
+
+  .scouting-note {
     font-size: 12px;
   }
 
