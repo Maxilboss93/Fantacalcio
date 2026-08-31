@@ -26,6 +26,7 @@ import {
   goalkeeperPairs,
   numberFromStat,
   Player,
+  postponedMatchInsights,
   results,
   Role,
   roleLabels,
@@ -158,11 +159,12 @@ function recommendNextPlayer(auction: Record<string, AuctionPick>, excludeKey = 
       const rolePriority = player.role === activeRole ? 45 : 0;
       const budgetFit = Math.min(24, (liveMax / Math.max(1, player.maxBid)) * 24);
       const bonusSignal = (player.penaltyRank === 1 ? 12 : 0) + (player.setPieceRank === 1 ? 8 : 0);
+      const injuryRisk = player.injury ? { Alta: 70, Media: 34, Bassa: 12 }[player.injury.impact] : 0;
       return {
         player,
         liveMax,
         affordable,
-        rank: (affordable ? 300 : -200) + rolePriority + roleNeed * 7 + attackStructure + midfieldStructure + quality + budgetFit + bonusSignal
+        rank: (affordable ? 300 : -200) + rolePriority + roleNeed * 7 + attackStructure + midfieldStructure + quality + budgetFit + bonusSignal - injuryRisk
       };
     })
     .filter((candidate) => candidate.affordable)
@@ -178,6 +180,7 @@ function recommendNextPlayer(auction: Record<string, AuctionPick>, excludeKey = 
   if (player.role === "C" && centerBonusBought < 3 && (player.penaltyRank === 1 || player.setPieceRank === 1 || player.stars >= 4)) reasons.push("aiuta l'obiettivo bonus a centrocampo");
   if (player.penaltyRank === 1) reasons.push("primo rigorista");
   else if (player.setPieceRank === 1) reasons.push("piazzati importanti");
+  if (player.injury) reasons.push(`rischio fisico ${player.injury.impact.toLowerCase()} gia scontato`);
   reasons.push(`massimo live ${formatMoney(liveMax)}`);
   return { player, liveMax, reason: reasons.join(" · ") };
 }
@@ -216,7 +219,7 @@ export function App() {
       .filter((player) => !onlyMilan || player.team === "MIL")
       .filter((player) => {
         if (!text) return true;
-        return [player.name, player.team, player.role, player.note, player.profile].some((value) =>
+        return [player.name, player.team, player.role, player.note, player.profile, player.injury?.concern, player.injury?.recovery].some((value) =>
           String(value).toLowerCase().includes(text)
         );
       })
@@ -361,7 +364,7 @@ export function App() {
   }
 
   function exportCsv() {
-    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Note"];
+    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Note"];
     const rows = selectedPlayers.map((player) => {
       const pick = auction[pickKey(player)];
       return [
@@ -374,6 +377,8 @@ export function App() {
         pick?.paid ?? "",
         pick?.status ?? defaultStatusFor(player),
         pick?.owner ?? "",
+        player.injury ? player.injury.impact : "",
+        player.injury?.recovery ?? "",
         pick?.liveNote ?? player.note
       ];
     });
@@ -785,6 +790,11 @@ function PlayerTable({
                         <ExternalLink size={13} />
                       </a>
                     )}
+                    {player.injury ? (
+                      <span className={`injury-badge injury-${player.injury.impact.toLowerCase()}`} title={`${player.injury.concern} Recupero: ${player.injury.recovery}`}>
+                        INF {player.injury.impact}
+                      </span>
+                    ) : null}
                     {player.role === "P" ? (
                       <a href={player.url} target="_blank" rel="noreferrer" className="external-player-link" aria-label={`Apri scheda ${player.name}`}>
                         <ExternalLink size={13} />
@@ -825,6 +835,11 @@ function PlayerTable({
                   <span>FM {numberFromStat(player.stats25?.fm).toFixed(2)}</span>
                 </td>
                 <td data-label="Info utili">
+                  {player.injury ? (
+                    <div className="injury-note">
+                      {player.injury.concern} Recupero: {player.injury.recovery}.
+                    </div>
+                  ) : null}
                   <textarea
                     value={pick.liveNote ?? player.note}
                     onChange={(event) => updatePick(player, { liveNote: event.target.value })}
@@ -1042,31 +1057,51 @@ function TakersView() {
 
 function ResultsView() {
   return (
-    <section className="table-wrap compact results-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Giornata</th>
-            <th>Data</th>
-            <th>Casa</th>
-            <th>Trasferta</th>
-            <th>Risultato/Ora</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map(([day, date, home, away, score]) => (
-            <tr key={`${day}-${home}-${away}`}>
-              <td data-label="Giornata">{day}</td>
-              <td data-label="Data">{date}</td>
-              <td data-label="Casa">{home}</td>
-              <td data-label="Trasferta">{away}</td>
-              <td data-label="Risultato/Ora">{score}</td>
+    <>
+      <section className="postponed-grid" aria-label="Posticipi giornata 2">
+        {postponedMatchInsights.map((match) => (
+          <article className="postponed-card" key={match.match}>
+            <div className="postponed-card-head">
+              <span>Giornata {match.day} · {match.date}</span>
+              <strong>{match.status}</strong>
+            </div>
+            <h2>{match.match}</h2>
+            <p className="postponed-score">{match.score}</p>
+            <ul>
+              {match.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </section>
+
+      <section className="table-wrap compact results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Giornata</th>
+              <th>Data</th>
+              <th>Casa</th>
+              <th>Trasferta</th>
+              <th>Risultato/Ora</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <p className="footnote">Aggiornato al 31/08/2026 mattina: Lecce-Roma e Atalanta-Bologna risultavano ancora da giocare.</p>
-    </section>
+          </thead>
+          <tbody>
+            {results.map(([day, date, home, away, score]) => (
+              <tr key={`${day}-${home}-${away}`}>
+                <td data-label="Giornata">{day}</td>
+                <td data-label="Data">{date}</td>
+                <td data-label="Casa">{home}</td>
+                <td data-label="Trasferta">{away}</td>
+                <td data-label="Risultato/Ora">{score}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="footnote">Aggiornato al 31/08/2026: i posticipi risultano 0-0 dalle fonti consultate; voti ufficiali e tabellini completi da consolidare appena pubblicati.</p>
+      </section>
+    </>
   );
 }
 

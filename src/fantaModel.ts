@@ -43,6 +43,7 @@ export type Player = RawPlayer & {
   setPieceRank?: number;
   stats25?: RawStats;
   stats26?: RawStats;
+  injury?: InjurySignal;
 };
 
 export type AuctionPick = {
@@ -57,11 +58,29 @@ export type EditorialAvoidSignal = {
   source: string;
 };
 
+export type InjurySignal = {
+  concern: string;
+  recovery: string;
+  impact: "Alta" | "Media" | "Bassa";
+  source: string;
+  maxBidDiscount: number;
+  scorePenalty: number;
+};
+
 export type BudgetRow = {
   role: Role | "R";
   label: string;
   slots: number;
   budget: number;
+};
+
+export type MatchInsight = {
+  day: number;
+  date: string;
+  match: string;
+  score: string;
+  status: "Finale" | "Dati parziali";
+  notes: string[];
 };
 
 export const roleLabels: Record<Role, string> = {
@@ -80,6 +99,10 @@ export const sources = [
   ["SOS Fanta guida asta", "https://www.sosfanta.com/guida-asta-fantacalcio/guida-asta-fantacalcio-2026-2027-tutti-consigli-fasce-chi-prendere/"],
   ["Fantacalcio.it trappole asta 26/27", "https://www.fantacalcio.it/consigli-fantacalcio/19_08_2026/trappole-asta-fantacalcio-26-27-496633"],
   ["Fantacalcio.it antiscommesse 26/27", "https://www.fantacalcio.it/amp/consigli-fantacalcio/10_08_2026/fantacalcio-scommesse-antiscommesse-495816"],
+  ["Fantacalcio.it indisponibili Serie A", "https://www.fantacalcio.it/serie-a/indisponibili"],
+  ["SOS Fanta indisponibili Serie A", "https://www.sosfanta.com/indisponibili-e-squalificati/tabella-indisponibili-seriea-fantacalcio-asta-infortunati-tempi-recupero-squalificati-diffidati/"],
+  ["Fantacalcio.it Lecce-Roma 31/08", "https://www.fantacalcio.it/serie-a/calendario/2/2026-27/lecce-roma/17970"],
+  ["Lega Serie A Atalanta-Bologna stats", "https://www.legaseriea.it/serie-a/match/871c6bbab9df419cbf03467af7a82599/atalanta-vs-bologna"],
   ["Goal guida asta", "https://www.goal.com/it/liste/consigli-fantacalcio-serie-a-2026-2027-chi-prendere-all-asta-la-guida-completa-divisione-in-fasce-e-ruoli/blt990f9f2a29ab947d"],
   ["Gazzetta FantaNews", "https://www.gazzetta.it/calcio/fantanews/11-08-2026/guida-fantacalcio-2026-2027-migliori-giocatori-da-comprare-all-asta.shtml"],
   ["Fantacalcio-Online prezzi reali", "https://www.fantacalcio-online.com/it/i-piu-comprati"],
@@ -180,8 +203,221 @@ export const editorialAvoidSignals: Record<string, EditorialAvoidSignal> = {
   }
 };
 
+export const injurySignals: Record<string, InjurySignal> = {
+  "Yildiz": {
+    concern: "Problema al piede sinistro, con possibile intervento.",
+    recovery: "rischio stop circa 3 mesi",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 20,
+    scorePenalty: 26
+  },
+  "Gimenez": {
+    concern: "Distorsione alla caviglia, out contro Venezia.",
+    recovery: "da valutare per la 3a giornata",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 7
+  },
+  "Pessina": {
+    concern: "Lussazione rotula ginocchio destro.",
+    recovery: "prova rientro da inizio novembre",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 10,
+    scorePenalty: 18
+  },
+  "Buongiorno": {
+    concern: "Recupero lento dopo intervento al menisco.",
+    recovery: "ipotizzato da meta novembre",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 12,
+    scorePenalty: 20
+  },
+  "Marianucci": {
+    concern: "Lesione alta del collaterale mediale.",
+    recovery: "rischio almeno 2 mesi",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 7,
+    scorePenalty: 14
+  },
+  "Nicolussi Caviglia": {
+    concern: "Operazione dopo lesione di medio grado alla coscia.",
+    recovery: "ipotesi rientro da novembre",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 7,
+    scorePenalty: 14
+  },
+  "Adorante": {
+    concern: "Operazione alla schiena a fine luglio.",
+    recovery: "buona parte del girone d'andata a rischio",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 8,
+    scorePenalty: 16
+  },
+  "Chakvetadze": {
+    concern: "Condizioni da monitorare.",
+    recovery: "da valutare",
+    impact: "Media",
+    source: "Fantacalcio.it infortunati Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 8
+  },
+  "Hien": {
+    concern: "Lesione al tendine prossimale del semimembranoso.",
+    recovery: "pronto da inizio ottobre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 9
+  },
+  "Sulemana K.": {
+    concern: "Lesione del collaterale mediale di secondo grado.",
+    recovery: "recuperabile da inizio ottobre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 6,
+    scorePenalty: 10
+  },
+  "Kristensen T.": {
+    concern: "Problema alla caviglia.",
+    recovery: "da valutare quotidianamente",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 3,
+    scorePenalty: 5
+  },
+  "El Azzouzi O.": {
+    concern: "Lesione del bicipite femorale sinistro.",
+    recovery: "seconda meta settembre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 4,
+    scorePenalty: 7
+  },
+  "Mina": {
+    concern: "Affaticamento al polpaccio.",
+    recovery: "da valutare per la 3a giornata",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 3,
+    scorePenalty: 5
+  },
+  "Addai": {
+    concern: "Rottura del tendine d'Achille.",
+    recovery: "prova rientro dalla seconda meta settembre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 9
+  },
+  "Parisi": {
+    concern: "Recupero da infortunio al crociato.",
+    recovery: "punta a novembre",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 7,
+    scorePenalty: 14
+  },
+  "Rensch": {
+    concern: "Risentimento muscolare al flessore sinistro.",
+    recovery: "da valutare dopo Lecce-Roma",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 3,
+    scorePenalty: 5
+  },
+  "Boloca": {
+    concern: "Problema al ginocchio.",
+    recovery: "da meta settembre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 4,
+    scorePenalty: 7
+  },
+  "Casadei": {
+    concern: "Affaticamento muscolare alla gamba.",
+    recovery: "da valutare per la 3a giornata",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 3,
+    scorePenalty: 5
+  },
+  "Palma": {
+    concern: "Problema muscolare all'adduttore destro.",
+    recovery: "meta settembre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 4,
+    scorePenalty: 7
+  },
+  "Zanoli": {
+    concern: "Recupero da lesione del crociato.",
+    recovery: "puo tornare da ottobre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 9
+  },
+  "Walukiewicz": {
+    concern: "Forte trauma contusivo alla gamba destra.",
+    recovery: "da inizio settembre",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 2,
+    scorePenalty: 4
+  },
+  "Pieragnolo": {
+    concern: "Recupero da lesione del crociato.",
+    recovery: "da ottobre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 9
+  },
+  "McKennie": {
+    concern: "Affaticamento muscolare alla gamba.",
+    recovery: "da valutare",
+    impact: "Bassa",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 3,
+    scorePenalty: 5
+  },
+  "Thuram K.": {
+    concern: "Sindrome femoro-rotulea.",
+    recovery: "da valutare per la 3a giornata",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 6,
+    scorePenalty: 10
+  },
+  "Trepy": {
+    concern: "Condizioni monitorate dopo ricovero.",
+    recovery: "assente nel prossimo turno, tempi da valutare",
+    impact: "Alta",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 8,
+    scorePenalty: 16
+  },
+  "Idrissi R.": {
+    concern: "Recupero da rottura del crociato.",
+    recovery: "fine ottobre",
+    impact: "Media",
+    source: "Fantacalcio.it indisponibili Serie A, 31/08/2026",
+    maxBidDiscount: 5,
+    scorePenalty: 9
+  }
+};
+
 export function defaultStatusFor(player: Pick<RawPlayer, "name">): Status {
-  return editorialAvoidSignals[player.name] ? "Evita" : "Da chiamare";
+  if (editorialAvoidSignals[player.name]) return "Evita";
+  if (injurySignals[player.name]?.impact === "Alta") return "Monitor";
+  return "Da chiamare";
 }
 
 export const budgetPlan: BudgetRow[] = [
@@ -218,8 +454,33 @@ export const results = [
   [2, "2026-08-30", "Napoli", "Como", "1-2"],
   [2, "2026-08-30", "Cagliari", "Inter", "0-1"],
   [2, "2026-08-30", "Lazio", "Genoa", "1-0"],
-  [2, "2026-08-31", "Lecce", "Roma", "18:30"],
-  [2, "2026-08-31", "Atalanta", "Bologna", "20:45"]
+  [2, "2026-08-31", "Lecce", "Roma", "0-0"],
+  [2, "2026-08-31", "Atalanta", "Bologna", "0-0"]
+] as const;
+
+export const postponedMatchInsights: MatchInsight[] = [
+  {
+    day: 2,
+    date: "2026-08-31",
+    match: "Lecce-Roma",
+    score: "0-0",
+    status: "Dati parziali",
+    notes: [
+      "Risultato 0-0 dalle fonti consultate; tabellino, voti e statistiche squadra non ancora consolidati al controllo.",
+      "Per asta: piccolo freno su hype Roma dopo il 4-0 iniziale, ma Svilar/difesa restano interessanti per clean sheet."
+    ]
+  },
+  {
+    day: 2,
+    date: "2026-08-31",
+    match: "Atalanta-Bologna",
+    score: "0-0",
+    status: "Dati parziali",
+    notes: [
+      "Risultato 0-0 dalle fonti consultate. Lega Serie A: xG 1.17-1.02, tiri 10-10, tiri in porta 1-5, angoli 2-5.",
+      "Per asta: attacco Atalanta meno brillante del prezzo, Bologna solido ma ancora senza bonus offensivi."
+    ]
+  }
 ] as const;
 
 export const goalkeeperPairs = [
@@ -316,6 +577,7 @@ function setPieceRank(name: string): number | undefined {
 function scorePlayer(q: RawPlayer): number {
   const s25 = stats25.get(q.name);
   const s26 = stats26.get(q.name);
+  const injury = injurySignals[q.name];
   let score = q.fvm / 7;
   score += num(s25?.gol) * (q.role === "C" || q.role === "A" ? 4 : 2);
   score += num(s25?.ass) * (q.role === "D" || q.role === "C" ? 3 : 2);
@@ -324,23 +586,28 @@ function scorePlayer(q: RawPlayer): number {
   if (penaltyRank(q.name) === 1) score += 18;
   if (setPieceRank(q.name)) score += 8;
   if (q.team === "MIL") score += 2;
-  return Math.round(score * 10) / 10;
+  score -= injury?.scorePenalty ?? 0;
+  return Math.max(0, Math.round(score * 10) / 10);
 }
 
 function calculatedMaxBid(q: RawPlayer): number {
   const manual = manualNotes[q.name];
+  const injury = injurySignals[q.name];
+  let value: number;
   if (manual) {
     const marketFloor = q.role === "A" && manual.tier === "Fascia 1" ? auctionRules.firstBandAttackMin : 0;
-    return Math.max(marketFloor, manual.maxBid);
+    value = Math.max(marketFloor, manual.maxBid);
+    return Math.max(1, value - (injury?.maxBidDiscount ?? 0));
   }
   const s25 = stats25.get(q.name);
   const s26 = stats26.get(q.name);
-  let value = q.fvm * roleMultiplier[q.role];
+  value = q.fvm * roleMultiplier[q.role];
   value += Math.min(10, num(s25?.gol) * 0.6);
   value += Math.min(8, num(s25?.ass) * 0.35);
   value += penaltyRank(q.name) === 1 && q.role !== "P" ? 8 : 0;
   value += setPieceRank(q.name) && (q.role === "D" || q.role === "C") ? 4 : 0;
   value += Math.min(8, num(s26?.gol) * 2 + num(s26?.ass));
+  value -= injury?.maxBidDiscount ?? 0;
   return Math.max(1, Math.min(roleCaps[q.role], Math.round(value)));
 }
 
@@ -390,10 +657,14 @@ function profileFor(q: RawPlayer, stars: number): string {
 }
 
 function noteFor(q: RawPlayer): string {
+  const injury = injurySignals[q.name];
+  const injuryNote = injury
+    ? `Infortunio ${injury.impact.toLowerCase()}: ${injury.concern} Recupero: ${injury.recovery}. Fonte: ${injury.source}.`
+    : "";
   const manual = manualNotes[q.name];
-  if (manual) return manual.note;
+  if (manual) return [manual.note, injuryNote].filter(Boolean).join(" ");
   const editorialAvoid = editorialAvoidSignals[q.name];
-  if (editorialAvoid) return `${editorialAvoid.reason} Fonte: ${editorialAvoid.source}.`;
+  if (editorialAvoid) return [editorialAvoid.reason, `Fonte: ${editorialAvoid.source}.`, injuryNote].filter(Boolean).join(" ");
   const s25 = stats25.get(q.name);
   const bits: string[] = [];
   if (penaltyRank(q.name) === 1) bits.push("primo rigorista");
@@ -401,6 +672,7 @@ function noteFor(q: RawPlayer): string {
   if (num(s25?.gol) >= 8) bits.push(`${num(s25?.gol)} gol 2025/26`);
   if (num(s25?.ass) >= 5) bits.push(`${num(s25?.ass)} assist 2025/26`);
   if (q.team === "MIL") bits.push("Milan: ok solo entro massimale");
+  if (injuryNote) bits.push(injuryNote);
   return bits.length ? `${bits.join("; ")}.` : "Profilo da valutare a prezzo, senza rilanci emotivi.";
 }
 
@@ -419,7 +691,8 @@ export const allPlayers: Player[] = quotazioni.map((q) => {
     penaltyRank: penaltyRank(q.name),
     setPieceRank: setPieceRank(q.name),
     stats25: stats25.get(q.name),
-    stats26: stats26.get(q.name)
+    stats26: stats26.get(q.name),
+    injury: injurySignals[q.name]
   };
 });
 
@@ -430,7 +703,8 @@ export const selectedPlayers: Player[] = ["P", "D", "C", "A"].flatMap((role) => 
     .sort((a, b) => b.stars - a.stars || b.score - a.score || b.fvm - a.fvm)
     .slice(0, limit[role as Role]);
   const editorialAvoids = allPlayers.filter((player) => player.role === role && defaultStatusFor(player) === "Evita");
-  return Array.from(new Map([...targets, ...editorialAvoids].map((player) => [player.name, player])).values());
+  const injuryWatch = allPlayers.filter((player) => player.role === role && Boolean(player.injury));
+  return Array.from(new Map([...targets, ...editorialAvoids, ...injuryWatch].map((player) => [player.name, player])).values());
 }) as Player[];
 
 export function starsText(stars: number): string {

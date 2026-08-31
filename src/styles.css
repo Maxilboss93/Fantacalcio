@@ -633,6 +633,50 @@ tr:hover td {
   color: #1d4ed8;
 }
 
+.injury-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 3px 7px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.injury-alta {
+  border-color: #fecdd3;
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.injury-media {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.injury-bassa {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.injury-note {
+  margin-bottom: 6px;
+  padding: 6px 8px;
+  border: 1px solid #fed7aa;
+  border-radius: 7px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .goalkeeper-focus {
   margin: 0 0 14px;
   padding: 14px;
@@ -1038,6 +1082,60 @@ textarea {
   margin: 12px;
 }
 
+.postponed-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.postponed-card {
+  padding: 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.postponed-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.postponed-card-head span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.postponed-card-head strong {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+}
+
+.postponed-score {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.postponed-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #334155;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.postponed-card li + li {
+  margin-top: 5px;
+}
+
 .sources {
   display: grid;
   gap: 14px;
@@ -1211,6 +1309,7 @@ textarea {
   }
 
   .panel-grid,
+  .postponed-grid,
   .source-grid {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -1369,6 +1468,14 @@ textarea {
   .player-cell {
     justify-content: flex-end;
     flex-wrap: wrap;
+  }
+
+  .injury-badge {
+    font-size: 10px;
+  }
+
+  .injury-note {
+    font-size: 12px;
   }
 
   .goalkeeper-focus {
