@@ -39,17 +39,48 @@ import {
   takers
 } from "./fantaModel";
 
-type View = "cockpit" | "listone" | "rosa" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
+type View = "cockpit" | "listone" | "rosa" | "avversari" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
 type SortDirection = "asc" | "desc";
 type SortKey = "priority" | "role" | "name" | "team" | "profile" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
 type SortState = { key: SortKey; direction: SortDirection };
+type ManagerVibe = "Freddo" | "Equilibrata" | "Tifoso" | "Aggressivo" | "Panic buyer" | "Risparmiatore";
+type ManagerProfile = {
+  id: string;
+  name: string;
+  heartTeam: string;
+  vibe: ManagerVibe;
+  budget: number;
+};
+type ManagerRow = {
+  manager: ManagerProfile;
+  players: Player[];
+  spent: number;
+  remainingBudget: number;
+  remainingSlots: number;
+  maxSingle: number;
+  countByRole: Record<Role, number>;
+  estimatedPush: number;
+  reading: string;
+};
 
 const storageKey = "fantacalcio-asta-2026-27-state";
-const views: View[] = ["cockpit", "listone", "rosa", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
+const managerStorageKey = "fantacalcio-asta-2026-27-managers";
+const views: View[] = ["cockpit", "listone", "rosa", "avversari", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
 const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
 const profileOptions = ["Tutti", "Titolare", "Titolare low cost", "Ballottaggio", "Secondo portiere", "Terzo portiere", "Riserva"];
 const recommendationBlockedStatuses = new Set<Status>(["Comprato", "Perso", "Evita", "Consigliato"]);
+const vibeOptions: ManagerVibe[] = ["Freddo", "Equilibrata", "Tifoso", "Aggressivo", "Panic buyer", "Risparmiatore"];
+const defaultManagers: ManagerProfile[] = [
+  { id: "me", name: "Io", heartTeam: "MIL", vibe: "Equilibrata", budget: 500 },
+  ...Array.from({ length: 9 }, (_, index) => ({
+    id: `rival-${index + 1}`,
+    name: `Avversario ${index + 1}`,
+    heartTeam: "",
+    vibe: "Equilibrata" as ManagerVibe,
+    budget: 500
+  }))
+];
 
 function viewFromHash(): View {
   const hash = window.location.hash.replace("#", "") as View;
@@ -62,6 +93,24 @@ function loadAuction(): Record<string, AuctionPick> {
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
+  }
+}
+
+function loadManagers(): ManagerProfile[] {
+  try {
+    const raw = localStorage.getItem(managerStorageKey);
+    if (!raw) return defaultManagers;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return defaultManagers;
+    return defaultManagers.map((fallback, index) => ({
+      ...fallback,
+      ...(parsed[index] ?? {}),
+      id: fallback.id,
+      budget: Number(parsed[index]?.budget ?? fallback.budget) || fallback.budget,
+      vibe: vibeOptions.includes(parsed[index]?.vibe) ? parsed[index].vibe : fallback.vibe
+    }));
+  } catch {
+    return defaultManagers;
   }
 }
 
@@ -86,12 +135,41 @@ function pickKey(player: Player) {
   return `${player.name}|${player.team}|${player.role}`;
 }
 
+function hasCurrentSeasonStats(player: Player) {
+  return numberFromStat(player.stats26?.pv) > 0;
+}
+
+function visibleStat(player: Player, key: "gol" | "ass" | "fm") {
+  const stats = hasCurrentSeasonStats(player) ? player.stats26 : player.stats25;
+  return numberFromStat(stats?.[key]);
+}
+
 function isOverpaid(player: Player, pick?: AuctionPick) {
   return pick?.paid !== undefined && pick.paid > player.maxBid;
 }
 
 function formatMoney(value: number) {
   return value.toLocaleString("it-IT", { maximumFractionDigits: 0 });
+}
+
+function ownerMatches(pick: AuctionPick | undefined, manager: ManagerProfile) {
+  if (!pick) return false;
+  return pick.ownerId === manager.id || (!pick.ownerId && pick.owner === manager.name);
+}
+
+function pickHasOwner(pick: AuctionPick | undefined) {
+  return Boolean(pick?.ownerId || pick?.owner);
+}
+
+function managerVibeBonus(vibe: ManagerVibe) {
+  return {
+    Freddo: -6,
+    Equilibrata: 0,
+    Tifoso: 8,
+    Aggressivo: 12,
+    "Panic buyer": 18,
+    Risparmiatore: -12
+  }[vibe];
 }
 
 function playerStatus(player: Player, auction: Record<string, AuctionPick>): Status {
@@ -190,6 +268,10 @@ function recommendNextPlayer(auction: Record<string, AuctionPick>, excludeKey = 
 export function App() {
   const [view, setView] = useState<View>(() => viewFromHash());
   const [auction, setAuction] = useState<Record<string, AuctionPick>>(() => loadAuction());
+  const [managers, setManagers] = useState<ManagerProfile[]>(() => loadManagers());
+  const [livePlayerName, setLivePlayerName] = useState("");
+  const [liveManagerId, setLiveManagerId] = useState("me");
+  const [livePrice, setLivePrice] = useState("");
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<Role | "Tutti">("Tutti");
   const [profile, setProfile] = useState("Tutti");
@@ -202,6 +284,10 @@ export function App() {
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(auction));
   }, [auction]);
+
+  useEffect(() => {
+    localStorage.setItem(managerStorageKey, JSON.stringify(managers));
+  }, [managers]);
 
   useEffect(() => {
     const onHashChange = () => setView(viewFromHash());
@@ -241,11 +327,23 @@ export function App() {
       });
   }, [auction, basePlayers, onlyMilan, onlyPenalty, profile, query, role, sortState]);
 
+  const myManager = managers[0];
+  const teamOptions = useMemo(() => Array.from(new Set(allPlayers.map((player) => player.team))).sort(), []);
+  const takenPlayerKeys = useMemo(() => new Set(
+    Object.entries(auction)
+      .filter(([, pick]) => pick.status === "Comprato" || pick.status === "Perso" || pickHasOwner(pick))
+      .map(([key]) => key)
+  ), [auction]);
+  const takenCount = takenPlayerKeys.size;
+
   const bought = useMemo(() => {
     return allPlayers
-      .filter((player) => auction[pickKey(player)]?.status === "Comprato")
+      .filter((player) => {
+        const pick = auction[pickKey(player)];
+        return pick?.status === "Comprato" && (!pickHasOwner(pick) || ownerMatches(pick, myManager));
+      })
       .sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role) || a.name.localeCompare(b.name));
-  }, [auction]);
+  }, [auction, myManager]);
 
   const totalSpent = bought.reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
   const totalBudget = 500;
@@ -327,10 +425,52 @@ export function App() {
     };
   });
 
+  const selectedLivePlayer = useMemo(() => {
+    const normalized = livePlayerName.trim().toLowerCase();
+    if (!normalized) return null;
+    return allPlayers.find((player) => player.name.toLowerCase() === normalized)
+      ?? allPlayers.find((player) => player.name.toLowerCase().includes(normalized))
+      ?? null;
+  }, [livePlayerName]);
+
+  const managerRows = useMemo<ManagerRow[]>(() => managers.map((manager) => {
+    const players = allPlayers.filter((player) => ownerMatches(auction[pickKey(player)], manager));
+    const spent = players.reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+    const countByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+      counts[role] = players.filter((player) => player.role === role).length;
+      return counts;
+    }, { P: 0, D: 0, C: 0, A: 0 });
+    const remainingBudget = Math.max(0, manager.budget - spent);
+    const remainingSlots = Math.max(0, 25 - players.length);
+    const maxSingle = Math.max(0, remainingBudget - Math.max(0, remainingSlots - 1));
+    const heartBonus = selectedLivePlayer && manager.heartTeam === selectedLivePlayer.team ? Math.round(selectedLivePlayer.maxBid * 0.22) : 0;
+    const vibeBonus = selectedLivePlayer ? managerVibeBonus(manager.vibe) : 0;
+    const estimatedPush = selectedLivePlayer ? Math.max(0, Math.min(maxSingle, selectedLivePlayer.maxBid + heartBonus + vibeBonus)) : 0;
+    return {
+      manager,
+      players,
+      spent,
+      remainingBudget,
+      remainingSlots,
+      maxSingle,
+      countByRole,
+      estimatedPush,
+      reading: selectedLivePlayer
+        ? estimatedPush >= selectedLivePlayer.maxBid + 10
+          ? "rischio rilancio"
+          : estimatedPush >= selectedLivePlayer.maxBid
+            ? "arriva al tuo max"
+            : "probabile sotto"
+        : "seleziona giocatore"
+    };
+  }), [auction, managers, selectedLivePlayer]);
+
   function updatePick(player: Player, patch: Partial<AuctionPick>) {
     const key = pickKey(player);
     const current = auction[key];
-    if (patch.status === "Comprato" && current?.status !== "Comprato") {
+    const nextOwnerId = patch.ownerId ?? current?.ownerId;
+    const isMine = !nextOwnerId || nextOwnerId === myManager.id;
+    if (patch.status === "Comprato" && current?.status !== "Comprato" && isMine) {
       const paid = patch.paid ?? current?.paid ?? player.openBid;
       const allowed = smartMaxBid(player);
       if (paid > allowed) {
@@ -346,6 +486,11 @@ export function App() {
           ...patch
         }
       };
+
+      const nextPick = nextAuction[key];
+      if (nextPick.status === "Comprato" && !pickHasOwner(nextPick)) {
+        nextAuction[key] = { ...nextPick, ownerId: myManager.id, owner: myManager.name };
+      }
 
       if (patch.status === "Comprato" && current?.status !== "Comprato") {
         Object.entries(nextAuction).forEach(([pickKeyValue, pick]) => {
@@ -370,10 +515,49 @@ export function App() {
   function quickBuy(player: Player) {
     const key = pickKey(player);
     const current = auction[key];
+    if (current?.status === "Comprato" && ownerMatches(current, myManager)) {
+      updatePick(player, { status: "Da chiamare", paid: undefined, owner: undefined, ownerId: undefined });
+      return;
+    }
     updatePick(player, {
-      status: current?.status === "Comprato" ? "Da chiamare" : "Comprato",
-      paid: current?.paid ?? player.openBid
+      status: "Comprato",
+      paid: current?.paid ?? player.openBid,
+      owner: myManager.name,
+      ownerId: myManager.id
     });
+  }
+
+  function updateManager(id: string, patch: Partial<ManagerProfile>) {
+    setManagers((current) => current.map((manager) => manager.id === id ? { ...manager, ...patch } : manager));
+    if (patch.name) {
+      setAuction((current) => Object.fromEntries(Object.entries(current).map(([key, pick]) => [
+        key,
+        pick.ownerId === id ? { ...pick, owner: patch.name } : pick
+      ])));
+    }
+  }
+
+  function assignLivePick() {
+    const player = selectedLivePlayer;
+    const manager = managers.find((item) => item.id === liveManagerId) ?? myManager;
+    const paid = Number(livePrice);
+    if (!player || !manager || !Number.isFinite(paid) || paid <= 0) {
+      window.alert("Seleziona giocatore, persona e cifra prima di assegnare.");
+      return;
+    }
+    const status: Status = manager.id === myManager.id ? "Comprato" : "Perso";
+    setAuction((current) => ({
+      ...current,
+      [pickKey(player)]: {
+        ...(current[pickKey(player)] ?? { status: defaultStatusFor(player) }),
+        status,
+        paid,
+        owner: manager.name,
+        ownerId: manager.id
+      }
+    }));
+    setLivePrice("");
+    setQuery(player.name);
   }
 
   function exportCsv() {
@@ -406,7 +590,7 @@ export function App() {
   function exportState() {
     downloadFile(
       "asta-fantacalcio-2026-27-live.json",
-      JSON.stringify({ exportedAt: new Date().toISOString(), auction }, null, 2),
+      JSON.stringify({ exportedAt: new Date().toISOString(), auction, managers }, null, 2),
       "application/json"
     );
   }
@@ -420,6 +604,9 @@ export function App() {
       try {
         const parsed = JSON.parse(String(reader.result ?? "{}"));
         const nextAuction = parsed.auction ?? parsed;
+        if (Array.isArray(parsed.managers)) {
+          setManagers(defaultManagers.map((fallback, index) => ({ ...fallback, ...(parsed.managers[index] ?? {}), id: fallback.id })));
+        }
         if (!nextAuction || typeof nextAuction !== "object" || Array.isArray(nextAuction)) {
           throw new Error("Invalid auction state");
         }
@@ -462,6 +649,7 @@ export function App() {
             ["cockpit", Trophy, "Cockpit"],
             ["listone", Search, "Listone"],
             ["rosa", Users, "Rosa"],
+            ["avversari", Users, "Avversari"],
             ["portieri", Shield, "Portieri"],
             ["rigoristi", Goal, "Rigoristi"],
             ["risultati", Star, "Risultati"],
@@ -505,11 +693,27 @@ export function App() {
 
         {view === "cockpit" || view === "listone" ? (
           <>
+            {view === "cockpit" ? (
+              <QuickAssignPanel
+                players={allPlayers}
+                managers={managers}
+                managerRows={managerRows}
+                playerName={livePlayerName}
+                managerId={liveManagerId}
+                price={livePrice}
+                selectedPlayer={selectedLivePlayer}
+                onPlayerNameChange={setLivePlayerName}
+                onManagerIdChange={setLiveManagerId}
+                onPriceChange={setLivePrice}
+                onAssign={assignLivePick}
+              />
+            ) : null}
+
             <section className="kpi-grid" aria-label="Budget">
               <MetricCard label="Speso" value={totalSpent} detail={`${formatMoney(remaining)} crediti residui`} tone="blue" />
               <MetricCard label="Rosa" value={bought.length} detail="25 slot obiettivo" tone="green" />
               <MetricCard label="Alert prezzo" value={bought.filter((p) => isOverpaid(p, auction[pickKey(p)])).length} detail="acquisti sopra massimale" tone="amber" />
-              <MetricCard label="Target visibili" value={filteredPlayers.length} detail={onlyTargets ? "lista corta" : "listone completo"} tone="red" />
+              <MetricCard label="Assegnati" value={takenCount} detail={`${filteredPlayers.length} righe visibili`} tone="red" />
             </section>
 
             <section className={reallocationPool < 0 || remaining < protectedFuture ? "budget-intelligence risk" : "budget-intelligence"} aria-label="Gestione intelligente del budget">
@@ -636,6 +840,8 @@ export function App() {
               auction={auction}
               updatePick={updatePick}
               quickBuy={quickBuy}
+              managers={managers}
+              myManager={myManager}
               sortState={sortState}
               setSortState={setSortState}
               selectedGoalkeeper={selectedGoalkeeper}
@@ -646,6 +852,17 @@ export function App() {
         ) : null}
 
         {view === "rosa" ? <RosterView bought={bought} auction={auction} roleStats={roleStats} /> : null}
+        {view === "avversari" ? (
+          <ManagersView
+            managers={managers}
+            managerRows={managerRows}
+            teamOptions={teamOptions}
+            playerName={livePlayerName}
+            selectedPlayer={selectedLivePlayer}
+            onManagerChange={updateManager}
+            onPlayerNameChange={setLivePlayerName}
+          />
+        ) : null}
         {view === "portieri" ? <GoalkeeperView /> : null}
         {view === "rigoristi" ? <TakersView /> : null}
         {view === "risultati" ? <ResultsView /> : null}
@@ -661,6 +878,7 @@ function viewLabel(view: View) {
     cockpit: "Cockpit",
     listone: "Listone completo",
     rosa: "Rosa acquistata",
+    avversari: "Avversari e rilanci",
     portieri: "Portieri e griglie",
     rigoristi: "Rigoristi e piazzati",
     risultati: "Risultati prime giornate",
@@ -698,9 +916,9 @@ function comparePlayers(a: Player, b: Player, sortState: SortState, auction: Rec
     maxBid: [a.maxBid, b.maxBid],
     paid: [pickA?.paid ?? -1, pickB?.paid ?? -1],
     status: [playerStatus(a, auction), playerStatus(b, auction)],
-    goals: [numberFromStat(a.stats25?.gol), numberFromStat(b.stats25?.gol)],
-    assists: [numberFromStat(a.stats25?.ass), numberFromStat(b.stats25?.ass)],
-    fm: [numberFromStat(a.stats25?.fm), numberFromStat(b.stats25?.fm)],
+    goals: [visibleStat(a, "gol"), visibleStat(b, "gol")],
+    assists: [visibleStat(a, "ass"), visibleStat(b, "ass")],
+    fm: [visibleStat(a, "fm"), visibleStat(b, "fm")],
     fvm: [a.fvm, b.fvm]
   };
   const [left, right] = values[sortState.key];
@@ -728,11 +946,225 @@ function MetricCard({ label, value, detail, tone }: { label: string; value: numb
   );
 }
 
+function QuickAssignPanel({
+  players,
+  managers,
+  managerRows,
+  playerName,
+  managerId,
+  price,
+  selectedPlayer,
+  onPlayerNameChange,
+  onManagerIdChange,
+  onPriceChange,
+  onAssign
+}: {
+  players: Player[];
+  managers: ManagerProfile[];
+  managerRows: ManagerRow[];
+  playerName: string;
+  managerId: string;
+  price: string;
+  selectedPlayer: Player | null;
+  onPlayerNameChange: (value: string) => void;
+  onManagerIdChange: (value: string) => void;
+  onPriceChange: (value: string) => void;
+  onAssign: () => void;
+}) {
+  const threatRows = selectedPlayer
+    ? [...managerRows]
+        .filter((row) => row.manager.id !== "me")
+        .sort((a, b) => b.estimatedPush - a.estimatedPush)
+        .slice(0, 3)
+    : [];
+
+  return (
+    <section className="quick-assign" aria-label="Assegnazione rapida asta">
+      <div className="quick-fields">
+        <label>
+          Giocatore
+          <input
+            list="players-list"
+            value={playerName}
+            onChange={(event) => onPlayerNameChange(event.target.value)}
+            placeholder="Nome giocatore"
+          />
+          <datalist id="players-list">
+            {players.map((player) => (
+              <option key={pickKey(player)} value={player.name}>{player.team} · {player.role}</option>
+            ))}
+          </datalist>
+        </label>
+        <label>
+          Persona
+          <select value={managerId} onChange={(event) => onManagerIdChange(event.target.value)}>
+            {managers.map((manager) => (
+              <option key={manager.id} value={manager.id}>{manager.name}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Cifra
+          <input
+            type="number"
+            min="1"
+            inputMode="numeric"
+            value={price}
+            onChange={(event) => onPriceChange(event.target.value)}
+            placeholder={selectedPlayer ? String(selectedPlayer.openBid) : "0"}
+          />
+        </label>
+        <button className="assign-button" onClick={onAssign}>
+          <Check size={16} /> Assegna
+        </button>
+      </div>
+
+      <div className="quick-scout">
+        {selectedPlayer ? (
+          <>
+            <div>
+              <span className={`role role-${selectedPlayer.role}`}>{selectedPlayer.role}</span>
+              <strong>{selectedPlayer.name}</strong>
+              <small>{selectedPlayer.team} · mio max {formatMoney(selectedPlayer.maxBid)}</small>
+            </div>
+            {threatRows.map((row) => (
+              <button key={row.manager.id} onClick={() => onManagerIdChange(row.manager.id)} title="Seleziona questa persona">
+                <span>{row.manager.name}</span>
+                <strong>{formatMoney(row.estimatedPush)}</strong>
+                <small>{row.reading}</small>
+              </button>
+            ))}
+          </>
+        ) : (
+          <span>Seleziona un giocatore per vedere subito chi puo rilanciare di piu.</span>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function ManagersView({
+  managers,
+  managerRows,
+  teamOptions,
+  playerName,
+  selectedPlayer,
+  onManagerChange,
+  onPlayerNameChange
+}: {
+  managers: ManagerProfile[];
+  managerRows: ManagerRow[];
+  teamOptions: string[];
+  playerName: string;
+  selectedPlayer: Player | null;
+  onManagerChange: (id: string, patch: Partial<ManagerProfile>) => void;
+  onPlayerNameChange: (value: string) => void;
+}) {
+  return (
+    <>
+      <section className="manager-controls">
+        <label className="searchbox">
+          <Search size={18} />
+          <input
+            list="manager-player-list"
+            value={playerName}
+            onChange={(event) => onPlayerNameChange(event.target.value)}
+            placeholder="Giocatore da stimare"
+          />
+          <datalist id="manager-player-list">
+            {allPlayers.map((player) => (
+              <option key={pickKey(player)} value={player.name}>{player.team} · {player.role}</option>
+            ))}
+          </datalist>
+        </label>
+        {selectedPlayer ? (
+          <div className="manager-target">
+            <span className={`role role-${selectedPlayer.role}`}>{selectedPlayer.role}</span>
+            <strong>{selectedPlayer.name}</strong>
+            <small>{selectedPlayer.team} · mio max {formatMoney(selectedPlayer.maxBid)}</small>
+          </div>
+        ) : null}
+      </section>
+
+      <section className="table-wrap managers-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Persona</th>
+              <th>Cuore</th>
+              <th>Vibe</th>
+              <th>Budget</th>
+              <th>Speso</th>
+              <th>Residuo</th>
+              <th>Rosa</th>
+              <th>Reparti</th>
+              <th>Max singola</th>
+              <th>Stima su chiamata</th>
+            </tr>
+          </thead>
+          <tbody>
+            {managerRows.map((row) => (
+              <tr key={row.manager.id} className={row.manager.id === "me" ? "my-manager-row" : ""}>
+                <td data-label="Persona">
+                  <input
+                    value={row.manager.name}
+                    onChange={(event) => onManagerChange(row.manager.id, { name: event.target.value })}
+                  />
+                </td>
+                <td data-label="Cuore">
+                  <select
+                    value={row.manager.heartTeam}
+                    onChange={(event) => onManagerChange(row.manager.id, { heartTeam: event.target.value })}
+                  >
+                    <option value="">-</option>
+                    {teamOptions.map((team) => (
+                      <option key={team} value={team}>{team}</option>
+                    ))}
+                  </select>
+                </td>
+                <td data-label="Vibe">
+                  <select
+                    value={row.manager.vibe}
+                    onChange={(event) => onManagerChange(row.manager.id, { vibe: event.target.value as ManagerVibe })}
+                  >
+                    {vibeOptions.map((vibe) => (
+                      <option key={vibe}>{vibe}</option>
+                    ))}
+                  </select>
+                </td>
+                <td data-label="Budget">
+                  <input
+                    type="number"
+                    min="1"
+                    value={row.manager.budget}
+                    onChange={(event) => onManagerChange(row.manager.id, { budget: Number(event.target.value) || 500 })}
+                  />
+                </td>
+                <td data-label="Speso" className="max">{formatMoney(row.spent)}</td>
+                <td data-label="Residuo" className="max">{formatMoney(row.remainingBudget)}</td>
+                <td data-label="Rosa">{row.players.length}/25</td>
+                <td data-label="Reparti">P {row.countByRole.P} · D {row.countByRole.D} · C {row.countByRole.C} · A {row.countByRole.A}</td>
+                <td data-label="Max singola">{formatMoney(row.maxSingle)}</td>
+                <td data-label="Stima su chiamata" className={row.estimatedPush >= (selectedPlayer?.maxBid ?? Infinity) ? "threat" : ""}>
+                  <strong>{selectedPlayer ? formatMoney(row.estimatedPush) : "-"}</strong>
+                  <small>{row.reading}</small>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </>
+  );
+}
+
 function PlayerTable({
   players,
   auction,
   updatePick,
   quickBuy,
+  managers,
+  myManager,
   sortState,
   setSortState,
   selectedGoalkeeper,
@@ -743,6 +1175,8 @@ function PlayerTable({
   auction: Record<string, AuctionPick>;
   updatePick: (player: Player, patch: Partial<AuctionPick>) => void;
   quickBuy: (player: Player) => void;
+  managers: ManagerProfile[];
+  myManager: ManagerProfile;
   sortState: SortState;
   setSortState: (sortState: SortState) => void;
   selectedGoalkeeper: Player | null;
@@ -776,6 +1210,7 @@ function PlayerTable({
             <SortHeader sortKey="maxBid">Max</SortHeader>
             <SortHeader sortKey="paid">Pagato</SortHeader>
             <SortHeader sortKey="status">Status</SortHeader>
+            <SortHeader>Owner</SortHeader>
             <SortHeader sortKey="goals">Stats</SortHeader>
             <SortHeader>Info utili</SortHeader>
             <SortHeader></SortHeader>
@@ -787,7 +1222,8 @@ function PlayerTable({
             const pick = auction[key] ?? { status: defaultStatusFor(player) };
             const over = isOverpaid(player, pick);
             const liveMax = smartMaxBid(player);
-            const smartOver = pick.status !== "Comprato" && pick.paid !== undefined && pick.paid > liveMax;
+            const isMine = ownerMatches(pick, myManager) || (!pickHasOwner(pick) && pick.status === "Comprato");
+            const smartOver = isMine && pick.paid !== undefined && pick.paid > liveMax;
             return (
               <tr key={key} className={`${pick.status.toLowerCase().replaceAll(" ", "-")} ${player.team === "MIL" ? "milan-row" : ""}`}>
                 <td data-label="Ruolo"><span className={`role role-${player.role}`}>{player.role}</span></td>
@@ -852,9 +1288,25 @@ function PlayerTable({
                     ))}
                   </select>
                 </td>
+                <td data-label="Owner">
+                  <select
+                    value={pick.ownerId ?? ""}
+                    onChange={(event) => {
+                      const manager = managers.find((item) => item.id === event.target.value);
+                      updatePick(player, manager
+                        ? { ownerId: manager.id, owner: manager.name, status: manager.id === myManager.id ? "Comprato" : "Perso" }
+                        : { ownerId: undefined, owner: undefined, status: "Da chiamare", paid: undefined });
+                    }}
+                  >
+                    <option value="">-</option>
+                    {managers.map((manager) => (
+                      <option key={manager.id} value={manager.id}>{manager.name}</option>
+                    ))}
+                  </select>
+                </td>
                 <td data-label="Stats" className="stats-cell">
-                  <span>G {numberFromStat(player.stats25?.gol)} / A {numberFromStat(player.stats25?.ass)}</span>
-                  <span>FM {numberFromStat(player.stats25?.fm).toFixed(2)}</span>
+                  <span>{hasCurrentSeasonStats(player) ? "26/27" : "25/26"} G {visibleStat(player, "gol")} / A {visibleStat(player, "ass")}</span>
+                  <span>FM {visibleStat(player, "fm").toFixed(2)}</span>
                 </td>
                 <td data-label="Info utili">
                   {player.injury ? (
@@ -1126,7 +1578,7 @@ function ResultsView() {
             ))}
           </tbody>
         </table>
-        <p className="footnote">Aggiornato al 31/08/2026: i posticipi risultano 0-0 dalle fonti consultate; voti ufficiali e tabellini completi da consolidare appena pubblicati.</p>
+        <p className="footnote">Aggiornato al 01/09/2026 con i posticipi del 31/08: Lecce-Roma 0-4 e Atalanta-Bologna 1-0.</p>
       </section>
     </>
   );

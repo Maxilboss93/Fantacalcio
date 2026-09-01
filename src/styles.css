@@ -196,6 +196,163 @@ h2 {
   background: #ffffff;
 }
 
+.quick-assign {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.9fr);
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px;
+  border: 1px solid #bfdbfe;
+  border-left: 5px solid #2563eb;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.quick-fields {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.3fr) minmax(150px, 0.8fr) 92px auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.quick-fields label,
+.manager-controls label {
+  display: grid;
+  gap: 5px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quick-fields input,
+.manager-controls input,
+.managers-table input {
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172033;
+}
+
+.assign-button {
+  min-height: 40px;
+  padding: 0 13px;
+  border: 1px solid #047857;
+  border-radius: 8px;
+  background: #047857;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.assign-button:hover {
+  background: #065f46;
+}
+
+.quick-scout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(90px, 0.75fr));
+  gap: 8px;
+  align-items: stretch;
+}
+
+.quick-scout > div,
+.quick-scout > button,
+.quick-scout > span,
+.manager-target {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.quick-scout > button {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+}
+
+.quick-scout strong,
+.quick-scout span,
+.quick-scout small,
+.manager-target strong,
+.manager-target small,
+.managers-table td[data-label="Stima su chiamata"] strong,
+.managers-table td[data-label="Stima su chiamata"] small {
+  display: block;
+}
+
+.quick-scout > div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+}
+
+.quick-scout > div small {
+  grid-column: 2;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.quick-scout > button span,
+.managers-table td[data-label="Stima su chiamata"] small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.quick-scout > button strong {
+  color: #be123c;
+  font-size: 18px;
+}
+
+.manager-controls {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.manager-controls .searchbox {
+  flex: 1;
+}
+
+.manager-target {
+  min-width: 240px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: center;
+}
+
+.manager-target small {
+  grid-column: 2;
+  color: #64748b;
+}
+
+.managers-table table {
+  min-width: 1100px;
+}
+
+.managers-table input[type="number"] {
+  width: 86px;
+}
+
+.managers-table td[data-label="Stima su chiamata"].threat {
+  color: #be123c;
+  font-weight: 800;
+}
+
+.my-manager-row td {
+  background: #f0fdf4;
+}
+
 .metric {
   padding: 16px;
   border-left-width: 5px;
@@ -1288,6 +1445,12 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .quick-assign,
+  .quick-fields,
+  .quick-scout {
+    grid-template-columns: 1fr;
+  }
+
   textarea {
     width: 280px;
   }
@@ -1611,6 +1774,26 @@ textarea {
 
   .budget-intelligence-grid {
     grid-template-columns: 1fr;
+  }
+
+  .quick-assign {
+    padding: 10px;
+  }
+
+  .quick-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-scout {
+    grid-template-columns: 1fr;
+  }
+
+  .manager-controls {
+    display: grid;
+  }
+
+  .manager-target {
+    min-width: 0;
   }
 
   .stars,

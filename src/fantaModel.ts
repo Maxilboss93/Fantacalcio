@@ -51,6 +51,7 @@ export type AuctionPick = {
   status: Status;
   paid?: number;
   owner?: string;
+  ownerId?: string;
   liveNote?: string;
 };
 
@@ -548,8 +549,8 @@ export const results = [
   [2, "2026-08-30", "Napoli", "Como", "1-2"],
   [2, "2026-08-30", "Cagliari", "Inter", "0-1"],
   [2, "2026-08-30", "Lazio", "Genoa", "1-0"],
-  [2, "2026-08-31", "Lecce", "Roma", "0-0"],
-  [2, "2026-08-31", "Atalanta", "Bologna", "0-0"]
+  [2, "2026-08-31", "Lecce", "Roma", "0-4"],
+  [2, "2026-08-31", "Atalanta", "Bologna", "1-0"]
 ] as const;
 
 export const postponedMatchInsights: MatchInsight[] = [
@@ -557,22 +558,22 @@ export const postponedMatchInsights: MatchInsight[] = [
     day: 2,
     date: "2026-08-31",
     match: "Lecce-Roma",
-    score: "0-0",
-    status: "Dati parziali",
+    score: "0-4",
+    status: "Finale",
     notes: [
-      "Risultato 0-0 dalle fonti consultate; tabellino, voti e statistiche squadra non ancora consolidati al controllo.",
-      "Per asta: piccolo freno su hype Roma dopo il 4-0 iniziale, ma Svilar/difesa restano interessanti per clean sheet."
+      "Malen ancora decisivo: doppietta e 5 gol nelle prime 2 giornate.",
+      "Bonus anche per Soulè, Mora, Wesley e Mancini: Roma da tenere alta nei target, ma senza rilanci fuori piano."
     ]
   },
   {
     day: 2,
     date: "2026-08-31",
     match: "Atalanta-Bologna",
-    score: "0-0",
-    status: "Dati parziali",
+    score: "1-0",
+    status: "Finale",
     notes: [
-      "Risultato 0-0 dalle fonti consultate. Lega Serie A: xG 1.17-1.02, tiri 10-10, tiri in porta 1-5, angoli 2-5.",
-      "Per asta: attacco Atalanta meno brillante del prezzo, Bologna solido ma ancora senza bonus offensivi."
+      "Samardzic segna al 96' su assist Zalewski: entrambi salgono come profili da rotazione bonus.",
+      "Skorupski penalizzato dall'errore sul gol: porta Bologna meno attraente nel breve."
     ]
   }
 ] as const;
@@ -732,7 +733,7 @@ export const takers = [
 ] as const;
 
 const manualNotes: Record<string, { note: string; maxBid: number; tier: string; profile?: string }> = {
-  "Malen": { note: "Top assoluto; rigorista Roma, 14 gol nel 2025/26 e avvio 2026/27 molto caldo.", maxBid: 148, tier: "Fascia 1" },
+  "Malen": { note: "Top assoluto; 5 gol nelle prime 2 giornate 2026/27, Roma a trazione bonus. Budget alto ma con disciplina.", maxBid: 150, tier: "Fascia 1" },
   "Martinez L.": { note: "Primo slot stabile: 17 gol e 6 assist nel 2025/26, alta affidabilita Inter.", maxBid: 132, tier: "Fascia 1" },
   "Thuram": { note: "Primo slot basso/secondo slot deluxe: 13 gol e 6 assist 2025/26.", maxBid: 100, tier: "Fascia 1" },
   "Ramos G.": { note: "Obiettivo Milan, primo rigorista indicato: prendere senza pagare tassa rossonera.", maxBid: 100, tier: "Fascia 1" },
@@ -742,7 +743,12 @@ const manualNotes: Record<string, { note: string; maxBid: number; tier: string; 
   "Kean": { note: "Potenziale doppia cifra, ma dipende da contesto e concorrenza.", maxBid: 58, tier: "Fascia 2" },
   "Yildiz": { note: "Talento e piazzati Juve: 10 gol e 6 assist 2025/26.", maxBid: 60, tier: "Fascia 2" },
   "Scamacca": { note: "Rigorista Atalanta; upside alto, controllare prezzo e tenuta fisica.", maxBid: 48, tier: "Fascia 3" },
+  "Samardzic": { note: "Gol decisivo al 96' e piazzati Atalanta: jolly da bonus, non ancora da pagare come titolare fisso.", maxBid: 24, tier: "Fascia 3" },
+  "Zalewski": { note: "Assist da subentrato nel posticipo: low cost interessante se resta dentro le rotazioni di Sarri.", maxBid: 8, tier: "Low cost" },
   "Dybala": { note: "Piazzati Roma, classe enorme ma rischio minutaggio: solo a sconto.", maxBid: 40, tier: "Fascia 3" },
+  "Soulè": { note: "Gol nel 4-0 di Lecce e buona centralita Roma: sale, ma attenzione al listino da attaccante.", maxBid: 24, tier: "Fascia 3" },
+  "Mora": { note: "Secondo bonus di fila e primo gol giallorosso: talento caldo da prendere solo se il prezzo resta razionale.", maxBid: 34, tier: "Fascia 3" },
+  "Wesley": { note: "Assist e voto alto nel 4-0: difensore da bonus/strappo, profilo molto utile col modificatore.", maxBid: 18, tier: "Fascia 3" },
   "Dovbyk": { note: "Bologna, prima punta fisica ma posticipi senza squillo e 2025/26 Roma non esplosivo: prendere solo a prezzo da terzo slot.", maxBid: 34, tier: "Fascia 3" },
   "Dimarco": { note: "Difensore top da bonus: 7 gol e 17 assist 2025/26, perfetto col modificatore.", maxBid: 55, tier: "Fascia 1" },
   "Calhanoglu": { note: "Rigorista Inter: 9 gol, 4 assist e 4/5 rigori nel 2025/26.", maxBid: 80, tier: "Fascia 1" },
