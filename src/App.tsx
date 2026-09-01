@@ -613,37 +613,144 @@ export function App() {
     setQuery(player.name);
   }
 
-  function buildCoachSnapshot() {
+  function buildCoachSnapshot(auctionState: Record<string, AuctionPick> = auction, currentPlayer: Player | null = selectedLivePlayer) {
+    const snapshotBought = allPlayers
+      .filter((player) => {
+        const pick = auctionState[pickKey(player)];
+        return pick?.status === "Comprato" && (!pickHasOwner(pick) || ownerMatches(pick, myManager));
+      })
+      .sort((a, b) => roleOrder.indexOf(a.role) - roleOrder.indexOf(b.role) || a.name.localeCompare(b.name));
+    const snapshotSpent = snapshotBought.reduce((sum, player) => sum + (auctionState[pickKey(player)]?.paid ?? 0), 0);
+    const snapshotRemaining = totalBudget - snapshotSpent;
+    const snapshotSpentByRole = roleOrder.reduce<Record<Role, number>>((totals, role) => {
+      totals[role] = snapshotBought
+        .filter((player) => player.role === role)
+        .reduce((sum, player) => sum + (auctionState[pickKey(player)]?.paid ?? 0), 0);
+      return totals;
+    }, { P: 0, D: 0, C: 0, A: 0 });
+    const snapshotBoughtCountByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+      counts[role] = snapshotBought.filter((player) => player.role === role).length;
+      return counts;
+    }, { P: 0, D: 0, C: 0, A: 0 });
+    const snapshotActiveRole = roleOrder.find((role) => snapshotBoughtCountByRole[role] < (budgetPlan.find((row) => row.role === role)?.slots ?? 0));
+    const snapshotProtectedFuture = snapshotActiveRole
+      ? roleOrder.slice(roleOrder.indexOf(snapshotActiveRole) + 1).reduce((sum, role) => {
+          const plan = budgetPlan.find((row) => row.role === role);
+          if (!plan) return sum;
+          const slotsLeft = Math.max(0, plan.slots - snapshotBoughtCountByRole[role]);
+          return sum + (slotsLeft ? Math.max(slotsLeft, Math.max(0, plan.budget - snapshotSpentByRole[role])) : 0);
+        }, 0)
+      : 0;
+    const snapshotActiveBudget = snapshotActiveRole ? Math.max(0, snapshotRemaining - snapshotProtectedFuture) : 0;
+    const snapshotRoleStats = budgetPlan.map((row) => {
+      if (row.role === "R") {
+        return { ...row, bought: 0, spent: 0, remaining: row.budget, smartRemaining: 0 };
+      }
+      const boughtByRole = snapshotBoughtCountByRole[row.role];
+      const spent = snapshotSpentByRole[row.role];
+      const remainingSlots = Math.max(0, row.slots - boughtByRole);
+      return {
+        ...row,
+        bought: boughtByRole,
+        spent,
+        remaining: row.budget - spent,
+        smartRemaining: remainingSlots && row.role === snapshotActiveRole ? snapshotActiveBudget : Math.max(0, row.budget - spent)
+      };
+    });
+
+    function snapshotSmartMaxForRole(role: Role) {
+      const otherNeeds = roleOrder
+        .filter((otherRole) => otherRole !== role)
+        .reduce((sum, otherRole) => {
+          const plan = budgetPlan.find((row) => row.role === otherRole);
+          if (!plan) return sum;
+          const slotsLeft = Math.max(0, plan.slots - snapshotBoughtCountByRole[otherRole]);
+          if (slotsLeft === 0) return sum;
+          return sum + Math.max(slotsLeft, Math.max(0, plan.budget - snapshotSpentByRole[otherRole]));
+        }, 0);
+      return Math.max(0, snapshotRemaining - otherNeeds);
+    }
+
+    function snapshotSmartMaxBid(player: Player) {
+      const pick = auctionState[pickKey(player)];
+      if (pick?.status === "Comprato") return pick.paid ?? player.maxBid;
+      const slotsAfterPurchase = Math.max(0, (budgetPlan.find((row) => row.role === player.role)?.slots ?? 0) - snapshotBoughtCountByRole[player.role] - 1);
+      return Math.max(0, snapshotSmartMaxForRole(player.role) - slotsAfterPurchase);
+    }
+
+    const snapshotExplicitRecommendation = selectedPlayers.find((player) => playerStatus(player, auctionState) === "Consigliato" && (!snapshotActiveRole || player.role === snapshotActiveRole));
+    const snapshotRecommendation = snapshotExplicitRecommendation
+      ? {
+          player: snapshotExplicitRecommendation,
+          liveMax: snapshotSmartMaxBid(snapshotExplicitRecommendation),
+          reason: `scelta mantenuta dopo gli acquisti · reparto ${roleLabels[snapshotExplicitRecommendation.role]} · massimo live ${formatMoney(snapshotSmartMaxBid(snapshotExplicitRecommendation))}`
+        }
+      : recommendNextPlayer(auctionState);
+    const snapshotManagerRows = managers.map((manager) => {
+      const players = allPlayers.filter((player) => ownerMatches(auctionState[pickKey(player)], manager));
+      const spent = players.reduce((sum, player) => sum + (auctionState[pickKey(player)]?.paid ?? 0), 0);
+      const countByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+        counts[role] = players.filter((player) => player.role === role).length;
+        return counts;
+      }, { P: 0, D: 0, C: 0, A: 0 });
+      const remainingBudget = Math.max(0, manager.budget - spent);
+      const remainingSlots = Math.max(0, 25 - players.length);
+      const maxSingle = Math.max(0, remainingBudget - Math.max(0, remainingSlots - 1));
+      const heartBonus = currentPlayer && manager.heartTeam === currentPlayer.team ? Math.round(currentPlayer.maxBid * 0.22) : 0;
+      const vibeBonus = currentPlayer ? managerVibeBonus(manager.vibe) : 0;
+      const estimatedPush = currentPlayer ? Math.max(0, Math.min(maxSingle, currentPlayer.maxBid + heartBonus + vibeBonus)) : 0;
+      return {
+        manager,
+        players,
+        spent,
+        remainingBudget,
+        remainingSlots,
+        maxSingle,
+        countByRole,
+        estimatedPush,
+        reading: currentPlayer
+          ? estimatedPush >= currentPlayer.maxBid + 10
+            ? "rischio rilancio"
+            : estimatedPush >= currentPlayer.maxBid
+              ? "arriva al tuo max"
+              : "probabile sotto"
+          : "seleziona giocatore"
+      };
+    });
+
     return {
-      currentPlayer: selectedLivePlayer ? {
-        name: selectedLivePlayer.name,
-        role: selectedLivePlayer.role,
-        team: selectedLivePlayer.team,
-        maxBid: selectedLivePlayer.maxBid,
-        openBid: selectedLivePlayer.openBid,
-        note: selectedLivePlayer.note,
-        stats26: selectedLivePlayer.stats26,
-        stats25: selectedLivePlayer.stats25
+      currentPlayer: currentPlayer ? {
+        name: currentPlayer.name,
+        role: currentPlayer.role,
+        team: currentPlayer.team,
+        maxBid: currentPlayer.maxBid,
+        openBid: currentPlayer.openBid,
+        status: playerStatus(currentPlayer, auctionState),
+        owner: auctionState[pickKey(currentPlayer)]?.owner,
+        paid: auctionState[pickKey(currentPlayer)]?.paid,
+        note: currentPlayer.note,
+        stats26: currentPlayer.stats26,
+        stats25: currentPlayer.stats25
       } : null,
-      nextRecommended: recommendation ? {
-        name: recommendation.player.name,
-        role: recommendation.player.role,
-        team: recommendation.player.team,
-        liveMax: recommendation.liveMax,
-        reason: recommendation.reason
+      nextRecommended: snapshotRecommendation ? {
+        name: snapshotRecommendation.player.name,
+        role: snapshotRecommendation.player.role,
+        team: snapshotRecommendation.player.team,
+        liveMax: snapshotRecommendation.liveMax,
+        reason: snapshotRecommendation.reason
       } : null,
       myTeam: {
         budget: totalBudget,
-        spent: totalSpent,
-        remaining,
-        activeRole,
-        bought: bought.map((player) => ({
+        spent: snapshotSpent,
+        remaining: snapshotRemaining,
+        activeRole: snapshotActiveRole,
+        bought: snapshotBought.map((player) => ({
           name: player.name,
           role: player.role,
           team: player.team,
-          paid: auction[pickKey(player)]?.paid ?? 0
+          paid: auctionState[pickKey(player)]?.paid ?? 0
         })),
-        roleStats: roleStats.map((row) => ({
+        roleStats: snapshotRoleStats.map((row) => ({
           role: row.role,
           bought: row.bought,
           slots: row.slots,
@@ -652,7 +759,7 @@ export function App() {
           smartRemaining: row.smartRemaining
         }))
       },
-      managers: managerRows.map((row) => ({
+      managers: snapshotManagerRows.map((row) => ({
         name: row.manager.name,
         heartTeam: row.manager.heartTeam,
         vibe: row.manager.vibe,
@@ -661,7 +768,7 @@ export function App() {
         roster: row.players.length,
         roles: row.countByRole,
         maxSingle: row.maxSingle,
-        estimateOnCurrentPlayer: selectedLivePlayer ? row.estimatedPush : null,
+        estimateOnCurrentPlayer: currentPlayer ? row.estimatedPush : null,
         reading: row.reading
       })),
       visiblePlayers: filteredPlayers.slice(0, 24).map((player) => ({
@@ -669,9 +776,9 @@ export function App() {
         role: player.role,
         team: player.team,
         maxBid: player.maxBid,
-        status: playerStatus(player, auction),
-        owner: auction[pickKey(player)]?.owner,
-        paid: auction[pickKey(player)]?.paid,
+        status: playerStatus(player, auctionState),
+        owner: auctionState[pickKey(player)]?.owner,
+        paid: auctionState[pickKey(player)]?.paid,
         note: player.note
       })),
       rules: auctionRules
@@ -702,6 +809,16 @@ export function App() {
       text: message
     };
     const detected = detectAssignIntent(message, managers);
+    const optimisticAuction = detected ? {
+      ...auction,
+      [pickKey(detected.player)]: {
+        ...(auction[pickKey(detected.player)] ?? { status: defaultStatusFor(detected.player) }),
+        status: detected.manager.id === myManager.id ? "Comprato" as Status : "Perso" as Status,
+        paid: detected.paid,
+        owner: detected.manager.name,
+        ownerId: detected.manager.id
+      }
+    } : auction;
     const localAction = detected ? {
       type: "assign",
       player: detected.player.name,
@@ -729,7 +846,7 @@ export function App() {
           message,
           localAction,
           history: nextMessages.slice(-4),
-          snapshot: buildCoachSnapshot()
+          snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer)
         })
       });
       const data = await response.json().catch(() => ({}));
