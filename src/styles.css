@@ -312,6 +312,55 @@ h2 {
   font-size: 18px;
 }
 
+.turn-strip {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(180px, auto);
+  gap: 8px;
+  align-items: stretch;
+}
+
+.turn-strip > div,
+.turn-strip > p,
+.turn-panel {
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.turn-strip > div {
+  padding: 10px;
+}
+
+.turn-strip > p {
+  margin: 0;
+  padding: 10px;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.turn-strip span,
+.turn-strip strong,
+.turn-panel span,
+.turn-panel strong {
+  display: block;
+}
+
+.turn-strip span,
+.turn-panel span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.turn-strip strong,
+.turn-panel strong {
+  margin-top: 3px;
+  color: #0f172a;
+}
+
 .manager-controls {
   display: flex;
   gap: 12px;
@@ -336,8 +385,41 @@ h2 {
   color: #64748b;
 }
 
+.turn-panel {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 0.75fr)) auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+  padding: 12px;
+}
+
+.turn-panel label {
+  display: grid;
+  gap: 5px;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.turn-panel > div {
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.turn-panel > p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #047857;
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .managers-table table {
-  min-width: 1100px;
+  min-width: 1200px;
 }
 
 .managers-table input[type="number"] {
@@ -1641,8 +1723,13 @@ textarea {
   .quick-assign,
   .quick-fields,
   .quick-scout,
+  .turn-strip,
   .coach-layout {
     grid-template-columns: 1fr;
+  }
+
+  .turn-panel {
+    grid-template-columns: 1fr 1fr;
   }
 
   textarea {
@@ -1998,6 +2085,15 @@ textarea {
 
   .manager-target {
     min-width: 0;
+  }
+
+  .turn-panel {
+    grid-template-columns: 1fr;
+    padding: 10px;
+  }
+
+  .turn-panel .ghost {
+    width: 100%;
   }
 
   .stars,

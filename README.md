@@ -10,6 +10,7 @@ Cockpit live per gestire l'asta:
 - tracker budget e slot per reparto;
 - stato giocatore: Da chiamare, Monitor, Comprato, Perso, Evita, Consigliato;
 - precompilazione dei nomi da evitare da segnali editoriali aggiornati e suggeritore live basato su acquisti, slot, budget e obiettivi di reparto;
+- giro chiamata configurabile nella vista Avversari, con avanzamento automatico e prossimo chiamante mostrato dopo ogni assegnazione;
 - badge infortunio nel listone con tempi di recupero, sconto automatico sul massimale e penalizzazione nei consigli;
 - listone e statistiche 2026/27 riallineati al Fantacalcio.it live del 31/08/2026, con nuovi ingressi e cambi squadra;
 - scouting estero per i nuovi arrivi senza storico Serie A recente, con badge `EST`, rendimento 2025/26 e correzione del massimale;
@@ -44,7 +45,7 @@ npm run dev:ai
 
 Il server salva le risposte in `server/coach-memory.json` e le riusa quando domanda, modello e stato asta sintetico coincidono. In quel caso l'app mostra `Cache locale: 0 token API`.
 
-Per ridurre i token anche sulle domande nuove, il server invia a OpenAI solo lo snapshot utile: giocatore attivo, prossima chiamata, budget, rosa, top minacce avversarie e pochi giocatori visibili. I comandi semplici tipo `segna Samardzic ad Avversario 1 per 18` vengono applicati dal browser senza chiamare il modello.
+Per ridurre i token anche sulle domande nuove, il server invia a OpenAI solo lo snapshot utile: giocatore attivo, turno chiamata, prossima chiamata consigliata, budget, rosa, top minacce avversarie e pochi giocatori visibili. I comandi semplici tipo `segna Samardzic ad Avversario 1 per 18` vengono applicati dal browser senza chiamare il modello.
 
 ## Deploy su Vercel
 

@@ -57,7 +57,7 @@ function systemPrompt() {
   return [
     "Sei il Coach AI di una webapp per asta Fantacalcio 2026/27.",
     "Rispondi in italiano, con tono pratico da asta live.",
-    "Usa solo i dati nello snapshot sintetico: budget, rose, max bid, squadra del cuore e vibe degli avversari.",
+    "Usa solo i dati nello snapshot sintetico: budget, rose, max bid, turno chiamata, squadra del cuore e vibe degli avversari.",
     "Dai indicazioni operative: rilancia/lascia, prezzo massimo, rischio avversari, alternativa immediata.",
     "Quando l'utente chiede di segnare un acquisto, conferma cosa registrare e segnala eventuali incoerenze; l'app applica i comandi deterministici lato client.",
     "Non inventare notizie esterne o aggiornamenti calciomercato in tempo reale."
@@ -149,6 +149,7 @@ function compactSnapshot(snapshot = {}) {
           paid: player.paid
         }))
       : [],
+    callTurn: snapshot.callTurn,
     rules: snapshot.rules
   };
 }

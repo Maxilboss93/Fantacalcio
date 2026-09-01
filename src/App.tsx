@@ -72,9 +72,14 @@ type ManagerRow = {
   estimatedPush: number;
   reading: string;
 };
+type CallTurn = {
+  order: string[];
+  currentCallerId: string;
+};
 
 const storageKey = "fantacalcio-asta-2026-27-state";
 const managerStorageKey = "fantacalcio-asta-2026-27-managers";
+const callTurnStorageKey = "fantacalcio-asta-2026-27-call-turn";
 const views: View[] = ["cockpit", "listone", "rosa", "avversari", "coach", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
 const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
@@ -91,6 +96,14 @@ const defaultManagers: ManagerProfile[] = [
     budget: 500
   }))
 ];
+
+function normalizeCallOrder(order: unknown, managers: ManagerProfile[] = defaultManagers) {
+  const validIds = new Set(managers.map((manager) => manager.id));
+  const parsedOrder = Array.isArray(order) ? order.filter((id): id is string => typeof id === "string" && validIds.has(id)) : [];
+  const uniqueOrder = Array.from(new Set(parsedOrder));
+  const missingIds = managers.map((manager) => manager.id).filter((id) => !uniqueOrder.includes(id));
+  return [...uniqueOrder, ...missingIds];
+}
 
 function viewFromHash(): View {
   const hash = window.location.hash.replace("#", "") as View;
@@ -121,6 +134,24 @@ function loadManagers(): ManagerProfile[] {
     }));
   } catch {
     return defaultManagers;
+  }
+}
+
+function loadCallTurn(): CallTurn {
+  const fallbackOrder = normalizeCallOrder(undefined);
+  try {
+    const raw = localStorage.getItem(callTurnStorageKey);
+    const parsed = raw ? JSON.parse(raw) : {};
+    const order = normalizeCallOrder(parsed.order);
+    return {
+      order,
+      currentCallerId: order.includes(parsed.currentCallerId) ? parsed.currentCallerId : order[0]
+    };
+  } catch {
+    return {
+      order: fallbackOrder,
+      currentCallerId: fallbackOrder[0]
+    };
   }
 }
 
@@ -313,6 +344,8 @@ export function App() {
   const [view, setView] = useState<View>(() => viewFromHash());
   const [auction, setAuction] = useState<Record<string, AuctionPick>>(() => loadAuction());
   const [managers, setManagers] = useState<ManagerProfile[]>(() => loadManagers());
+  const [callTurn, setCallTurn] = useState<CallTurn>(() => loadCallTurn());
+  const [callTurnNotice, setCallTurnNotice] = useState("");
   const [livePlayerName, setLivePlayerName] = useState("");
   const [liveManagerId, setLiveManagerId] = useState("me");
   const [livePrice, setLivePrice] = useState("");
@@ -341,6 +374,12 @@ export function App() {
   useEffect(() => {
     localStorage.setItem(managerStorageKey, JSON.stringify(managers));
   }, [managers]);
+
+  useEffect(() => {
+    const order = normalizeCallOrder(callTurn.order, managers);
+    const currentCallerId = order.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : order[0];
+    localStorage.setItem(callTurnStorageKey, JSON.stringify({ order, currentCallerId }));
+  }, [callTurn, managers]);
 
   useEffect(() => {
     const onHashChange = () => setView(viewFromHash());
@@ -518,6 +557,48 @@ export function App() {
     };
   }), [auction, managers, selectedLivePlayer]);
 
+  const callOrder = useMemo(() => normalizeCallOrder(callTurn.order, managers), [callTurn.order, managers]);
+  const currentCallerId = callOrder.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : callOrder[0];
+  const currentCaller = managers.find((manager) => manager.id === currentCallerId) ?? managers[0];
+  const nextCallerId = callOrder[(callOrder.indexOf(currentCallerId) + 1) % callOrder.length] ?? currentCallerId;
+  const nextCaller = managers.find((manager) => manager.id === nextCallerId) ?? currentCaller;
+
+  function nextCallerMessage(nextManager = nextCaller) {
+    return `Prossima chiamata: ${nextManager.name}.`;
+  }
+
+  function advanceCallTurn() {
+    const nextId = nextCallerId;
+    const nextManager = managers.find((manager) => manager.id === nextId) ?? currentCaller;
+    setCallTurn({ order: callOrder, currentCallerId: nextId });
+    const message = nextCallerMessage(nextManager);
+    setCallTurnNotice(message);
+    return message;
+  }
+
+  function updateCurrentCaller(id: string) {
+    if (!callOrder.includes(id)) return;
+    setCallTurn({ order: callOrder, currentCallerId: id });
+    const manager = managers.find((item) => item.id === id);
+    setCallTurnNotice(manager ? `Ora chiama: ${manager.name}.` : "");
+  }
+
+  function updateCallerPosition(id: string, position: number) {
+    const boundedPosition = Math.max(0, Math.min(callOrder.length - 1, position));
+    const nextOrder = callOrder.filter((managerId) => managerId !== id);
+    nextOrder.splice(boundedPosition, 0, id);
+    const nextCurrentId = nextOrder.includes(currentCallerId) ? currentCallerId : nextOrder[0];
+    setCallTurn({ order: nextOrder, currentCallerId: nextCurrentId });
+    setCallTurnNotice("");
+  }
+
+  function resetCallTurn() {
+    const firstCallerId = callOrder[0];
+    const firstCaller = managers.find((manager) => manager.id === firstCallerId) ?? managers[0];
+    setCallTurn({ order: callOrder, currentCallerId: firstCallerId });
+    setCallTurnNotice(firstCaller ? `Ora chiama: ${firstCaller.name}.` : "");
+  }
+
   function updatePick(player: Player, patch: Partial<AuctionPick>) {
     const key = pickKey(player);
     const current = auction[key];
@@ -528,9 +609,10 @@ export function App() {
       const allowed = smartMaxBid(player);
       if (paid > allowed) {
         window.alert(`${player.name} non e sostenibile a ${formatMoney(paid)} crediti: il piano lascia al massimo ${formatMoney(allowed)} per questo acquisto, proteggendo i reparti successivi.`);
-        return;
+        return false;
       }
     }
+    const shouldAdvanceTurn = Boolean(patch.ownerId) || (patch.status === "Comprato" && current?.status !== "Comprato");
     setAuction((previousAuction) => {
       const nextAuction: Record<string, AuctionPick> = {
         ...previousAuction,
@@ -563,6 +645,8 @@ export function App() {
 
       return nextAuction;
     });
+    if (shouldAdvanceTurn) advanceCallTurn();
+    return true;
   }
 
   function quickBuy(player: Player) {
@@ -599,21 +683,27 @@ export function App() {
       return;
     }
     const status: Status = manager.id === myManager.id ? "Comprato" : "Perso";
-    setAuction((current) => ({
-      ...current,
-      [pickKey(player)]: {
-        ...(current[pickKey(player)] ?? { status: defaultStatusFor(player) }),
-        status,
-        paid,
-        owner: manager.name,
-        ownerId: manager.id
-      }
-    }));
+    const assigned = updatePick(player, {
+      status,
+      paid,
+      owner: manager.name,
+      ownerId: manager.id
+    });
+    if (!assigned) return;
     setLivePrice("");
     setQuery(player.name);
   }
 
-  function buildCoachSnapshot(auctionState: Record<string, AuctionPick> = auction, currentPlayer: Player | null = selectedLivePlayer) {
+  function buildCoachSnapshot(
+    auctionState: Record<string, AuctionPick> = auction,
+    currentPlayer: Player | null = selectedLivePlayer,
+    turnState: CallTurn = { order: callOrder, currentCallerId }
+  ) {
+    const snapshotCallOrder = normalizeCallOrder(turnState.order, managers);
+    const snapshotCurrentCallerId = snapshotCallOrder.includes(turnState.currentCallerId) ? turnState.currentCallerId : snapshotCallOrder[0];
+    const snapshotNextCallerId = snapshotCallOrder[(snapshotCallOrder.indexOf(snapshotCurrentCallerId) + 1) % snapshotCallOrder.length] ?? snapshotCurrentCallerId;
+    const snapshotCurrentCaller = managers.find((manager) => manager.id === snapshotCurrentCallerId);
+    const snapshotNextCaller = managers.find((manager) => manager.id === snapshotNextCallerId);
     const snapshotBought = allPlayers
       .filter((player) => {
         const pick = auctionState[pickKey(player)];
@@ -781,6 +871,14 @@ export function App() {
         paid: auctionState[pickKey(player)]?.paid,
         note: player.note
       })),
+      callTurn: {
+        currentCaller: snapshotCurrentCaller?.name,
+        nextCaller: snapshotNextCaller?.name,
+        order: snapshotCallOrder.map((id, index) => ({
+          position: index + 1,
+          name: managers.find((manager) => manager.id === id)?.name ?? id
+        }))
+      },
       rules: auctionRules
     };
   }
@@ -809,6 +907,8 @@ export function App() {
       text: message
     };
     const detected = detectAssignIntent(message, managers);
+    const nextTurnText = detected ? nextCallerMessage() : "";
+    const optimisticCallTurn = detected ? { order: callOrder, currentCallerId: nextCallerId } : { order: callOrder, currentCallerId };
     const optimisticAuction = detected ? {
       ...auction,
       [pickKey(detected.player)]: {
@@ -828,7 +928,7 @@ export function App() {
     const localMessage: CoachMessage | null = detected ? {
       id: crypto.randomUUID(),
       role: "system",
-      text: `Aggiornato: ${detected.player.name} a ${detected.manager.name} per ${formatMoney(detected.paid)}.`
+      text: `Aggiornato: ${detected.player.name} a ${detected.manager.name} per ${formatMoney(detected.paid)}.${nextTurnText ? `\n${nextTurnText}` : ""}`
     } : null;
     const nextMessages = [...coachMessages, userMessage, ...(localMessage ? [localMessage] : [])];
 
@@ -846,7 +946,7 @@ export function App() {
           message,
           localAction,
           history: nextMessages.slice(-4),
-          snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer)
+          snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer, optimisticCallTurn)
         })
       });
       const data = await response.json().catch(() => ({}));
@@ -903,7 +1003,7 @@ export function App() {
   function exportState() {
     downloadFile(
       "asta-fantacalcio-2026-27-live.json",
-      JSON.stringify({ exportedAt: new Date().toISOString(), auction, managers }, null, 2),
+      JSON.stringify({ exportedAt: new Date().toISOString(), auction, managers, callTurn: { order: callOrder, currentCallerId } }, null, 2),
       "application/json"
     );
   }
@@ -919,6 +1019,13 @@ export function App() {
         const nextAuction = parsed.auction ?? parsed;
         if (Array.isArray(parsed.managers)) {
           setManagers(defaultManagers.map((fallback, index) => ({ ...fallback, ...(parsed.managers[index] ?? {}), id: fallback.id })));
+        }
+        if (parsed.callTurn && typeof parsed.callTurn === "object") {
+          const importedOrder = normalizeCallOrder(parsed.callTurn.order);
+          setCallTurn({
+            order: importedOrder,
+            currentCallerId: importedOrder.includes(parsed.callTurn.currentCallerId) ? parsed.callTurn.currentCallerId : importedOrder[0]
+          });
         }
         if (!nextAuction || typeof nextAuction !== "object" || Array.isArray(nextAuction)) {
           throw new Error("Invalid auction state");
@@ -1016,6 +1123,9 @@ export function App() {
                 managerId={liveManagerId}
                 price={livePrice}
                 selectedPlayer={selectedLivePlayer}
+                currentCaller={currentCaller}
+                nextCaller={nextCaller}
+                turnNotice={callTurnNotice}
                 onPlayerNameChange={setLivePlayerName}
                 onManagerIdChange={setLiveManagerId}
                 onPriceChange={setLivePrice}
@@ -1182,8 +1292,16 @@ export function App() {
             teamOptions={teamOptions}
             playerName={livePlayerName}
             selectedPlayer={selectedLivePlayer}
+            callOrder={callOrder}
+            currentCallerId={currentCallerId}
+            currentCaller={currentCaller}
+            nextCaller={nextCaller}
+            turnNotice={callTurnNotice}
             onManagerChange={updateManager}
             onPlayerNameChange={setLivePlayerName}
+            onCurrentCallerChange={updateCurrentCaller}
+            onCallerPositionChange={updateCallerPosition}
+            onResetTurn={resetCallTurn}
           />
         ) : null}
         {view === "coach" ? (
@@ -1415,6 +1533,9 @@ function QuickAssignPanel({
   managerId,
   price,
   selectedPlayer,
+  currentCaller,
+  nextCaller,
+  turnNotice,
   onPlayerNameChange,
   onManagerIdChange,
   onPriceChange,
@@ -1427,6 +1548,9 @@ function QuickAssignPanel({
   managerId: string;
   price: string;
   selectedPlayer: Player | null;
+  currentCaller: ManagerProfile;
+  nextCaller: ManagerProfile;
+  turnNotice: string;
   onPlayerNameChange: (value: string) => void;
   onManagerIdChange: (value: string) => void;
   onPriceChange: (value: string) => void;
@@ -1500,6 +1624,18 @@ function QuickAssignPanel({
           <span>Seleziona un giocatore per vedere subito chi puo rilanciare di piu.</span>
         )}
       </div>
+
+      <div className="turn-strip" aria-live="polite">
+        <div>
+          <span>Ora chiama</span>
+          <strong>{currentCaller.name}</strong>
+        </div>
+        <div>
+          <span>Dopo assegnazione</span>
+          <strong>{nextCaller.name}</strong>
+        </div>
+        {turnNotice ? <p>{turnNotice}</p> : null}
+      </div>
     </section>
   );
 }
@@ -1510,17 +1646,35 @@ function ManagersView({
   teamOptions,
   playerName,
   selectedPlayer,
+  callOrder,
+  currentCallerId,
+  currentCaller,
+  nextCaller,
+  turnNotice,
   onManagerChange,
-  onPlayerNameChange
+  onPlayerNameChange,
+  onCurrentCallerChange,
+  onCallerPositionChange,
+  onResetTurn
 }: {
   managers: ManagerProfile[];
   managerRows: ManagerRow[];
   teamOptions: string[];
   playerName: string;
   selectedPlayer: Player | null;
+  callOrder: string[];
+  currentCallerId: string;
+  currentCaller: ManagerProfile;
+  nextCaller: ManagerProfile;
+  turnNotice: string;
   onManagerChange: (id: string, patch: Partial<ManagerProfile>) => void;
   onPlayerNameChange: (value: string) => void;
+  onCurrentCallerChange: (id: string) => void;
+  onCallerPositionChange: (id: string, position: number) => void;
+  onResetTurn: () => void;
 }) {
+  const orderedRows = [...managerRows].sort((a, b) => callOrder.indexOf(a.manager.id) - callOrder.indexOf(b.manager.id));
+
   return (
     <>
       <section className="manager-controls">
@@ -1547,10 +1701,35 @@ function ManagersView({
         ) : null}
       </section>
 
+      <section className="turn-panel" aria-label="Giro chiamata asta">
+        <label>
+          Ora chiama
+          <select value={currentCallerId} onChange={(event) => onCurrentCallerChange(event.target.value)}>
+            {callOrder.map((id, index) => {
+              const manager = managers.find((item) => item.id === id);
+              return manager ? <option key={id} value={id}>{index + 1}. {manager.name}</option> : null;
+            })}
+          </select>
+        </label>
+        <div>
+          <span>Prossimo dopo assegnazione</span>
+          <strong>{nextCaller.name}</strong>
+        </div>
+        <div>
+          <span>Turno corrente</span>
+          <strong>{currentCaller.name}</strong>
+        </div>
+        <button className="ghost" type="button" onClick={onResetTurn}>
+          <RotateCcw size={15} /> Reset giro
+        </button>
+        {turnNotice ? <p>{turnNotice}</p> : null}
+      </section>
+
       <section className="table-wrap managers-table">
         <table>
           <thead>
             <tr>
+              <th>Giro</th>
               <th>Persona</th>
               <th>Cuore</th>
               <th>Vibe</th>
@@ -1564,8 +1743,20 @@ function ManagersView({
             </tr>
           </thead>
           <tbody>
-            {managerRows.map((row) => (
+            {orderedRows.map((row) => (
               <tr key={row.manager.id} className={row.manager.id === "me" ? "my-manager-row" : ""}>
+                <td data-label="Giro">
+                  <select
+                    value={callOrder.indexOf(row.manager.id)}
+                    onChange={(event) => onCallerPositionChange(row.manager.id, Number(event.target.value))}
+                    aria-label={`Posizione giro chiamata per ${row.manager.name}`}
+                  >
+                    {callOrder.map((id, index) => {
+                      const manager = managers.find((item) => item.id === id);
+                      return <option key={id} value={index}>{index + 1}. {manager?.name ?? id}</option>;
+                    })}
+                  </select>
+                </td>
                 <td data-label="Persona">
                   <input
                     value={row.manager.name}
