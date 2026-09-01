@@ -599,6 +599,20 @@ export function App() {
     setCallTurnNotice(firstCaller ? `Ora chiama: ${firstCaller.name}.` : "");
   }
 
+  function localCoachReply(message: string) {
+    const normalized = normalizeText(message);
+    if (!/\b(chi|cosa|quale)\b/.test(normalized) || !/\b(chiamo|chiamare|chiamata|priorita)\b/.test(normalized)) return null;
+    if (!recommendation) {
+      return `Ora chiama ${currentCaller.name}. Non ho un target consigliato disponibile: controlla ruoli mancanti e budget residuo prima di aprire una chiamata.\nDopo l'assegnazione tocchera a ${nextCaller.name}.`;
+    }
+    return [
+      `Ora chiama ${currentCaller.name}.`,
+      `Chiamerei ${recommendation.player.name} (${recommendation.player.role}, ${recommendation.player.team}) con massimo live ${formatMoney(recommendation.liveMax)}.`,
+      recommendation.reason,
+      `Dopo l'assegnazione tocchera a ${nextCaller.name}.`
+    ].join("\n");
+  }
+
   function updatePick(player: Player, patch: Partial<AuctionPick>) {
     const key = pickKey(player);
     const current = auction[key];
@@ -937,6 +951,17 @@ export function App() {
     if (detected) applyCoachAssign(detected.player, detected.manager, detected.paid);
     if (detected && isSimpleAssignCommand(message)) return;
 
+    const localReply = localCoachReply(message);
+    if (localReply) {
+      setCoachMessages((current) => [...current, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: localReply,
+        meta: "Locale: 0 token API"
+      }]);
+      return;
+    }
+
     setCoachLoading(true);
     try {
       const response = await fetch("/api/coach", {
@@ -949,8 +974,18 @@ export function App() {
           snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer, optimisticCallTurn)
         })
       });
-      const data = await response.json().catch(() => ({}));
-      const reply = typeof data.reply === "string" ? data.reply : "Il Coach AI non ha restituito una risposta leggibile.";
+      const raw = await response.text();
+      let data: Record<string, unknown> = {};
+      try {
+        data = raw ? JSON.parse(raw) : {};
+      } catch {
+        data = {};
+      }
+      const reply = typeof data.reply === "string"
+        ? data.reply
+        : response.ok
+          ? "Il Coach AI non ha restituito una risposta leggibile."
+          : `Coach AI non disponibile (${response.status}). ${raw.trim().slice(0, 180) || "Controlla che npm run dev:ai sia attivo e che OPENAI_API_KEY sia impostata."}`;
       const meta = data.cached
         ? "Cache locale: 0 token API"
         : data.tokenMode === "compact"
@@ -1312,6 +1347,8 @@ export function App() {
             currentPlayer={selectedLivePlayer}
             recommendation={recommendation}
             managerRows={managerRows}
+            currentCaller={currentCaller}
+            nextCaller={nextCaller}
             onInputChange={setCoachInput}
             onSubmit={askCoach}
             onPrompt={setCoachInput}
@@ -1408,6 +1445,8 @@ function CoachView({
   currentPlayer,
   recommendation,
   managerRows,
+  currentCaller,
+  nextCaller,
   onInputChange,
   onSubmit,
   onPrompt
@@ -1418,6 +1457,8 @@ function CoachView({
   currentPlayer: Player | null;
   recommendation: { player: Player; liveMax: number; reason: string } | null;
   managerRows: ManagerRow[];
+  currentCaller: ManagerProfile;
+  nextCaller: ManagerProfile;
   onInputChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onPrompt: (value: string) => void;
@@ -1437,6 +1478,20 @@ function CoachView({
   return (
     <section className="coach-layout" aria-label="Coach AI live">
       <aside className="coach-context">
+        <div>
+          <p className="eyebrow">Giro chiamata</p>
+          <div className="coach-turn">
+            <div>
+              <span>Ora</span>
+              <strong>{currentCaller.name}</strong>
+            </div>
+            <div>
+              <span>Dopo</span>
+              <strong>{nextCaller.name}</strong>
+            </div>
+          </div>
+        </div>
+
         <div>
           <p className="eyebrow">Giocatore attivo</p>
           {currentPlayer ? (

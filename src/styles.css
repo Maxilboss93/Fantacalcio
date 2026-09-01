@@ -481,6 +481,37 @@ h2 {
   font-size: 13px;
 }
 
+.coach-turn {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.coach-turn > div {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.coach-turn span,
+.coach-turn strong {
+  display: block;
+}
+
+.coach-turn span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.coach-turn strong {
+  margin-top: 3px;
+  color: #0f172a;
+}
+
 .coach-threat-list {
   display: grid;
   gap: 8px;
