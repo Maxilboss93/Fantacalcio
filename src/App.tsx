@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   ArrowDown,
   ArrowUp,
+  Bot,
   Check,
   Download,
   ExternalLink,
@@ -9,15 +10,17 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
+  Send,
   Shield,
   SlidersHorizontal,
+  Sparkles,
   Star,
   Trophy,
   Upload,
   Users,
   X
 } from "lucide-react";
-import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import {
   allPlayers,
   AuctionPick,
@@ -39,10 +42,17 @@ import {
   takers
 } from "./fantaModel";
 
-type View = "cockpit" | "listone" | "rosa" | "avversari" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
+type View = "cockpit" | "listone" | "rosa" | "avversari" | "coach" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
 type SortDirection = "asc" | "desc";
 type SortKey = "priority" | "role" | "name" | "team" | "profile" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
 type SortState = { key: SortKey; direction: SortDirection };
+type CoachRole = "user" | "assistant" | "system";
+type CoachMessage = {
+  id: string;
+  role: CoachRole;
+  text: string;
+  meta?: string;
+};
 type ManagerVibe = "Freddo" | "Equilibrata" | "Tifoso" | "Aggressivo" | "Panic buyer" | "Risparmiatore";
 type ManagerProfile = {
   id: string;
@@ -65,7 +75,7 @@ type ManagerRow = {
 
 const storageKey = "fantacalcio-asta-2026-27-state";
 const managerStorageKey = "fantacalcio-asta-2026-27-managers";
-const views: View[] = ["cockpit", "listone", "rosa", "avversari", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
+const views: View[] = ["cockpit", "listone", "rosa", "avversari", "coach", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
 const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
 const profileOptions = ["Tutti", "Titolare", "Titolare low cost", "Ballottaggio", "Secondo portiere", "Terzo portiere", "Riserva"];
@@ -172,6 +182,40 @@ function managerVibeBonus(vibe: ManagerVibe) {
   }[vibe];
 }
 
+function normalizeText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+function detectAssignIntent(message: string, managers: ManagerProfile[]) {
+  const normalized = normalizeText(message);
+  if (!/\b(segna|assegna|preso|presa|comprato|comprata|pagato|pagata)\b/.test(normalized)) return null;
+
+  const player = [...allPlayers]
+    .sort((a, b) => b.name.length - a.name.length)
+    .find((item) => normalized.includes(normalizeText(item.name)));
+  const manager = [...managers]
+    .sort((a, b) => b.name.length - a.name.length)
+    .find((item) => normalized.includes(normalizeText(item.name)));
+  const prices = Array.from(normalized.matchAll(/\b(\d{1,3})\b/g))
+    .map((match) => Number(match[1]))
+    .filter((value) => Number.isFinite(value) && value > 0);
+  const paid = prices.at(-1);
+
+  if (!player || !manager || !paid) return null;
+  return { player, manager, paid };
+}
+
+function isSimpleAssignCommand(message: string) {
+  const normalized = normalizeText(message);
+  const strategyWords = /\b(rilancio|rilancia|rilanciare|spingo|spingermi|quanto|massimo|max|stop|consiglio|conviene|meglio|rischio|alternativa|chiamo|chiamare|priorita|aspettare)\b/;
+  return !message.includes("?") && !strategyWords.test(normalized);
+}
+
 function playerStatus(player: Player, auction: Record<string, AuctionPick>): Status {
   return auction[pickKey(player)]?.status ?? defaultStatusFor(player);
 }
@@ -272,12 +316,21 @@ export function App() {
   const [livePlayerName, setLivePlayerName] = useState("");
   const [liveManagerId, setLiveManagerId] = useState("me");
   const [livePrice, setLivePrice] = useState("");
+  const [coachInput, setCoachInput] = useState("");
+  const [coachMessages, setCoachMessages] = useState<CoachMessage[]>([
+    {
+      id: "coach-welcome",
+      role: "assistant",
+      text: "Dimmi chi sta uscendo, chi rilancia e a che prezzo siamo. Posso consigliarti lo stop price oppure registrare comandi tipo: segna Samardzic ad Avversario 1 per 18."
+    }
+  ]);
+  const [coachLoading, setCoachLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<Role | "Tutti">("Tutti");
+  const [team, setTeam] = useState("Tutte");
   const [profile, setProfile] = useState("Tutti");
   const [onlyTargets, setOnlyTargets] = useState(true);
   const [onlyPenalty, setOnlyPenalty] = useState(false);
-  const [onlyMilan, setOnlyMilan] = useState(false);
   const [sortState, setSortState] = useState<SortState>({ key: "priority", direction: "desc" });
   const [selectedGoalkeeper, setSelectedGoalkeeper] = useState<Player | null>(null);
 
@@ -302,9 +355,9 @@ export function App() {
     const text = query.trim().toLowerCase();
     return basePlayers
       .filter((player) => role === "Tutti" || player.role === role)
+      .filter((player) => team === "Tutte" || player.team === team)
       .filter((player) => profile === "Tutti" || (profile === "Ballottaggio" ? player.profile.startsWith("Ballottaggio con") : player.profile === profile))
       .filter((player) => !onlyPenalty || player.penaltyRank === 1)
-      .filter((player) => !onlyMilan || player.team === "MIL")
       .filter((player) => {
         if (!text) return true;
         return [
@@ -319,13 +372,13 @@ export function App() {
           player.scouting?.lastSeason,
           player.scouting?.verdict
         ].some((value) =>
-          String(value).toLowerCase().includes(text)
-        );
-      })
+        String(value).toLowerCase().includes(text)
+      );
+    })
       .sort((a, b) => {
         return comparePlayers(a, b, sortState, auction);
       });
-  }, [auction, basePlayers, onlyMilan, onlyPenalty, profile, query, role, sortState]);
+  }, [auction, basePlayers, onlyPenalty, profile, query, role, sortState, team]);
 
   const myManager = managers[0];
   const teamOptions = useMemo(() => Array.from(new Set(allPlayers.map((player) => player.team))).sort(), []);
@@ -560,6 +613,149 @@ export function App() {
     setQuery(player.name);
   }
 
+  function buildCoachSnapshot() {
+    return {
+      currentPlayer: selectedLivePlayer ? {
+        name: selectedLivePlayer.name,
+        role: selectedLivePlayer.role,
+        team: selectedLivePlayer.team,
+        maxBid: selectedLivePlayer.maxBid,
+        openBid: selectedLivePlayer.openBid,
+        note: selectedLivePlayer.note,
+        stats26: selectedLivePlayer.stats26,
+        stats25: selectedLivePlayer.stats25
+      } : null,
+      nextRecommended: recommendation ? {
+        name: recommendation.player.name,
+        role: recommendation.player.role,
+        team: recommendation.player.team,
+        liveMax: recommendation.liveMax,
+        reason: recommendation.reason
+      } : null,
+      myTeam: {
+        budget: totalBudget,
+        spent: totalSpent,
+        remaining,
+        activeRole,
+        bought: bought.map((player) => ({
+          name: player.name,
+          role: player.role,
+          team: player.team,
+          paid: auction[pickKey(player)]?.paid ?? 0
+        })),
+        roleStats: roleStats.map((row) => ({
+          role: row.role,
+          bought: row.bought,
+          slots: row.slots,
+          spent: row.spent,
+          remaining: row.remaining,
+          smartRemaining: row.smartRemaining
+        }))
+      },
+      managers: managerRows.map((row) => ({
+        name: row.manager.name,
+        heartTeam: row.manager.heartTeam,
+        vibe: row.manager.vibe,
+        spent: row.spent,
+        remainingBudget: row.remainingBudget,
+        roster: row.players.length,
+        roles: row.countByRole,
+        maxSingle: row.maxSingle,
+        estimateOnCurrentPlayer: selectedLivePlayer ? row.estimatedPush : null,
+        reading: row.reading
+      })),
+      visiblePlayers: filteredPlayers.slice(0, 24).map((player) => ({
+        name: player.name,
+        role: player.role,
+        team: player.team,
+        maxBid: player.maxBid,
+        status: playerStatus(player, auction),
+        owner: auction[pickKey(player)]?.owner,
+        paid: auction[pickKey(player)]?.paid,
+        note: player.note
+      })),
+      rules: auctionRules
+    };
+  }
+
+  function applyCoachAssign(player: Player, manager: ManagerProfile, paid: number) {
+    updatePick(player, {
+      status: manager.id === myManager.id ? "Comprato" : "Perso",
+      paid,
+      owner: manager.name,
+      ownerId: manager.id
+    });
+    setLivePlayerName(player.name);
+    setLiveManagerId(manager.id);
+    setLivePrice(String(paid));
+    setQuery(player.name);
+  }
+
+  async function askCoach(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const message = coachInput.trim();
+    if (!message || coachLoading) return;
+
+    const userMessage: CoachMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      text: message
+    };
+    const detected = detectAssignIntent(message, managers);
+    const localAction = detected ? {
+      type: "assign",
+      player: detected.player.name,
+      manager: detected.manager.name,
+      paid: detected.paid
+    } : null;
+    const localMessage: CoachMessage | null = detected ? {
+      id: crypto.randomUUID(),
+      role: "system",
+      text: `Aggiornato: ${detected.player.name} a ${detected.manager.name} per ${formatMoney(detected.paid)}.`
+    } : null;
+    const nextMessages = [...coachMessages, userMessage, ...(localMessage ? [localMessage] : [])];
+
+    setCoachMessages(nextMessages);
+    setCoachInput("");
+    if (detected) applyCoachAssign(detected.player, detected.manager, detected.paid);
+    if (detected && isSimpleAssignCommand(message)) return;
+
+    setCoachLoading(true);
+    try {
+      const response = await fetch("/api/coach", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          message,
+          localAction,
+          history: nextMessages.slice(-4),
+          snapshot: buildCoachSnapshot()
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      const reply = typeof data.reply === "string" ? data.reply : "Il Coach AI non ha restituito una risposta leggibile.";
+      const meta = data.cached
+        ? "Cache locale: 0 token API"
+        : data.tokenMode === "compact"
+          ? "Snapshot sintetico"
+          : undefined;
+      setCoachMessages((current) => [...current, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: reply,
+        meta
+      }]);
+    } catch {
+      setCoachMessages((current) => [...current, {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: "Coach AI non raggiungibile: avvia npm run dev:ai. I comandi rapidi locali restano comunque applicati quando riconosco giocatore, persona e cifra."
+      }]);
+    } finally {
+      setCoachLoading(false);
+    }
+  }
+
   function exportCsv() {
     const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Scouting", "Note"];
     const rows = selectedPlayers.map((player) => {
@@ -650,6 +846,7 @@ export function App() {
             ["listone", Search, "Listone"],
             ["rosa", Users, "Rosa"],
             ["avversari", Users, "Avversari"],
+            ["coach", Bot, "Coach AI"],
             ["portieri", Shield, "Portieri"],
             ["rigoristi", Goal, "Rigoristi"],
             ["risultati", Star, "Risultati"],
@@ -809,6 +1006,15 @@ export function App() {
                 </select>
               </label>
               <label>
+                Squadra
+                <select value={team} onChange={(event) => setTeam(event.target.value)}>
+                  <option>Tutte</option>
+                  {teamOptions.map((item) => (
+                    <option key={item}>{item}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
                 Profilo
                 <select value={profile} onChange={(event) => setProfile(event.target.value)}>
                   {profileOptions.map((item) => (
@@ -822,7 +1028,7 @@ export function App() {
               <button className={onlyPenalty ? "toggle on" : "toggle"} onClick={() => setOnlyPenalty((v) => !v)}>
                 <Goal size={16} /> Rig 1
               </button>
-              <button className={onlyMilan ? "toggle on milan" : "toggle"} onClick={() => setOnlyMilan((v) => !v)}>
+              <button className={team === "MIL" ? "toggle on milan" : "toggle"} onClick={() => setTeam((value) => value === "MIL" ? "Tutte" : "MIL")}>
                 Milan
               </button>
             </section>
@@ -863,6 +1069,19 @@ export function App() {
             onPlayerNameChange={setLivePlayerName}
           />
         ) : null}
+        {view === "coach" ? (
+          <CoachView
+            messages={coachMessages}
+            input={coachInput}
+            loading={coachLoading}
+            currentPlayer={selectedLivePlayer}
+            recommendation={recommendation}
+            managerRows={managerRows}
+            onInputChange={setCoachInput}
+            onSubmit={askCoach}
+            onPrompt={setCoachInput}
+          />
+        ) : null}
         {view === "portieri" ? <GoalkeeperView /> : null}
         {view === "rigoristi" ? <TakersView /> : null}
         {view === "risultati" ? <ResultsView /> : null}
@@ -879,6 +1098,7 @@ function viewLabel(view: View) {
     listone: "Listone completo",
     rosa: "Rosa acquistata",
     avversari: "Avversari e rilanci",
+    coach: "Coach AI live",
     portieri: "Portieri e griglie",
     rigoristi: "Rigoristi e piazzati",
     risultati: "Risultati prime giornate",
@@ -943,6 +1163,130 @@ function MetricCard({ label, value, detail, tone }: { label: string; value: numb
       <strong>{typeof value === "number" ? formatMoney(value) : value}</strong>
       <small>{detail}</small>
     </article>
+  );
+}
+
+function CoachView({
+  messages,
+  input,
+  loading,
+  currentPlayer,
+  recommendation,
+  managerRows,
+  onInputChange,
+  onSubmit,
+  onPrompt
+}: {
+  messages: CoachMessage[];
+  input: string;
+  loading: boolean;
+  currentPlayer: Player | null;
+  recommendation: { player: Player; liveMax: number; reason: string } | null;
+  managerRows: ManagerRow[];
+  onInputChange: (value: string) => void;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onPrompt: (value: string) => void;
+}) {
+  const threatRows = currentPlayer
+    ? [...managerRows]
+        .filter((row) => row.manager.id !== "me")
+        .sort((a, b) => b.estimatedPush - a.estimatedPush)
+        .slice(0, 4)
+    : [];
+  const promptSeeds = [
+    currentPlayer ? `Quanto mi spingo per ${currentPlayer.name}?` : "Chi chiamo adesso?",
+    recommendation ? `Meglio chiamare ${recommendation.player.name} ora o aspettare?` : "Qual e la priorita del prossimo reparto?",
+    "Chi puo rilanciare piu forte sul giocatore selezionato?"
+  ];
+
+  return (
+    <section className="coach-layout" aria-label="Coach AI live">
+      <aside className="coach-context">
+        <div>
+          <p className="eyebrow">Giocatore attivo</p>
+          {currentPlayer ? (
+            <div className="coach-player">
+              <span className={`role role-${currentPlayer.role}`}>{currentPlayer.role}</span>
+              <strong>{currentPlayer.name}</strong>
+              <small>{currentPlayer.team} · max {formatMoney(currentPlayer.maxBid)} · FM {visibleStat(currentPlayer, "fm").toFixed(2)}</small>
+            </div>
+          ) : (
+            <p className="coach-empty">Seleziona o nomina un giocatore.</p>
+          )}
+        </div>
+
+        <div>
+          <p className="eyebrow">Pressione avversari</p>
+          <div className="coach-threat-list">
+            {threatRows.length ? threatRows.map((row) => (
+              <div key={row.manager.id}>
+                <span>{row.manager.name}</span>
+                <strong>{formatMoney(row.estimatedPush)}</strong>
+                <small>{row.manager.heartTeam || "-"} · {row.manager.vibe} · {row.reading}</small>
+              </div>
+            )) : (
+              <p className="coach-empty">La stima compare quando c'e un giocatore attivo.</p>
+            )}
+          </div>
+        </div>
+
+        {recommendation ? (
+          <div>
+            <p className="eyebrow">Prossima chiamata</p>
+            <div className="coach-player">
+              <span className={`role role-${recommendation.player.role}`}>{recommendation.player.role}</span>
+              <strong>{recommendation.player.name}</strong>
+              <small>{recommendation.player.team} · live {formatMoney(recommendation.liveMax)}</small>
+            </div>
+          </div>
+        ) : null}
+      </aside>
+
+      <section className="coach-panel">
+        <div className="coach-head">
+          <div>
+            <p className="eyebrow">Strategia testuale</p>
+            <h2>Coach AI</h2>
+          </div>
+          <span><Sparkles size={15} /> Cache locale</span>
+        </div>
+
+        <div className="coach-prompts">
+          {promptSeeds.map((prompt) => (
+            <button key={prompt} type="button" onClick={() => onPrompt(prompt)}>
+              {prompt}
+            </button>
+          ))}
+        </div>
+
+        <div className="coach-thread" aria-live="polite">
+          {messages.map((message) => (
+            <article key={message.id} className={`coach-message ${message.role}`}>
+              <span>{message.role === "user" ? "Tu" : message.role === "system" ? "App" : "Coach"}</span>
+              <p>{message.text}</p>
+              {message.meta ? <small className="coach-message-meta">{message.meta}</small> : null}
+            </article>
+          ))}
+          {loading ? (
+            <article className="coach-message assistant">
+              <span>Coach</span>
+              <p>Sto leggendo budget, rose e rilanci in forma sintetica...</p>
+            </article>
+          ) : null}
+        </div>
+
+        <form className="coach-form" onSubmit={onSubmit}>
+          <textarea
+            value={input}
+            onChange={(event) => onInputChange(event.target.value)}
+            placeholder="Es. Samardzic e a 16, Avversario 1 e atalantino: rilancio?"
+          />
+          <button className="assign-button" disabled={loading || !input.trim()}>
+            <Send size={16} /> Invia
+          </button>
+        </form>
+      </section>
+    </section>
   );
 }
 

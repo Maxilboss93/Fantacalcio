@@ -6,3 +6,5 @@ tsconfig.tsbuildinfo
 *.local
 .codex-spreadsheet-work/
 outputs/
+server/coach-memory.json
+server/coach-memory.json.tmp

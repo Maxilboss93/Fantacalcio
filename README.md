@@ -14,6 +14,7 @@ Cockpit live per gestire l'asta:
 - listone e statistiche 2026/27 riallineati al Fantacalcio.it live del 31/08/2026, con nuovi ingressi e cambi squadra;
 - scouting estero per i nuovi arrivi senza storico Serie A recente, con badge `EST`, rendimento 2025/26 e correzione del massimale;
 - pagina Rosa con acquistati, spesa totale, delta dal massimale, gol, assist, fantamedia e tiratori;
+- Coach AI con cache locale su file, snapshot sintetico e comandi di assegnazione gestiti senza chiamata API quando non serve strategia;
 - export CSV ed export/import JSON dello stato live;
 - supporto PWA leggero per riaprire l'app dopo il primo caricamento anche con rete instabile;
 - viste portieri, rigoristi, risultati, mercato e fonti.
@@ -32,6 +33,18 @@ npm run dev
 ```bash
 npm run build
 ```
+
+## Coach AI e token
+
+Avvia il coach con:
+
+```bash
+npm run dev:ai
+```
+
+Il server salva le risposte in `server/coach-memory.json` e le riusa quando domanda, modello e stato asta sintetico coincidono. In quel caso l'app mostra `Cache locale: 0 token API`.
+
+Per ridurre i token anche sulle domande nuove, il server invia a OpenAI solo lo snapshot utile: giocatore attivo, prossima chiamata, budget, rosa, top minacce avversarie e pochi giocatori visibili. I comandi semplici tipo `segna Samardzic ad Avversario 1 per 18` vengono applicati dal browser senza chiamare il modello.
 
 ## Deploy su Vercel
 

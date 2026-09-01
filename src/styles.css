@@ -353,6 +353,199 @@ h2 {
   background: #f0fdf4;
 }
 
+.coach-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.45fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.coach-context,
+.coach-panel {
+  min-width: 0;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.coach-context {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+.coach-player {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 8px;
+  align-items: center;
+}
+
+.coach-player strong,
+.coach-player small {
+  display: block;
+  min-width: 0;
+}
+
+.coach-player small {
+  grid-column: 2;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.coach-empty {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.coach-threat-list {
+  display: grid;
+  gap: 8px;
+}
+
+.coach-threat-list > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  padding: 9px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.coach-threat-list span {
+  font-weight: 800;
+}
+
+.coach-threat-list strong {
+  color: #be123c;
+}
+
+.coach-threat-list small {
+  grid-column: 1 / -1;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.coach-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.coach-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.coach-head h2 {
+  margin: 0;
+}
+
+.coach-head > span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 9px;
+  border: 1px solid #bbf7d0;
+  border-radius: 999px;
+  color: #047857;
+  background: #f0fdf4;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.coach-prompts {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.coach-prompts button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.coach-thread {
+  max-height: min(52vh, 560px);
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  padding: 4px;
+}
+
+.coach-message {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d8e0ec;
+  background: #f8fafc;
+}
+
+.coach-message.user {
+  justify-self: end;
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.coach-message.system {
+  max-width: 100%;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.coach-message span {
+  display: block;
+  margin-bottom: 4px;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.coach-message p {
+  margin: 0;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.coach-message-meta {
+  display: block;
+  margin-top: 6px;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.coach-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+
+.coach-form textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 84px;
+}
+
+.assign-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .metric {
   padding: 16px;
   border-left-width: 5px;
@@ -1447,7 +1640,8 @@ textarea {
 
   .quick-assign,
   .quick-fields,
-  .quick-scout {
+  .quick-scout,
+  .coach-layout {
     grid-template-columns: 1fr;
   }
 
@@ -1477,6 +1671,16 @@ textarea {
 
   h1 {
     font-size: 23px;
+  }
+
+  .coach-head,
+  .coach-form {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .coach-message {
+    max-width: 100%;
   }
 }
 
