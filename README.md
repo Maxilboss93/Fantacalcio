@@ -37,7 +37,7 @@ npm run build
 
 ## Coach AI e token
 
-Avvia il coach con:
+Per usarlo in locale, crea `.env` partendo da `.env.example`, inserisci `OPENAI_API_KEY`, poi avvia:
 
 ```bash
 npm run dev:ai
@@ -46,6 +46,8 @@ npm run dev:ai
 Il server salva le risposte in `server/coach-memory.json` e le riusa quando domanda, modello e stato asta sintetico coincidono. In quel caso l'app mostra `Cache locale: 0 token API`.
 
 Per ridurre i token anche sulle domande nuove, il server invia a OpenAI solo lo snapshot utile: giocatore attivo, turno chiamata, prossima chiamata consigliata, budget, rosa, top minacce avversarie e pochi giocatori visibili. I comandi semplici tipo `segna Samardzic ad Avversario 1 per 18` vengono applicati dal browser senza chiamare il modello.
+
+Su Vercel imposta `OPENAI_API_KEY` in Project Settings -> Environment Variables per Production, Preview e Development, poi fai un redeploy. La route `api/coach.js` usa quella variabile lato server, senza esporla al browser. La cache su Vercel resta in memoria nelle funzioni calde; in locale resta su file.
 
 ## Deploy su Vercel
 
