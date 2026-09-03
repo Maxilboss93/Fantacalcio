@@ -20,7 +20,7 @@ import {
   Users,
   X
 } from "lucide-react";
-import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from "react";
 import {
   allPlayers,
   AuctionPick,
@@ -42,7 +42,7 @@ import {
   takers
 } from "./fantaModel";
 
-type View = "cockpit" | "listone" | "rosa" | "avversari" | "coach" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
+type View = "cockpit" | "listone" | "rosa" | "rose" | "avversari" | "coach" | "portieri" | "rigoristi" | "risultati" | "mercato" | "fonti";
 type SortDirection = "asc" | "desc";
 type SortKey = "priority" | "role" | "name" | "team" | "profile" | "stars" | "maxBid" | "paid" | "status" | "goals" | "assists" | "fm" | "fvm";
 type SortState = { key: SortKey; direction: SortDirection };
@@ -65,12 +65,58 @@ type ManagerRow = {
   manager: ManagerProfile;
   players: Player[];
   spent: number;
+  spentByRole: Record<Role, number>;
   remainingBudget: number;
   remainingSlots: number;
   maxSingle: number;
   countByRole: Record<Role, number>;
   estimatedPush: number;
   reading: string;
+  roleBudgetPressure: OpponentRoleBudgetPressure | null;
+};
+type OpponentRoleBudgetPressure = {
+  role: Role;
+  roleBudget: number;
+  roleSpent: number;
+  roleBought: number;
+  roleSlots: number;
+  roleSlotsLeft: number;
+  ceiling: number;
+  usedPct: number;
+  concentrated: boolean;
+  reading: string;
+};
+type AuctionMemoryEvent = {
+  id: string;
+  createdAt: string;
+  text: string;
+  managerIds: string[];
+  playerName?: string;
+  playerRole?: Role;
+  playerTeam?: string;
+  tags: string[];
+  intensity: number;
+};
+type DetectedAssignment = {
+  player: Player;
+  manager: ManagerProfile;
+  paid: number;
+};
+type BulkAssignParse = {
+  isBulk: boolean;
+  assignments: DetectedAssignment[];
+  skippedLines: string[];
+};
+type ManagerLearning = {
+  managerId: string;
+  notes: number;
+  overpaySignals: number;
+  bidWarSignals: number;
+  oneCreditSignals: number;
+  bugSignals: number;
+  roleBias: Record<Role, number>;
+  heat: number;
+  summary: string;
 };
 type CallTurn = {
   order: string[];
@@ -83,12 +129,14 @@ type LiveState = {
   auction: Record<string, AuctionPick>;
   managers: ManagerProfile[];
   callTurn: CallTurn;
+  auctionMemory?: AuctionMemoryEvent[];
 };
 
 const storageKey = "fantacalcio-asta-2026-27-state";
 const managerStorageKey = "fantacalcio-asta-2026-27-managers";
 const callTurnStorageKey = "fantacalcio-asta-2026-27-call-turn";
-const views: View[] = ["cockpit", "listone", "rosa", "avversari", "coach", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
+const auctionMemoryStorageKey = "fantacalcio-asta-2026-27-memory";
+const views: View[] = ["cockpit", "listone", "rosa", "rose", "avversari", "coach", "portieri", "rigoristi", "risultati", "mercato", "fonti"];
 const statuses: Status[] = ["Da chiamare", "Monitor", "Comprato", "Perso", "Evita", "Consigliato"];
 const roleOrder: Role[] = ["P", "D", "C", "A"];
 const profileOptions = ["Tutti", "Titolare", "Titolare low cost", "Ballottaggio", "Secondo portiere", "Terzo portiere", "Riserva"];
@@ -104,6 +152,16 @@ const defaultManagers: ManagerProfile[] = [
     budget: 500
   }))
 ];
+
+function initialCoachMessages(): CoachMessage[] {
+  return [
+    {
+      id: "coach-welcome",
+      role: "assistant",
+      text: "Dimmi chi sta uscendo, chi rilancia e a che prezzo siamo. Posso consigliarti lo stop price oppure registrare comandi tipo: segna Samardzic ad Avversario 1 per 18."
+    }
+  ];
+}
 
 function normalizeCallOrder(order: unknown, managers: ManagerProfile[] = defaultManagers) {
   const validIds = new Set(managers.map((manager) => manager.id));
@@ -138,6 +196,25 @@ function normalizeManagers(input: unknown): ManagerProfile[] {
   }));
 }
 
+function normalizeAuctionMemory(input: unknown): AuctionMemoryEvent[] {
+  if (!Array.isArray(input)) return [];
+  return input
+    .filter((event): event is Partial<AuctionMemoryEvent> => Boolean(event) && typeof event === "object")
+    .map((event) => ({
+      id: typeof event.id === "string" ? event.id : crypto.randomUUID(),
+      createdAt: typeof event.createdAt === "string" ? event.createdAt : new Date().toISOString(),
+      text: String(event.text ?? "").slice(0, 500),
+      managerIds: Array.isArray(event.managerIds) ? event.managerIds.filter((id): id is string => typeof id === "string") : [],
+      playerName: typeof event.playerName === "string" ? event.playerName : undefined,
+      playerRole: roleOrder.includes(event.playerRole as Role) ? event.playerRole as Role : undefined,
+      playerTeam: typeof event.playerTeam === "string" ? event.playerTeam : undefined,
+      tags: Array.isArray(event.tags) ? event.tags.filter((tag): tag is string => typeof tag === "string").slice(0, 6) : [],
+      intensity: Math.max(1, Math.min(5, Number(event.intensity) || 1))
+    }))
+    .filter((event) => event.text && event.managerIds.length)
+    .slice(-80);
+}
+
 function normalizeLiveState(input: unknown): LiveState | null {
   if (!input || typeof input !== "object" || Array.isArray(input)) return null;
   const parsed = input as Partial<LiveState>;
@@ -157,7 +234,8 @@ function normalizeLiveState(input: unknown): LiveState | null {
       currentCallerId: importedOrder.includes(parsed.callTurn?.currentCallerId ?? "")
         ? parsed.callTurn?.currentCallerId ?? importedOrder[0]
         : importedOrder[0]
-    }
+    },
+    auctionMemory: normalizeAuctionMemory(parsed.auctionMemory)
   };
 }
 
@@ -187,6 +265,15 @@ function loadCallTurn(): CallTurn {
       order: fallbackOrder,
       currentCallerId: fallbackOrder[0]
     };
+  }
+}
+
+function loadAuctionMemory(): AuctionMemoryEvent[] {
+  try {
+    const raw = localStorage.getItem(auctionMemoryStorageKey);
+    return raw ? normalizeAuctionMemory(JSON.parse(raw)) : [];
+  } catch {
+    return [];
   }
 }
 
@@ -257,7 +344,7 @@ function normalizeText(value: string) {
     .trim();
 }
 
-function detectAssignIntent(message: string, managers: ManagerProfile[]) {
+function detectAssignIntent(message: string, managers: ManagerProfile[]): DetectedAssignment | null {
   const normalized = normalizeText(message);
   if (!/\b(segna|assegna|preso|presa|comprato|comprata|pagato|pagata)\b/.test(normalized)) return null;
 
@@ -274,6 +361,158 @@ function detectAssignIntent(message: string, managers: ManagerProfile[]) {
 
   if (!player || !manager || !paid) return null;
   return { player, manager, paid };
+}
+
+function parseBulkAssignCommands(message: string, managers: ManagerProfile[]): BulkAssignParse {
+  const lines = message
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length < 2) return { isBulk: false, assignments: [], skippedLines: [] };
+
+  const parsedLines = lines.map((line) => {
+    const looksLikeAssignment = /\b(segna|assegna|preso|presa|comprato|comprata|pagato|pagata)\b/.test(normalizeText(line));
+    const detected = looksLikeAssignment && isSimpleAssignCommand(line) ? detectAssignIntent(line, managers) : null;
+    return { line, detected, looksLikeAssignment };
+  });
+  const isBulk = parsedLines.some((item) => item.looksLikeAssignment);
+
+  return {
+    isBulk,
+    assignments: parsedLines.map((item) => item.detected).filter((item): item is DetectedAssignment => Boolean(item)),
+    skippedLines: parsedLines.filter((item) => item.looksLikeAssignment && !item.detected).map((item) => item.line)
+  };
+}
+
+function inferAuctionMemoryEvent(message: string, managers: ManagerProfile[]): AuctionMemoryEvent | null {
+  const normalized = normalizeText(message);
+  const signalWords = /\b(strapag|strapagato|strapagata|rilancio|rilanci|rilanciando|rilancia|guerra|scaten|forte|aggressivo|aggressiva|impazzito|impazzita|overpay|sovrapprezzo|uno alla volta|1 credito|bluff|finta|punta sempre)\b/;
+  if (!signalWords.test(normalized)) return null;
+
+  const managerIds = managers
+    .filter((manager) => manager.id !== "me")
+    .filter((manager) => normalized.includes(normalizeText(manager.name)))
+    .map((manager) => manager.id);
+  if (!managerIds.length) return null;
+
+  const player = [...allPlayers]
+    .sort((a, b) => b.name.length - a.name.length)
+    .find((item) => normalized.includes(normalizeText(item.name)));
+  const tags = [
+    /\b(strapag|strapagato|strapagata|overpay|sovrapprezzo)\b/.test(normalized) ? "overpay" : "",
+    /\b(guerra|scaten|duello)\b/.test(normalized) ? "guerra rilanci" : "",
+    /\b(rilancio|rilanci|rilanciando|rilancia)\b/.test(normalized) ? "rilanci forti" : "",
+    /\b(uno alla volta|1 credito)\b/.test(normalized) ? "salite da 1" : "",
+    /\b(bluff|finta)\b/.test(normalized) ? "bluff" : "",
+    player?.role === "C" && player.roleBug?.kind === "C-attacco" ? "bug attacco" : "",
+    player?.role === "D" && player.roleBug?.kind === "D-centrocampo" ? "bug esterno" : ""
+  ].filter(Boolean);
+  const intensity = Math.min(5, 1 + tags.length + (/\b(scaten|guerra|impazzit|forte)\b/.test(normalized) ? 1 : 0));
+
+  return {
+    id: crypto.randomUUID(),
+    createdAt: new Date().toISOString(),
+    text: message.slice(0, 500),
+    managerIds,
+    playerName: player?.name,
+    playerRole: player?.role,
+    playerTeam: player?.team,
+    tags,
+    intensity
+  };
+}
+
+function summarizeAuctionMemory(memory: AuctionMemoryEvent[], managers: ManagerProfile[]): ManagerLearning[] {
+  return managers
+    .filter((manager) => manager.id !== "me")
+    .map((manager) => {
+      const events = memory.filter((event) => event.managerIds.includes(manager.id));
+      const roleBias = roleOrder.reduce<Record<Role, number>>((counts, role) => {
+        counts[role] = events.filter((event) => event.playerRole === role).length;
+        return counts;
+      }, { P: 0, D: 0, C: 0, A: 0 });
+      const overpaySignals = events.filter((event) => event.tags.includes("overpay")).length;
+      const bidWarSignals = events.filter((event) => event.tags.includes("guerra rilanci") || event.tags.includes("rilanci forti")).length;
+      const oneCreditSignals = events.filter((event) => event.tags.includes("salite da 1")).length;
+      const bugSignals = events.filter((event) => event.tags.includes("bug attacco") || event.tags.includes("bug esterno")).length;
+      const heat = events.reduce((sum, event) => sum + event.intensity, 0);
+      const strongestRole = roleOrder
+        .filter((role) => roleBias[role] > 0)
+        .sort((a, b) => roleBias[b] - roleBias[a])[0];
+      const bits = [];
+      if (overpaySignals) bits.push(`strapaga ${overpaySignals}x`);
+      if (bidWarSignals) bits.push(`rilancia forte ${bidWarSignals}x`);
+      if (oneCreditSignals) bits.push("sale spesso da 1");
+      if (bugSignals) bits.push("sensibile ai bug di listone");
+      if (strongestRole) bits.push(`focus ${roleLabels[strongestRole]}`);
+      return {
+        managerId: manager.id,
+        notes: events.length,
+        overpaySignals,
+        bidWarSignals,
+        oneCreditSignals,
+        bugSignals,
+        roleBias,
+        heat,
+        summary: bits.length ? bits.join(" · ") : "nessun pattern forte"
+      };
+    });
+}
+
+function memoryPushBonus(player: Player | null, learning?: ManagerLearning) {
+  if (!player || !learning || !learning.notes) return 0;
+  const roleHeat = learning.roleBias[player.role] * 3;
+  const overpayHeat = Math.min(14, learning.overpaySignals * 5);
+  const warHeat = Math.min(12, learning.bidWarSignals * 4);
+  const oneCreditHeat = Math.min(4, learning.oneCreditSignals * 2);
+  const bugHeat = player.roleBug && learning.bugSignals ? Math.min(8, learning.bugSignals * 4) : 0;
+  return Math.min(24, roleHeat + overpayHeat + warHeat + oneCreditHeat + bugHeat);
+}
+
+function opponentRoleBudgetPressure(player: Player | null, spentByRole: Record<Role, number>, countByRole: Record<Role, number>): OpponentRoleBudgetPressure | null {
+  if (!player) return null;
+  const plan = budgetPlan.find((row) => row.role === player.role);
+  if (!plan || plan.role === "R") return null;
+
+  const roleSpent = spentByRole[player.role];
+  const roleBought = countByRole[player.role];
+  const roleSlotsLeft = Math.max(0, plan.slots - roleBought);
+  const roleBudgetLeft = plan.budget - roleSpent;
+  const minimumAfterThisPlayer = Math.max(0, roleSlotsLeft - 1);
+  const ceiling = roleSlotsLeft <= 0 ? 0 : Math.max(0, roleBudgetLeft - minimumAfterThisPlayer);
+  const usedPct = plan.budget > 0 ? Math.round((roleSpent / plan.budget) * 100) : 0;
+  const concentrated = roleBought > 0 && roleBought <= 2 && usedPct >= 45;
+  const reading = roleSlotsLeft <= 0
+    ? "reparto pieno"
+    : ceiling <= Math.max(1, player.openBid)
+      ? "budget reparto quasi finito"
+      : usedPct >= 90 || ceiling < player.maxBid * 0.45
+        ? "budget reparto consumato"
+        : usedPct >= 70 || ceiling < player.maxBid * 0.7
+          ? "budget reparto stretto"
+          : concentrated
+            ? "spesa concentrata nel reparto"
+            : "budget reparto libero";
+
+  return {
+    role: player.role,
+    roleBudget: plan.budget,
+    roleSpent,
+    roleBought,
+    roleSlots: plan.slots,
+    roleSlotsLeft,
+    ceiling,
+    usedPct,
+    concentrated,
+    reading
+  };
+}
+
+function applyBudgetPressureToEstimate(estimate: number, learnedBonus: number, pressure: OpponentRoleBudgetPressure | null) {
+  if (!pressure) return estimate;
+  if (pressure.roleSlotsLeft <= 0) return 0;
+  const aggressionSlack = learnedBonus >= 12 ? Math.min(8, Math.round(learnedBonus / 3)) : 0;
+  return Math.max(0, Math.min(estimate, pressure.ceiling + aggressionSlack));
 }
 
 function isSimpleAssignCommand(message: string) {
@@ -380,19 +619,15 @@ export function App() {
   const [auction, setAuction] = useState<Record<string, AuctionPick>>(() => loadAuction());
   const [managers, setManagers] = useState<ManagerProfile[]>(() => loadManagers());
   const [callTurn, setCallTurn] = useState<CallTurn>(() => loadCallTurn());
+  const [auctionMemory, setAuctionMemory] = useState<AuctionMemoryEvent[]>(() => loadAuctionMemory());
   const [callTurnNotice, setCallTurnNotice] = useState("");
   const [livePlayerName, setLivePlayerName] = useState("");
   const [liveManagerId, setLiveManagerId] = useState("me");
   const [livePrice, setLivePrice] = useState("");
   const [coachInput, setCoachInput] = useState("");
-  const [coachMessages, setCoachMessages] = useState<CoachMessage[]>([
-    {
-      id: "coach-welcome",
-      role: "assistant",
-      text: "Dimmi chi sta uscendo, chi rilancia e a che prezzo siamo. Posso consigliarti lo stop price oppure registrare comandi tipo: segna Samardzic ad Avversario 1 per 18."
-    }
-  ]);
+  const [coachMessages, setCoachMessages] = useState<CoachMessage[]>(() => initialCoachMessages());
   const [coachLoading, setCoachLoading] = useState(false);
+  const coachRequestRef = useRef(0);
   const [query, setQuery] = useState("");
   const [role, setRole] = useState<Role | "Tutti">("Tutti");
   const [team, setTeam] = useState("Tutte");
@@ -418,6 +653,7 @@ export function App() {
           setAuction(serverState.auction);
           setManagers(serverState.managers);
           setCallTurn(serverState.callTurn);
+          setAuctionMemory(serverState.auctionMemory ?? []);
           setSyncStatus("Backup server caricato");
         } else if (!cancelled) {
           setSyncStatus("Backup server pronto");
@@ -444,6 +680,10 @@ export function App() {
   }, [managers]);
 
   useEffect(() => {
+    localStorage.setItem(auctionMemoryStorageKey, JSON.stringify(auctionMemory));
+  }, [auctionMemory]);
+
+  useEffect(() => {
     const order = normalizeCallOrder(callTurn.order, managers);
     const currentCallerId = order.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : order[0];
     localStorage.setItem(callTurnStorageKey, JSON.stringify({ order, currentCallerId }));
@@ -465,7 +705,8 @@ export function App() {
               exportedAt: new Date().toISOString(),
               auction,
               managers,
-              callTurn: { order, currentCallerId }
+              callTurn: { order, currentCallerId },
+              auctionMemory
             }
           }),
           signal: controller.signal
@@ -482,7 +723,7 @@ export function App() {
       controller.abort();
       window.clearTimeout(timeoutId);
     };
-  }, [auction, callTurn, managers, serverStateReady]);
+  }, [auction, auctionMemory, callTurn, managers, serverStateReady]);
 
   useEffect(() => {
     const onHashChange = () => setView(viewFromHash());
@@ -628,9 +869,17 @@ export function App() {
       ?? null;
   }, [livePlayerName]);
 
+  const managerLearning = useMemo(() => summarizeAuctionMemory(auctionMemory, managers), [auctionMemory, managers]);
+
   const managerRows = useMemo<ManagerRow[]>(() => managers.map((manager) => {
     const players = allPlayers.filter((player) => ownerMatches(auction[pickKey(player)], manager));
     const spent = players.reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+    const spentByRole = roleOrder.reduce<Record<Role, number>>((totals, role) => {
+      totals[role] = players
+        .filter((player) => player.role === role)
+        .reduce((sum, player) => sum + (auction[pickKey(player)]?.paid ?? 0), 0);
+      return totals;
+    }, { P: 0, D: 0, C: 0, A: 0 });
     const countByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
       counts[role] = players.filter((player) => player.role === role).length;
       return counts;
@@ -640,31 +889,42 @@ export function App() {
     const maxSingle = Math.max(0, remainingBudget - Math.max(0, remainingSlots - 1));
     const heartBonus = selectedLivePlayer && manager.heartTeam === selectedLivePlayer.team ? Math.round(selectedLivePlayer.maxBid * 0.22) : 0;
     const vibeBonus = selectedLivePlayer ? managerVibeBonus(manager.vibe) : 0;
-    const estimatedPush = selectedLivePlayer ? Math.max(0, Math.min(maxSingle, selectedLivePlayer.maxBid + heartBonus + vibeBonus)) : 0;
+    const learning = managerLearning.find((item) => item.managerId === manager.id);
+    const learnedBonus = memoryPushBonus(selectedLivePlayer, learning);
+    const roleBudgetPressure = opponentRoleBudgetPressure(selectedLivePlayer, spentByRole, countByRole);
+    const rawEstimatedPush = selectedLivePlayer ? Math.max(0, Math.min(maxSingle, selectedLivePlayer.maxBid + heartBonus + vibeBonus + learnedBonus)) : 0;
+    const estimatedPush = applyBudgetPressureToEstimate(rawEstimatedPush, learnedBonus, roleBudgetPressure);
     return {
       manager,
       players,
       spent,
+      spentByRole,
       remainingBudget,
       remainingSlots,
       maxSingle,
       countByRole,
       estimatedPush,
+      roleBudgetPressure,
       reading: selectedLivePlayer
-        ? estimatedPush >= selectedLivePlayer.maxBid + 10
+        ? roleBudgetPressure && roleBudgetPressure.reading !== "budget reparto libero" && roleBudgetPressure.ceiling < selectedLivePlayer.maxBid
+          ? `${roleBudgetPressure.reading}: ${formatMoney(roleBudgetPressure.roleSpent)}/${formatMoney(roleBudgetPressure.roleBudget)} ${selectedLivePlayer.role}`
+          : learnedBonus >= 8
+          ? `pattern caldo: ${learning?.summary ?? "memoria asta"}`
+          : estimatedPush >= selectedLivePlayer.maxBid + 10
           ? "rischio rilancio"
           : estimatedPush >= selectedLivePlayer.maxBid
             ? "arriva al tuo max"
             : "probabile sotto"
         : "seleziona giocatore"
     };
-  }), [auction, managers, selectedLivePlayer]);
+  }), [auction, managerLearning, managers, selectedLivePlayer]);
 
   const callOrder = useMemo(() => normalizeCallOrder(callTurn.order, managers), [callTurn.order, managers]);
   const currentCallerId = callOrder.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : callOrder[0];
   const currentCaller = managers.find((manager) => manager.id === currentCallerId) ?? managers[0];
   const nextCallerId = callOrder[(callOrder.indexOf(currentCallerId) + 1) % callOrder.length] ?? currentCallerId;
   const nextCaller = managers.find((manager) => manager.id === nextCallerId) ?? currentCaller;
+  const currentCallNumber = Math.max(1, callOrder.indexOf(currentCallerId) + 1);
 
   function nextCallerMessage(nextManager = nextCaller) {
     return `Prossima chiamata: ${nextManager.name}.`;
@@ -679,11 +939,29 @@ export function App() {
     return message;
   }
 
+  function advanceCallTurnBy(steps: number) {
+    if (steps <= 0 || !callOrder.length) return "";
+    const currentIndex = Math.max(0, callOrder.indexOf(currentCallerId));
+    const nextId = callOrder[(currentIndex + steps) % callOrder.length] ?? currentCallerId;
+    const nextManager = managers.find((manager) => manager.id === nextId) ?? currentCaller;
+    setCallTurn({ order: callOrder, currentCallerId: nextId });
+    const message = `Assegnazioni massive registrate: ${steps}. Ora chiama: ${nextManager.name}.`;
+    setCallTurnNotice(message);
+    return message;
+  }
+
   function updateCurrentCaller(id: string) {
     if (!callOrder.includes(id)) return;
     setCallTurn({ order: callOrder, currentCallerId: id });
     const manager = managers.find((item) => item.id === id);
     setCallTurnNotice(manager ? `Ora chiama: ${manager.name}.` : "");
+  }
+
+  function updateCurrentCallerNumber(position: number) {
+    if (!Number.isFinite(position) || !callOrder.length) return;
+    const nextIndex = Math.max(0, Math.min(callOrder.length - 1, Math.round(position) - 1));
+    const nextCallerFromNumber = callOrder[nextIndex];
+    if (nextCallerFromNumber) updateCurrentCaller(nextCallerFromNumber);
   }
 
   function updateCallerPosition(id: string, position: number) {
@@ -814,8 +1092,10 @@ export function App() {
   function buildCoachSnapshot(
     auctionState: Record<string, AuctionPick> = auction,
     currentPlayer: Player | null = selectedLivePlayer,
-    turnState: CallTurn = { order: callOrder, currentCallerId }
+    turnState: CallTurn = { order: callOrder, currentCallerId },
+    memoryState: AuctionMemoryEvent[] = auctionMemory
   ) {
+    const snapshotLearning = summarizeAuctionMemory(memoryState, managers);
     const snapshotCallOrder = normalizeCallOrder(turnState.order, managers);
     const snapshotCurrentCallerId = snapshotCallOrder.includes(turnState.currentCallerId) ? turnState.currentCallerId : snapshotCallOrder[0];
     const snapshotNextCallerId = snapshotCallOrder[(snapshotCallOrder.indexOf(snapshotCurrentCallerId) + 1) % snapshotCallOrder.length] ?? snapshotCurrentCallerId;
@@ -896,6 +1176,12 @@ export function App() {
     const snapshotManagerRows = managers.map((manager) => {
       const players = allPlayers.filter((player) => ownerMatches(auctionState[pickKey(player)], manager));
       const spent = players.reduce((sum, player) => sum + (auctionState[pickKey(player)]?.paid ?? 0), 0);
+      const spentByRole = roleOrder.reduce<Record<Role, number>>((totals, role) => {
+        totals[role] = players
+          .filter((player) => player.role === role)
+          .reduce((sum, player) => sum + (auctionState[pickKey(player)]?.paid ?? 0), 0);
+        return totals;
+      }, { P: 0, D: 0, C: 0, A: 0 });
       const countByRole = roleOrder.reduce<Record<Role, number>>((counts, role) => {
         counts[role] = players.filter((player) => player.role === role).length;
         return counts;
@@ -905,18 +1191,29 @@ export function App() {
       const maxSingle = Math.max(0, remainingBudget - Math.max(0, remainingSlots - 1));
       const heartBonus = currentPlayer && manager.heartTeam === currentPlayer.team ? Math.round(currentPlayer.maxBid * 0.22) : 0;
       const vibeBonus = currentPlayer ? managerVibeBonus(manager.vibe) : 0;
-      const estimatedPush = currentPlayer ? Math.max(0, Math.min(maxSingle, currentPlayer.maxBid + heartBonus + vibeBonus)) : 0;
+      const learning = snapshotLearning.find((item) => item.managerId === manager.id);
+      const learnedBonus = memoryPushBonus(currentPlayer, learning);
+      const roleBudgetPressure = opponentRoleBudgetPressure(currentPlayer, spentByRole, countByRole);
+      const rawEstimatedPush = currentPlayer ? Math.max(0, Math.min(maxSingle, currentPlayer.maxBid + heartBonus + vibeBonus + learnedBonus)) : 0;
+      const estimatedPush = applyBudgetPressureToEstimate(rawEstimatedPush, learnedBonus, roleBudgetPressure);
       return {
         manager,
         players,
         spent,
+        spentByRole,
         remainingBudget,
         remainingSlots,
         maxSingle,
         countByRole,
         estimatedPush,
+        learning,
+        roleBudgetPressure,
         reading: currentPlayer
-          ? estimatedPush >= currentPlayer.maxBid + 10
+          ? roleBudgetPressure && roleBudgetPressure.reading !== "budget reparto libero" && roleBudgetPressure.ceiling < currentPlayer.maxBid
+            ? `${roleBudgetPressure.reading}: ${formatMoney(roleBudgetPressure.roleSpent)}/${formatMoney(roleBudgetPressure.roleBudget)} ${currentPlayer.role}`
+            : learnedBonus >= 8
+            ? `pattern caldo: ${learning?.summary ?? "memoria asta"}`
+            : estimatedPush >= currentPlayer.maxBid + 10
             ? "rischio rilancio"
             : estimatedPush >= currentPlayer.maxBid
               ? "arriva al tuo max"
@@ -974,9 +1271,17 @@ export function App() {
         remainingBudget: row.remainingBudget,
         roster: row.players.length,
         roles: row.countByRole,
+        spentByRole: row.spentByRole,
         maxSingle: row.maxSingle,
         estimateOnCurrentPlayer: currentPlayer ? row.estimatedPush : null,
-        reading: row.reading
+        reading: row.reading,
+        roleBudgetPressure: row.roleBudgetPressure,
+        learning: row.learning ? {
+          notes: row.learning.notes,
+          heat: row.learning.heat,
+          summary: row.learning.summary,
+          roleBias: row.learning.roleBias
+        } : undefined
       })),
       visiblePlayers: filteredPlayers.slice(0, 24).map((player) => ({
         name: player.name,
@@ -996,6 +1301,23 @@ export function App() {
           name: managers.find((manager) => manager.id === id)?.name ?? id
         }))
       },
+      auctionMemory: {
+        recentEvents: memoryState.slice(-8).map((event) => ({
+          text: event.text,
+          managers: event.managerIds.map((id) => managers.find((manager) => manager.id === id)?.name ?? id),
+          player: event.playerName,
+          role: event.playerRole,
+          tags: event.tags,
+          intensity: event.intensity
+        })),
+        managerLearning: snapshotLearning.map((learning) => ({
+          manager: managers.find((manager) => manager.id === learning.managerId)?.name ?? learning.managerId,
+          notes: learning.notes,
+          heat: learning.heat,
+          summary: learning.summary,
+          roleBias: learning.roleBias
+        }))
+      },
       rules: auctionRules
     };
   }
@@ -1013,6 +1335,48 @@ export function App() {
     setQuery(player.name);
   }
 
+  function applyBulkCoachAssign(assignments: DetectedAssignment[]) {
+    const lastAssignment = assignments.at(-1);
+    setAuction((previousAuction) => {
+      const nextAuction: Record<string, AuctionPick> = { ...previousAuction };
+      for (const assignment of assignments) {
+        const key = pickKey(assignment.player);
+        nextAuction[key] = {
+          ...(nextAuction[key] ?? { status: defaultStatusFor(assignment.player) }),
+          status: assignment.manager.id === myManager.id ? "Comprato" : "Perso",
+          paid: assignment.paid,
+          owner: assignment.manager.name,
+          ownerId: assignment.manager.id
+        };
+      }
+
+      Object.entries(nextAuction).forEach(([key, pick]) => {
+        if (pick.status === "Consigliato") {
+          nextAuction[key] = { ...pick, status: "Da chiamare" };
+        }
+      });
+      const nextRecommendation = recommendNextPlayer(nextAuction, lastAssignment ? pickKey(lastAssignment.player) : "");
+      if (nextRecommendation) {
+        const nextKey = pickKey(nextRecommendation.player);
+        nextAuction[nextKey] = {
+          ...(nextAuction[nextKey] ?? { status: defaultStatusFor(nextRecommendation.player) }),
+          status: "Consigliato"
+        };
+      }
+
+      return nextAuction;
+    });
+
+    if (lastAssignment) {
+      setLivePlayerName(lastAssignment.player.name);
+      setLiveManagerId(lastAssignment.manager.id);
+      setLivePrice(String(lastAssignment.paid));
+      setQuery(lastAssignment.player.name);
+    }
+
+    return advanceCallTurnBy(assignments.length);
+  }
+
   async function askCoach(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const message = coachInput.trim();
@@ -1023,7 +1387,34 @@ export function App() {
       role: "user",
       text: message
     };
+    const bulkParse = parseBulkAssignCommands(message, managers);
+    if (bulkParse.isBulk) {
+      const bulkAssignments = bulkParse.assignments;
+      const turnText = applyBulkCoachAssign(bulkAssignments);
+      const assignedByManager = bulkAssignments.reduce<Record<string, number>>((counts, assignment) => {
+        counts[assignment.manager.name] = (counts[assignment.manager.name] ?? 0) + 1;
+        return counts;
+      }, {});
+      const managerSummary = Object.entries(assignedByManager)
+        .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+        .slice(0, 6)
+        .map(([manager, count]) => `${manager} ${count}`)
+        .join(" · ");
+      const skippedText = bulkParse.skippedLines.length
+        ? `\nRighe non riconosciute (${bulkParse.skippedLines.length}): ${bulkParse.skippedLines.slice(0, 6).join(" | ")}${bulkParse.skippedLines.length > 6 ? " | ..." : ""}`
+        : "";
+      setCoachMessages([...coachMessages, userMessage, {
+        id: crypto.randomUUID(),
+        role: "system",
+        text: `Import massivo registrato: ${bulkAssignments.length} assegnazioni applicate localmente, 0 token API.${managerSummary ? `\nDistribuzione: ${managerSummary}.` : ""}${skippedText}${turnText ? `\n${turnText}` : ""}`,
+        meta: "Locale: 0 token API"
+      }]);
+      setCoachInput("");
+      setCoachLoading(false);
+      return;
+    }
     const detected = detectAssignIntent(message, managers);
+    const memoryEvent = inferAuctionMemoryEvent(message, managers);
     const nextTurnText = detected ? nextCallerMessage() : "";
     const optimisticCallTurn = detected ? { order: callOrder, currentCallerId: nextCallerId } : { order: callOrder, currentCallerId };
     const optimisticAuction = detected ? {
@@ -1036,22 +1427,42 @@ export function App() {
         ownerId: detected.manager.id
       }
     } : auction;
-    const localAction = detected ? {
-      type: "assign",
-      player: detected.player.name,
-      manager: detected.manager.name,
-      paid: detected.paid
+    const localAction = detected || memoryEvent ? {
+      assignment: detected ? {
+        type: "assign",
+        player: detected.player.name,
+        manager: detected.manager.name,
+        paid: detected.paid
+      } : null,
+      memoryEvent: memoryEvent ? {
+        managers: memoryEvent.managerIds.map((id) => managers.find((manager) => manager.id === id)?.name ?? id),
+        player: memoryEvent.playerName,
+        tags: memoryEvent.tags,
+        intensity: memoryEvent.intensity
+      } : null
     } : null;
-    const localMessage: CoachMessage | null = detected ? {
-      id: crypto.randomUUID(),
-      role: "system",
-      text: `Aggiornato: ${detected.player.name} a ${detected.manager.name} per ${formatMoney(detected.paid)}.${nextTurnText ? `\n${nextTurnText}` : ""}`
-    } : null;
-    const nextMessages = [...coachMessages, userMessage, ...(localMessage ? [localMessage] : [])];
+    const localMessages: CoachMessage[] = [];
+    if (detected) {
+      localMessages.push({
+        id: crypto.randomUUID(),
+        role: "system",
+        text: `Aggiornato: ${detected.player.name} a ${detected.manager.name} per ${formatMoney(detected.paid)}.${nextTurnText ? `\n${nextTurnText}` : ""}`
+      });
+    }
+    if (memoryEvent) {
+      localMessages.push({
+        id: crypto.randomUUID(),
+        role: "system",
+        text: `Memoria asta salvata: ${memoryEvent.managerIds.map((id) => managers.find((manager) => manager.id === id)?.name ?? id).join(", ")} · ${memoryEvent.tags.join(", ") || "nota comportamento"}${memoryEvent.playerName ? ` · ${memoryEvent.playerName}` : ""}.`
+      });
+    }
+    const nextMemory = memoryEvent ? [...auctionMemory, memoryEvent].slice(-80) : auctionMemory;
+    const nextMessages = [...coachMessages, userMessage, ...localMessages];
 
     setCoachMessages(nextMessages);
     setCoachInput("");
     if (detected) applyCoachAssign(detected.player, detected.manager, detected.paid);
+    if (memoryEvent) setAuctionMemory(nextMemory);
     if (detected && isSimpleAssignCommand(message)) return;
 
     const localReply = localCoachReply(message);
@@ -1065,6 +1476,8 @@ export function App() {
       return;
     }
 
+    const requestId = coachRequestRef.current + 1;
+    coachRequestRef.current = requestId;
     setCoachLoading(true);
     try {
       const response = await fetch("/api/coach", {
@@ -1074,7 +1487,7 @@ export function App() {
           message,
           localAction,
           history: nextMessages.slice(-4),
-          snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer, optimisticCallTurn)
+          snapshot: buildCoachSnapshot(optimisticAuction, detected?.player ?? selectedLivePlayer, optimisticCallTurn, nextMemory)
         })
       });
       const raw = await response.text();
@@ -1091,9 +1504,12 @@ export function App() {
           : `Coach AI non disponibile (${response.status}). ${raw.trim().slice(0, 180) || "Controlla che npm run dev:ai sia attivo e che OPENAI_API_KEY sia impostata."}`;
       const meta = data.cached
         ? "Cache locale: 0 token API"
+        : data.incomplete
+          ? "Risposta incompleta"
         : data.tokenMode === "compact"
           ? "Snapshot sintetico"
           : undefined;
+      if (coachRequestRef.current !== requestId) return;
       setCoachMessages((current) => [...current, {
         id: crypto.randomUUID(),
         role: "assistant",
@@ -1101,13 +1517,14 @@ export function App() {
         meta
       }]);
     } catch {
+      if (coachRequestRef.current !== requestId) return;
       setCoachMessages((current) => [...current, {
         id: crypto.randomUUID(),
         role: "assistant",
         text: "Coach AI non raggiungibile: avvia npm run dev:ai. I comandi rapidi locali restano comunque applicati quando riconosco giocatore, persona e cifra."
       }]);
     } finally {
-      setCoachLoading(false);
+      if (coachRequestRef.current === requestId) setCoachLoading(false);
     }
   }
 
@@ -1143,7 +1560,7 @@ export function App() {
   function exportState() {
     downloadFile(
       "asta-fantacalcio-2026-27-live.json",
-      JSON.stringify({ exportedAt: new Date().toISOString(), auction, managers, callTurn: { order: callOrder, currentCallerId } }, null, 2),
+      JSON.stringify({ exportedAt: new Date().toISOString(), auction, managers, callTurn: { order: callOrder, currentCallerId }, auctionMemory }, null, 2),
       "application/json"
     );
   }
@@ -1162,6 +1579,7 @@ export function App() {
         }
         setManagers(imported.managers);
         setCallTurn(imported.callTurn);
+        setAuctionMemory(imported.auctionMemory ?? []);
         setAuction(imported.auction);
         window.alert("Stato asta importato correttamente.");
       } catch {
@@ -1174,8 +1592,13 @@ export function App() {
   }
 
   function resetState() {
-    if (window.confirm("Vuoi azzerare acquisti, prezzi e note live?")) {
+    if (window.confirm("Vuoi azzerare acquisti, prezzi, note live, memoria e chat Coach?")) {
+      coachRequestRef.current += 1;
       setAuction({});
+      setAuctionMemory([]);
+      setCoachMessages(initialCoachMessages());
+      setCoachInput("");
+      setCoachLoading(false);
     }
   }
 
@@ -1200,7 +1623,8 @@ export function App() {
           {[
             ["cockpit", Trophy, "Cockpit"],
             ["listone", Search, "Listone"],
-            ["rosa", Users, "Rosa"],
+            ["rosa", Users, "Mia Rosa"],
+            ["rose", Trophy, "Rose Live"],
             ["avversari", Users, "Avversari"],
             ["coach", Bot, "Coach AI"],
             ["portieri", Shield, "Portieri"],
@@ -1260,11 +1684,14 @@ export function App() {
                 selectedPlayer={selectedLivePlayer}
                 currentCaller={currentCaller}
                 nextCaller={nextCaller}
+                currentCallNumber={currentCallNumber}
+                callOrderSize={callOrder.length}
                 turnNotice={callTurnNotice}
                 onPlayerNameChange={setLivePlayerName}
                 onManagerIdChange={setLiveManagerId}
                 onPriceChange={setLivePrice}
                 onAssign={assignLivePick}
+                onCurrentCallerNumberChange={updateCurrentCallerNumber}
               />
             ) : null}
 
@@ -1420,6 +1847,7 @@ export function App() {
         ) : null}
 
         {view === "rosa" ? <RosterView bought={bought} auction={auction} roleStats={roleStats} /> : null}
+        {view === "rose" ? <LeagueRostersView managerRows={managerRows} auction={auction} myManager={myManager} /> : null}
         {view === "avversari" ? (
           <ManagersView
             managers={managers}
@@ -1431,10 +1859,13 @@ export function App() {
             currentCallerId={currentCallerId}
             currentCaller={currentCaller}
             nextCaller={nextCaller}
+            currentCallNumber={currentCallNumber}
+            callOrderSize={callOrder.length}
             turnNotice={callTurnNotice}
             onManagerChange={updateManager}
             onPlayerNameChange={setLivePlayerName}
             onCurrentCallerChange={updateCurrentCaller}
+            onCurrentCallerNumberChange={updateCurrentCallerNumber}
             onCallerPositionChange={updateCallerPosition}
             onResetTurn={resetCallTurn}
           />
@@ -1447,8 +1878,13 @@ export function App() {
             currentPlayer={selectedLivePlayer}
             recommendation={recommendation}
             managerRows={managerRows}
+            managerLearning={managerLearning}
+            auctionMemory={auctionMemory}
             currentCaller={currentCaller}
             nextCaller={nextCaller}
+            currentCallNumber={currentCallNumber}
+            callOrderSize={callOrder.length}
+            onCurrentCallerNumberChange={updateCurrentCallerNumber}
             onInputChange={setCoachInput}
             onSubmit={askCoach}
             onPrompt={setCoachInput}
@@ -1468,7 +1904,8 @@ function viewLabel(view: View) {
   return {
     cockpit: "Cockpit",
     listone: "Listone completo",
-    rosa: "Rosa acquistata",
+    rosa: "Mia Rosa",
+    rose: "Rose Live",
     avversari: "Avversari e rilanci",
     coach: "Coach AI live",
     portieri: "Portieri e griglie",
@@ -1545,8 +1982,13 @@ function CoachView({
   currentPlayer,
   recommendation,
   managerRows,
+  managerLearning,
+  auctionMemory,
   currentCaller,
   nextCaller,
+  currentCallNumber,
+  callOrderSize,
+  onCurrentCallerNumberChange,
   onInputChange,
   onSubmit,
   onPrompt
@@ -1557,8 +1999,13 @@ function CoachView({
   currentPlayer: Player | null;
   recommendation: { player: Player; liveMax: number; reason: string } | null;
   managerRows: ManagerRow[];
+  managerLearning: ManagerLearning[];
+  auctionMemory: AuctionMemoryEvent[];
   currentCaller: ManagerProfile;
   nextCaller: ManagerProfile;
+  currentCallNumber: number;
+  callOrderSize: number;
+  onCurrentCallerNumberChange: (value: number) => void;
   onInputChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onPrompt: (value: string) => void;
@@ -1572,8 +2019,13 @@ function CoachView({
   const promptSeeds = [
     currentPlayer ? `Quanto mi spingo per ${currentPlayer.name}?` : "Chi chiamo adesso?",
     recommendation ? `Meglio chiamare ${recommendation.player.name} ora o aspettare?` : "Qual e la priorita del prossimo reparto?",
-    "Chi puo rilanciare piu forte sul giocatore selezionato?"
+    "Chi puo rilanciare piu forte sul giocatore selezionato?",
+    "Nota memoria: Paul ha strapagato il giocatore X con guerra di rilanci"
   ];
+  const hotLearning = managerLearning
+    .filter((learning) => learning.notes > 0)
+    .sort((a, b) => b.heat - a.heat)
+    .slice(0, 4);
 
   return (
     <section className="coach-layout" aria-label="Coach AI live">
@@ -1581,6 +2033,19 @@ function CoachView({
         <div>
           <p className="eyebrow">Giro chiamata</p>
           <div className="coach-turn">
+            <label className="coach-turn-number">
+              <span>N.</span>
+              <input
+                type="number"
+                min="1"
+                max={callOrderSize}
+                inputMode="numeric"
+                value={currentCallNumber}
+                onChange={(event) => {
+                  if (event.target.value) onCurrentCallerNumberChange(Number(event.target.value));
+                }}
+              />
+            </label>
             <div>
               <span>Ora</span>
               <strong>{currentCaller.name}</strong>
@@ -1630,6 +2095,27 @@ function CoachView({
             </div>
           </div>
         ) : null}
+
+        <div>
+          <p className="eyebrow">Memoria asta</p>
+          <div className="coach-memory-list">
+            {hotLearning.length ? hotLearning.map((learning) => {
+              const manager = managerRows.find((row) => row.manager.id === learning.managerId)?.manager;
+              return (
+                <div key={learning.managerId}>
+                  <span>{manager?.name ?? learning.managerId}</span>
+                  <strong>{learning.summary}</strong>
+                  <small>{learning.notes} note · calore {learning.heat}</small>
+                </div>
+              );
+            }) : (
+              <p className="coach-empty">Scrivi note naturali sui rilanci per creare pattern.</p>
+            )}
+            {auctionMemory.at(-1) ? (
+              <small className="coach-memory-last">Ultima: {auctionMemory.at(-1)?.text}</small>
+            ) : null}
+          </div>
+        </div>
       </aside>
 
       <section className="coach-panel">
@@ -1669,7 +2155,7 @@ function CoachView({
           <textarea
             value={input}
             onChange={(event) => onInputChange(event.target.value)}
-            placeholder="Es. Samardzic e a 16, Avversario 1 e atalantino: rilancio?"
+            placeholder="Es. Samardzic e a 16, Avversario 1 e atalantino: rilancio? Oppure incolla piu righe: assegna X a Y per N"
           />
           <button className="assign-button" disabled={loading || !input.trim()}>
             <Send size={16} /> Invia
@@ -1690,11 +2176,14 @@ function QuickAssignPanel({
   selectedPlayer,
   currentCaller,
   nextCaller,
+  currentCallNumber,
+  callOrderSize,
   turnNotice,
   onPlayerNameChange,
   onManagerIdChange,
   onPriceChange,
-  onAssign
+  onAssign,
+  onCurrentCallerNumberChange
 }: {
   players: Player[];
   managers: ManagerProfile[];
@@ -1705,11 +2194,14 @@ function QuickAssignPanel({
   selectedPlayer: Player | null;
   currentCaller: ManagerProfile;
   nextCaller: ManagerProfile;
+  currentCallNumber: number;
+  callOrderSize: number;
   turnNotice: string;
   onPlayerNameChange: (value: string) => void;
   onManagerIdChange: (value: string) => void;
   onPriceChange: (value: string) => void;
   onAssign: () => void;
+  onCurrentCallerNumberChange: (value: number) => void;
 }) {
   const threatRows = selectedPlayer
     ? [...managerRows]
@@ -1781,6 +2273,19 @@ function QuickAssignPanel({
       </div>
 
       <div className="turn-strip" aria-live="polite">
+        <label className="turn-number-control">
+          <span>Numero chiamata</span>
+          <input
+            type="number"
+            min="1"
+            max={callOrderSize}
+            inputMode="numeric"
+            value={currentCallNumber}
+            onChange={(event) => {
+              if (event.target.value) onCurrentCallerNumberChange(Number(event.target.value));
+            }}
+          />
+        </label>
         <div>
           <span>Ora chiama</span>
           <strong>{currentCaller.name}</strong>
@@ -1805,10 +2310,13 @@ function ManagersView({
   currentCallerId,
   currentCaller,
   nextCaller,
+  currentCallNumber,
+  callOrderSize,
   turnNotice,
   onManagerChange,
   onPlayerNameChange,
   onCurrentCallerChange,
+  onCurrentCallerNumberChange,
   onCallerPositionChange,
   onResetTurn
 }: {
@@ -1821,10 +2329,13 @@ function ManagersView({
   currentCallerId: string;
   currentCaller: ManagerProfile;
   nextCaller: ManagerProfile;
+  currentCallNumber: number;
+  callOrderSize: number;
   turnNotice: string;
   onManagerChange: (id: string, patch: Partial<ManagerProfile>) => void;
   onPlayerNameChange: (value: string) => void;
   onCurrentCallerChange: (id: string) => void;
+  onCurrentCallerNumberChange: (value: number) => void;
   onCallerPositionChange: (id: string, position: number) => void;
   onResetTurn: () => void;
 }) {
@@ -1857,6 +2368,19 @@ function ManagersView({
       </section>
 
       <section className="turn-panel" aria-label="Giro chiamata asta">
+        <label>
+          Numero chiamata
+          <input
+            type="number"
+            min="1"
+            max={callOrderSize}
+            inputMode="numeric"
+            value={currentCallNumber}
+            onChange={(event) => {
+              if (event.target.value) onCurrentCallerNumberChange(Number(event.target.value));
+            }}
+          />
+        </label>
         <label>
           Ora chiama
           <select value={currentCallerId} onChange={(event) => onCurrentCallerChange(event.target.value)}>
@@ -2165,6 +2689,106 @@ function PlayerTable({
         </tbody>
       </table>
     </section>
+  );
+}
+
+function LeagueRostersView({
+  managerRows,
+  auction,
+  myManager
+}: {
+  managerRows: ManagerRow[];
+  auction: Record<string, AuctionPick>;
+  myManager: ManagerProfile;
+}) {
+  const totalSpent = managerRows.reduce((sum, row) => sum + row.spent, 0);
+  const completedSlots = managerRows.reduce((sum, row) => sum + row.players.length, 0);
+  const avgSpent = managerRows.length ? totalSpent / managerRows.length : 0;
+  const mostSpent = [...managerRows].sort((a, b) => b.spent - a.spent)[0];
+  const orderedRows = [...managerRows].sort((a, b) => {
+    if (a.manager.id === myManager.id) return -1;
+    if (b.manager.id === myManager.id) return 1;
+    return b.spent - a.spent || a.manager.name.localeCompare(b.manager.name);
+  });
+
+  return (
+    <>
+      <section className="kpi-grid roster-kpis" aria-label="Statistiche rose lega">
+        <MetricCard label="Giocatori assegnati" value={completedSlots} detail={`${Math.max(0, managerRows.length * 25 - completedSlots)} slot ancora liberi`} tone="blue" />
+        <MetricCard label="Crediti spesi" value={totalSpent} detail={`media ${formatMoney(avgSpent)} per squadra`} tone="green" />
+        <MetricCard label="Piu esposto" value={mostSpent?.manager.name ?? "-"} detail={mostSpent ? `${formatMoney(mostSpent.spent)} spesi, ${formatMoney(mostSpent.remainingBudget)} residui` : "nessuna rosa avviata"} tone="amber" />
+        <MetricCard label="Squadre complete" value={managerRows.filter((row) => row.players.length >= 25).length} detail={`${managerRows.length} partecipanti monitorati`} tone="red" />
+      </section>
+
+      <section className="league-rosters" aria-label="Rose complete lega">
+        {orderedRows.map((row) => {
+          const budgetUsed = Math.min(100, Math.round((row.spent / Math.max(1, row.manager.budget)) * 100));
+          return (
+            <article key={row.manager.id} className={row.manager.id === myManager.id ? "league-roster mine" : "league-roster"}>
+              <header className="league-roster-head">
+                <div>
+                  <span>{row.manager.id === myManager.id ? "La mia squadra" : row.manager.vibe}</span>
+                  <h2>{row.manager.name}</h2>
+                </div>
+                <strong>{row.players.length}/25</strong>
+              </header>
+
+              <div className="league-roster-budget">
+                <div>
+                  <span>Speso {formatMoney(row.spent)}</span>
+                  <span>Residuo {formatMoney(row.remainingBudget)}</span>
+                </div>
+                <div className="progress" aria-hidden="true">
+                  <span style={{ width: `${budgetUsed}%` }} />
+                </div>
+              </div>
+
+              <div className="league-role-strip">
+                {roleOrder.map((role) => {
+                  const plan = budgetPlan.find((item) => item.role === role);
+                  return (
+                    <div key={role}>
+                      <span className={`role role-${role}`}>{role}</span>
+                      <strong>{row.countByRole[role]}/{plan?.slots ?? 0}</strong>
+                      <small>{formatMoney(row.spentByRole[role])}</small>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="league-roster-players">
+                {roleOrder.map((role) => {
+                  const rolePlayers = row.players
+                    .filter((player) => player.role === role)
+                    .sort((a, b) => (auction[pickKey(b)]?.paid ?? 0) - (auction[pickKey(a)]?.paid ?? 0) || a.name.localeCompare(b.name));
+                  return (
+                    <section key={role}>
+                      <h3>{roleLabels[role]}</h3>
+                      {rolePlayers.length ? rolePlayers.map((player) => {
+                        const pick = auction[pickKey(player)];
+                        const paid = pick?.paid ?? 0;
+                        const delta = paid - player.maxBid;
+                        return (
+                          <div key={pickKey(player)} className="league-player-row">
+                            <span className={`role role-${player.role}`}>{player.role}</span>
+                            <strong>{player.name}</strong>
+                            <small>{player.team}</small>
+                            <b>{formatMoney(paid)}</b>
+                            <em className={delta > 0 ? "negative" : "positive"}>{delta > 0 ? `+${delta}` : delta}</em>
+                          </div>
+                        );
+                      }) : (
+                        <p>Nessun acquisto</p>
+                      )}
+                    </section>
+                  );
+                })}
+              </div>
+            </article>
+          );
+        })}
+      </section>
+    </>
   );
 }
 

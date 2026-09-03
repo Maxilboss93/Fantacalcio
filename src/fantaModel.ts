@@ -166,6 +166,8 @@ export const sources = [
   ["Gazzetta FantaNews", "https://www.gazzetta.it/calcio/fantanews/11-08-2026/guida-fantacalcio-2026-2027-migliori-giocatori-da-comprare-all-asta.shtml"],
   ["Fantacalcio.it Chukwueze 2026/27", "https://www.fantacalcio.it/serie-a/squadre/milan/chukwueze/4856/2026-27/italia"],
   ["SOS Fanta formazioni tipo 2026/27", "https://www.sosfanta.com/asta-fantacalcio/seriea-tutte-formazioni-tipo-fantacalcio-2026-2027-asta-consigli-chi-prendere/"],
+  ["SOS Fanta nuovi arrivi post mercato", "https://www.sosfanta.com/news/el-shaarawy-ricardo-rodriguez-nuovi-arrivi-fantacalcio-cosa-fare-asta/"],
+  ["SOS Fanta Ehizibue Genoa", "https://www.sosfanta.com/squadra/genoa/ezhibue-svincolato-fatta-seriea-udinese-genoa-fantacalcio-asta/"],
   ["DAZN probabile formazione Milan", "https://www.dazn.com/it-IT/news/calcio/probabile-formazione-milan-modulo-titolari-ballottaggi/1ovtpo3fat0e412ic9xn9kpicw"],
   ["Fantacalcio-Online prezzi reali", "https://www.fantacalcio-online.com/it/i-piu-comprati"],
   ["Fantacalcio.dev fasce oneste", "https://fantacalcio.dev/report/fasce-oneste-2026-27"],
@@ -529,6 +531,30 @@ export const injurySignals: Record<string, InjurySignal> = {
 };
 
 export const externalScoutingSignals: Record<string, ExternalScoutingSignal> = {
+  "El Shaarawy": {
+    origin: "Roma svincolato / Genoa",
+    lastSeason: "2025/26 Roma: 18 presenze a voto, 1 gol, 2 assist, FM 6.33. Fantacalcio.it lo riporta al Genoa con QA 7 e FVM 25.",
+    verdict: "Bug ruolo vero: C che puo giocare seconda punta, trequartista o esterno a tutta fascia. Da prendere se resta prezzo medio, senza inseguire nome e ritorno emotivo.",
+    source: "Fantacalcio.it scheda giocatore e SOS Fanta nuovi arrivi, controllo 03/09/2026",
+    maxBidBoost: 6,
+    scoreBoost: 8
+  },
+  "Rodriguez R.": {
+    origin: "Betis svincolato / Torino",
+    lastSeason: "2025/26 Betis: profilo da braccetto mancino; Fantacalcio.it segnala il ritorno ufficiale al Torino a parametro zero.",
+    verdict: "Difensore low cost da copertura: sale per titolarita e piazzati, ma non va pagato come esterno da bonus continuo.",
+    source: "Fantacalcio.it e SOS Fanta, controllo 03/09/2026",
+    maxBidBoost: 3,
+    scoreBoost: 4
+  },
+  "Ehizibue": {
+    origin: "Udinese svincolato / Genoa",
+    lastSeason: "2025/26 Udinese: 26 presenze a voto, 2 gol, FM 5.96. SOS Fanta/Sky lo danno pronto per il Genoa.",
+    verdict: "Laterale destro da tenere in watchlist: utile se entra nel listone a prezzo basso, ma serve prudenza finche non diventa ufficiale/quotato.",
+    source: "SOS Fanta/Sky e Fantacalcio.it scheda 2025/26, controllo 03/09/2026",
+    maxBidBoost: 1,
+    scoreBoost: 2
+  },
   "Kessiè": {
     origin: "Al-Ahli, Saudi Pro League",
     lastSeason: "2025/26: 26 partite, 5 gol, 3 assist, 2173 minuti, rating FotMob 7.28.",
@@ -770,6 +796,30 @@ export const marketUpdates: MarketUpdate[] = [
     source: "Fantacalcio.it quotazioni, Toronto FC"
   },
   {
+    name: "El Shaarawy",
+    role: "C",
+    team: "GEN",
+    update: "03/09: ufficiale al Genoa da svincolato. Inserito nel listone locale come C, QA 7 e FVM 25: SOS Fanta lo tratta da 3/4 slot, non titolare fisso ma quasi sempre a voto se sta bene.",
+    action: "Inserito",
+    source: "Fantacalcio.it scheda giocatore e SOS Fanta nuovi arrivi, controllo 03/09/2026"
+  },
+  {
+    name: "Rodriguez R.",
+    role: "D",
+    team: "TOR",
+    update: "03/09: ritorno ufficiale al Torino a parametro zero. Low cost di prima fascia, candidato al braccetto sinistro e possibile fattore su piazzati/vice rigori.",
+    action: "Verificato",
+    source: "Fantacalcio.it ufficiale Torino e SOS Fanta nuovi arrivi, controllo 03/09/2026"
+  },
+  {
+    name: "Ehizibue",
+    role: "D",
+    team: "GEN",
+    update: "03/09: svincolato vicino/fatto col Genoa secondo SOS Fanta/Sky dopo l'uscita di Norton-Cuffy. Laterale destro da assist potenziali, ma attendere ufficialita e quotazione prima di rilanciare.",
+    action: "Verificato",
+    source: "SOS Fanta/Sky, controllo 03/09/2026"
+  },
+  {
     name: "Massolin",
     role: "C",
     team: "CAG",
@@ -999,7 +1049,9 @@ export const lineupSignals: Record<string, LineupSignal> = {
   "Sow": { startPct: 90, source: liveLineupSource },
   "Mitaj": { startPct: 80, source: liveLineupSource },
   "Baldanzi": { startPct: 90, source: liveLineupSource },
+  "El Shaarawy": { startPct: 65, ballotWith: "Vitinha O./Mitaj/Ellertsson", ballotPct: 45, note: "Nuovo arrivo: puo giocare seconda punta/trequartista o esterno tutta fascia; quasi sempre voto se sta bene, ma non titolare fisso.", source: "SOS Fanta nuovi arrivi, 03/09/2026" },
   "Vitinha O.": { startPct: 60, ballotWith: "Osmajic", ballotPct: 40, source: liveLineupSource },
+  "Ehizibue": { startPct: 45, ballotWith: "El Shaarawy/Baldanzi", ballotPct: 55, note: "Possibile innesto sulla corsia destra dopo Norton-Cuffy: aspetta ufficialita e quotazione prima di rilanciare.", source: "SOS Fanta/Sky, 03/09/2026" },
   "Colombo": { startPct: 90, source: liveLineupSource },
 
   "Butez": { startPct: 90, source: liveLineupSource },
@@ -1040,6 +1092,7 @@ export const lineupSignals: Record<string, LineupSignal> = {
   "Coco": { startPct: 90, source: liveLineupSource },
   "Comert": { startPct: 90, source: liveLineupSource },
   "Belghali": { startPct: 80, source: liveLineupSource },
+  "Rodriguez R.": { startPct: 65, ballotWith: "Comuzzo/Comert", ballotPct: 45, note: "Candidato forte al braccetto sinistro, con possibile peso sui piazzati; minutaggio importante ma condizione da verificare.", source: "SOS Fanta nuovi arrivi + Fantacalcio.it, 03/09/2026" },
   "Gineitis": { startPct: 55, ballotWith: "Mandragora", ballotPct: 45, source: liveLineupSource },
   "Mandragora": { startPct: 45, ballotWith: "Gineitis", ballotPct: 55, note: "Panchina live al 60% ma ballottaggio ufficiale lo mette dietro Gineitis.", source: liveLineupSource },
   "Fitz-Jim": { startPct: 85, source: liveLineupSource },
@@ -1312,6 +1365,15 @@ const advancedDefenderSource = "Goal.com difensori a centrocampo, 02/09/2026";
 const listoneBugSource = "Calcio d'Angolo bug listone, 06/08/2026";
 
 export const roleBugSignals: Record<string, RoleBugSignal> = {
+  "El Shaarawy": {
+    kind: "C-attacco",
+    label: "BUG ATT",
+    roleOnPitch: "seconda punta/trequartista o esterno tutta fascia",
+    reason: "Listato centrocampista, ma SOS Fanta lo indica come jolly offensivo nel Genoa di De Rossi.",
+    source: "SOS Fanta nuovi arrivi, 03/09/2026",
+    maxBidBoost: 4,
+    scoreBoost: 8
+  },
   "Zalewski": {
     kind: "C-attacco",
     label: "BUG ATT",
@@ -2007,6 +2069,7 @@ const manualNotes: Record<string, { note: string; maxBid: number; tier: string; 
   "Soulè": { note: "Gol nel 4-0 di Lecce e buona centralita Roma: sale, ma attenzione al listino da attaccante.", maxBid: 24, tier: "Fascia 3" },
   "Mora": { note: "Secondo bonus di fila e primo gol giallorosso: talento caldo da prendere solo se il prezzo resta razionale.", maxBid: 34, tier: "Fascia 3" },
   "Wesley": { note: "Assist e voto alto nel 4-0: difensore da bonus/strappo, profilo molto utile col modificatore.", maxBid: 18, tier: "Fascia 3" },
+  "El Shaarawy": { note: "03/09 Genoa: C offensivo da bug listone. SOS Fanta lo vede 3/4 slot, quasi sempre voto se sta bene ma non titolare fisso: chiamarlo se resta sotto la fascia hype.", maxBid: 20, tier: "Fascia 3", profile: "Bug listone offensivo" },
   "Dovbyk": { note: "Bologna, prima punta fisica ma posticipi senza squillo e 2025/26 Roma non esplosivo: prendere solo a prezzo da terzo slot.", maxBid: 34, tier: "Fascia 3" },
   "Rowe": { note: "Deadline day: passa all'Atalanta. Listato C con upside, ma rotazioni alte: scommessa di fascia 3 entro prezzo razionale.", maxBid: 20, tier: "Fascia 3" },
   "Beto": { note: "Deadline day: Fiorentina dopo l'uscita di Kean. Puo avere volume, ma FVM basso e concorrenza nuova: terzo slot aggressivo solo a sconto.", maxBid: 30, tier: "Fascia 3" },
@@ -2014,6 +2077,8 @@ const manualNotes: Record<string, { note: string; maxBid: number; tier: string; 
   "Goncalves P.": { note: "Deadline day: Fiorentina. Listato C e candidato ai piazzati: scommessa premium interessante, ma aspetta indicazioni sulle gerarchie.", maxBid: 30, tier: "Fascia 3" },
   "Gudmundsson A.": { note: "Deadline day: passa alla Lazio. Listato C, puo diventare fonte bonus dietro Zaccagni: profilo interessante ma senza vecchio boost da rigorista Fiorentina.", maxBid: 28, tier: "Fascia 3" },
   "Mandragora": { note: "Deadline day: passa al Torino. Perde centralita e vecchio peso sui rigori Fiorentina: da prendere solo come rotazione low cost.", maxBid: 10, tier: "Low cost" },
+  "Rodriguez R.": { note: "03/09 Torino: difensore low cost da braccetto sinistro, utile per minuti e qualche piazzato ma non da rilancio forte.", maxBid: 8, tier: "Low cost" },
+  "Ehizibue": { note: "03/09 Genoa: laterale destro segnalato in arrivo/fatto da SOS Fanta/Sky. Solo watchlist finche non entra ufficialmente nel listone aggiornato.", maxBid: 4, tier: "Low cost" },
   "Nzola": { note: "Deadline day: Cagliari, indicato da Fantacalcio.it come prima opzione rigori. FVM basso, ma i rigori lo rendono una scommessa da ultimi slot.", maxBid: 18, tier: "Low cost" },
   "Mbangula": { note: "Deadline day: Bologna dal Werder. Listato C, upside da esterno ma concorrenza viva: scommessa sotto i 12-14.", maxBid: 14, tier: "Low cost" },
   "Braganca": { note: "Deadline day: Torino dallo Sporting. Tecnico, ma bonus e titolarita da verificare: chiamata bassa.", maxBid: 10, tier: "Low cost" },

@@ -24,8 +24,9 @@ function loadLocalEnv() {
 loadLocalEnv();
 
 const model = process.env.OPENAI_MODEL ?? "gpt-5.6-terra";
+const maxCoachOutputTokens = Math.max(700, Number(process.env.COACH_MAX_OUTPUT_TOKENS ?? 950) || 950);
 const cacheFile = new URL("./coach-memory.json", import.meta.url);
-const cacheVersion = 1;
+const cacheVersion = 2;
 const maxCacheEntries = Number(process.env.COACH_CACHE_MAX_ENTRIES ?? 250);
 const useFileCache = process.env.COACH_CACHE_MODE === "file" || !process.env.VERCEL;
 let memoryCache = { version: cacheVersion, updatedAt: null, entries: [] };
@@ -48,8 +49,11 @@ function systemPrompt() {
   return [
     "Sei il Coach AI di una webapp per asta Fantacalcio 2026/27.",
     "Rispondi in italiano, con tono pratico da asta live.",
-    "Usa solo i dati nello snapshot sintetico: budget, rose, max bid, turno chiamata, squadra del cuore e vibe degli avversari.",
+    "Usa solo i dati nello snapshot sintetico: budget, rose, max bid, turno chiamata, squadra del cuore, vibe e memoria comportamentale degli avversari.",
+    "Se la memoria mostra overpay, guerre di rilanci o pattern su ruoli specifici, adatta stop price e timing di chiamata in modo esplicito.",
+    "Quando un avversario ha gia consumato molto budget nel reparto del giocatore corrente o deve ancora completare molti slot, considera meno probabile un rilancio forte anche se la sua memoria e calda.",
     "Dai indicazioni operative: rilancia/lascia, prezzo massimo, rischio avversari, alternativa immediata.",
+    "Rispondi in modo completo ma compatto: se analizzi molti avversari, sintetizza e chiudi sempre con una decisione operativa.",
     "Quando l'utente chiede di segnare un acquisto, conferma cosa registrare e segnala eventuali incoerenze; l'app applica i comandi deterministici lato client.",
     "Non inventare notizie esterne o aggiornamenti calciomercato in tempo reale."
   ].join("\n");
@@ -127,9 +131,27 @@ function compactSnapshot(snapshot = {}) {
       remainingBudget: row.remainingBudget,
       roster: row.roster,
       roles: row.roles,
+      spentByRole: row.spentByRole,
       maxSingle: row.maxSingle,
       estimateOnCurrentPlayer: row.estimateOnCurrentPlayer,
-      reading: truncateText(row.reading, 130)
+      reading: truncateText(row.reading, 130),
+      roleBudgetPressure: row.roleBudgetPressure ? {
+        role: row.roleBudgetPressure.role,
+        roleBudget: row.roleBudgetPressure.roleBudget,
+        roleSpent: row.roleBudgetPressure.roleSpent,
+        roleBought: row.roleBudgetPressure.roleBought,
+        roleSlotsLeft: row.roleBudgetPressure.roleSlotsLeft,
+        ceiling: row.roleBudgetPressure.ceiling,
+        usedPct: row.roleBudgetPressure.usedPct,
+        concentrated: row.roleBudgetPressure.concentrated,
+        reading: truncateText(row.roleBudgetPressure.reading, 90)
+      } : undefined,
+      learning: row.learning ? {
+        notes: row.learning.notes,
+        heat: row.learning.heat,
+        summary: truncateText(row.learning.summary, 140),
+        roleBias: row.learning.roleBias
+      } : undefined
     })),
     visiblePlayers: Array.isArray(snapshot.visiblePlayers)
       ? snapshot.visiblePlayers.slice(0, 8).map((player) => ({
@@ -143,6 +165,29 @@ function compactSnapshot(snapshot = {}) {
         }))
       : [],
     callTurn: snapshot.callTurn,
+    auctionMemory: snapshot.auctionMemory ? {
+      recentEvents: Array.isArray(snapshot.auctionMemory.recentEvents)
+        ? snapshot.auctionMemory.recentEvents.slice(-6).map((event) => ({
+            text: truncateText(event.text, 220),
+            managers: event.managers,
+            player: event.player,
+            role: event.role,
+            tags: event.tags,
+            intensity: event.intensity
+          }))
+        : [],
+      managerLearning: Array.isArray(snapshot.auctionMemory.managerLearning)
+        ? snapshot.auctionMemory.managerLearning
+            .filter((learning) => Number(learning.notes ?? 0) > 0)
+            .map((learning) => ({
+              manager: learning.manager,
+              notes: learning.notes,
+              heat: learning.heat,
+              summary: truncateText(learning.summary, 150),
+              roleBias: learning.roleBias
+            }))
+        : []
+    } : undefined,
     rules: snapshot.rules
   };
 }
@@ -303,7 +348,7 @@ export async function handleCoachPayload({ message, snapshot, history, localActi
           })
         }
       ],
-      max_output_tokens: 420
+      max_output_tokens: maxCoachOutputTokens
     })
   });
 
@@ -318,8 +363,14 @@ export async function handleCoachPayload({ message, snapshot, history, localActi
     };
   }
 
-  const reply = outputText(data) || "Non ho abbastanza segnale per una risposta utile.";
-  if (useCache) {
+  const incompleteReason = data?.status === "incomplete"
+    ? data?.incomplete_details?.reason ?? "limite risposta"
+    : "";
+  const baseReply = outputText(data) || "Non ho abbastanza segnale per una risposta utile.";
+  const reply = incompleteReason
+    ? `${baseReply}\n\nRisposta interrotta per ${incompleteReason}: ho aumentato il limite, ma chiedimi \"continua\" se vuoi proseguire da qui.`
+    : baseReply;
+  if (useCache && !incompleteReason) {
     await rememberReply({ cacheKey, message, contextHash, reply }).catch(() => undefined);
   }
 
@@ -330,6 +381,7 @@ export async function handleCoachPayload({ message, snapshot, history, localActi
       configured: true,
       model,
       cached: false,
+      incomplete: Boolean(incompleteReason),
       tokenMode: "compact"
     }
   };

@@ -335,11 +335,12 @@ h2 {
 .turn-strip {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(180px, auto);
+  grid-template-columns: 118px repeat(2, minmax(0, 1fr)) minmax(180px, auto);
   gap: 8px;
   align-items: stretch;
 }
 
+.turn-strip > label,
 .turn-strip > div,
 .turn-strip > p,
 .turn-panel {
@@ -348,6 +349,7 @@ h2 {
   background: #ffffff;
 }
 
+.turn-strip > label,
 .turn-strip > div {
   padding: 10px;
 }
@@ -362,12 +364,14 @@ h2 {
 
 .turn-strip span,
 .turn-strip strong,
+.turn-strip label span,
 .turn-panel span,
 .turn-panel strong {
   display: block;
 }
 
 .turn-strip span,
+.turn-strip label span,
 .turn-panel span {
   color: #64748b;
   font-size: 11px;
@@ -379,6 +383,16 @@ h2 {
 .turn-panel strong {
   margin-top: 3px;
   color: #0f172a;
+}
+
+.turn-number-control input,
+.coach-turn-number input {
+  width: 100%;
+  min-width: 0;
+  margin-top: 5px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
 }
 
 .manager-controls {
@@ -407,7 +421,7 @@ h2 {
 
 .turn-panel {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) repeat(2, minmax(150px, 0.75fr)) auto;
+  grid-template-columns: 118px minmax(220px, 1fr) repeat(2, minmax(150px, 0.75fr)) auto;
   gap: 10px;
   align-items: end;
   margin-bottom: 12px;
@@ -503,10 +517,11 @@ h2 {
 
 .coach-turn {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 70px repeat(2, minmax(0, 1fr));
   gap: 8px;
 }
 
+.coach-turn-number,
 .coach-turn > div {
   min-width: 0;
   padding: 9px 10px;
@@ -516,11 +531,13 @@ h2 {
 }
 
 .coach-turn span,
+.coach-turn-number span,
 .coach-turn strong {
   display: block;
 }
 
-.coach-turn span {
+.coach-turn span,
+.coach-turn-number span {
   color: #64748b;
   font-size: 11px;
   font-weight: 900;
@@ -559,6 +576,39 @@ h2 {
   grid-column: 1 / -1;
   color: #64748b;
   font-size: 12px;
+}
+
+.coach-memory-list {
+  display: grid;
+  gap: 8px;
+}
+
+.coach-memory-list > div {
+  display: grid;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+}
+
+.coach-memory-list span {
+  color: #9a3412;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.coach-memory-list strong {
+  color: #7c2d12;
+  font-size: 13px;
+}
+
+.coach-memory-list small,
+.coach-memory-last {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .coach-panel {
@@ -1533,6 +1583,161 @@ textarea {
   min-width: 1180px;
 }
 
+.league-rosters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.league-roster {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #d8e0ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.league-roster.mine {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+}
+
+.league-roster-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.league-roster-head span,
+.league-roster-budget span,
+.league-role-strip small,
+.league-player-row small {
+  color: #64748b;
+  font-size: 12px;
+}
+
+.league-roster-head span {
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.league-roster-head h2 {
+  margin: 2px 0 0;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+.league-roster-head > strong {
+  padding: 5px 9px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 13px;
+}
+
+.league-roster-budget {
+  margin-bottom: 12px;
+}
+
+.league-roster-budget > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.league-role-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.league-role-strip > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  background: #f8fafc;
+}
+
+.league-role-strip strong {
+  color: #0f172a;
+  font-size: 15px;
+}
+
+.league-roster-players {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.league-roster-players section {
+  min-width: 0;
+}
+
+.league-roster-players h3 {
+  margin: 0 0 7px;
+  color: #334155;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.league-roster-players p {
+  margin: 0;
+  padding: 9px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 7px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.league-player-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 5px 7px;
+  min-height: 34px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.league-player-row:last-child {
+  border-bottom: 0;
+}
+
+.league-player-row strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.league-player-row small {
+  grid-column: 2;
+  margin-top: -5px;
+}
+
+.league-player-row b {
+  color: #0f172a;
+  font-size: 13px;
+}
+
+.league-player-row em {
+  min-width: 28px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 800;
+  text-align: right;
+}
+
 .overpaid-row td {
   background: #fff1f2;
 }
@@ -1833,6 +2038,7 @@ textarea {
   .kpi-grid,
   .budget-strip,
   .roster-summary,
+  .league-rosters,
   .panel-grid,
   .taker-grid,
   .source-grid {
@@ -1873,10 +2079,16 @@ textarea {
   .kpi-grid,
   .budget-strip,
   .roster-summary,
+  .league-rosters,
+  .league-roster-players,
   .panel-grid,
   .taker-grid,
   .source-grid {
     grid-template-columns: 1fr;
+  }
+
+  .league-role-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   h1 {

@@ -23,13 +23,15 @@ function normalizeState(input) {
 
   const managers = Array.isArray(payload.managers) ? payload.managers : [];
   const callTurn = isObject(payload.callTurn) ? payload.callTurn : {};
+  const auctionMemory = Array.isArray(payload.auctionMemory) ? payload.auctionMemory : [];
 
   return {
     version: 1,
     savedAt: new Date().toISOString(),
     auction,
     managers,
-    callTurn
+    callTurn,
+    auctionMemory
   };
 }
 
