@@ -930,6 +930,36 @@ export function App() {
     return `Prossima chiamata: ${nextManager.name}.`;
   }
 
+  function persistCallTurnNow(nextCallTurn: CallTurn) {
+    const order = normalizeCallOrder(nextCallTurn.order, managers);
+    const nextCurrentCallerId = order.includes(nextCallTurn.currentCallerId) ? nextCallTurn.currentCallerId : order[0];
+    const normalizedCallTurn = { order, currentCallerId: nextCurrentCallerId };
+    localStorage.setItem(callTurnStorageKey, JSON.stringify(normalizedCallTurn));
+    if (!serverStateReady) return;
+
+    void fetch("/api/state", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        state: {
+          exportedAt: new Date().toISOString(),
+          auction,
+          managers,
+          callTurn: normalizedCallTurn,
+          auctionMemory
+        }
+      })
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Salvataggio server fallito");
+        return response.json();
+      })
+      .then((data) => {
+        setSyncStatus(typeof data.savedAt === "string" ? `Backup server ${new Date(data.savedAt).toLocaleTimeString("it-IT")}` : "Backup server salvato");
+      })
+      .catch(() => setSyncStatus("Backup solo browser"));
+  }
+
   function advanceCallTurn() {
     const nextId = nextCallerId;
     const nextManager = managers.find((manager) => manager.id === nextId) ?? currentCaller;
@@ -952,7 +982,9 @@ export function App() {
 
   function updateCurrentCaller(id: string) {
     if (!callOrder.includes(id)) return;
-    setCallTurn({ order: callOrder, currentCallerId: id });
+    const nextCallTurn = { order: callOrder, currentCallerId: id };
+    setCallTurn(nextCallTurn);
+    persistCallTurnNow(nextCallTurn);
     const manager = managers.find((item) => item.id === id);
     setCallTurnNotice(manager ? `Ora chiama: ${manager.name}.` : "");
   }
@@ -969,14 +1001,18 @@ export function App() {
     const nextOrder = callOrder.filter((managerId) => managerId !== id);
     nextOrder.splice(boundedPosition, 0, id);
     const nextCurrentId = nextOrder.includes(currentCallerId) ? currentCallerId : nextOrder[0];
-    setCallTurn({ order: nextOrder, currentCallerId: nextCurrentId });
+    const nextCallTurn = { order: nextOrder, currentCallerId: nextCurrentId };
+    setCallTurn(nextCallTurn);
+    persistCallTurnNow(nextCallTurn);
     setCallTurnNotice("");
   }
 
   function resetCallTurn() {
     const firstCallerId = callOrder[0];
     const firstCaller = managers.find((manager) => manager.id === firstCallerId) ?? managers[0];
-    setCallTurn({ order: callOrder, currentCallerId: firstCallerId });
+    const nextCallTurn = { order: callOrder, currentCallerId: firstCallerId };
+    setCallTurn(nextCallTurn);
+    persistCallTurnNow(nextCallTurn);
     setCallTurnNotice(firstCaller ? `Ora chiama: ${firstCaller.name}.` : "");
   }
 
@@ -2340,6 +2376,18 @@ function ManagersView({
   onResetTurn: () => void;
 }) {
   const orderedRows = [...managerRows].sort((a, b) => callOrder.indexOf(a.manager.id) - callOrder.indexOf(b.manager.id));
+  const [orderDrafts, setOrderDrafts] = useState<Record<string, string>>({});
+  const commitCallerPositionDraft = (id: string, value?: string) => {
+    const currentPosition = callOrder.indexOf(id) + 1;
+    const rawValue = value ?? orderDrafts[id] ?? String(currentPosition);
+    const nextPosition = Number(rawValue);
+    if (Number.isFinite(nextPosition)) onCallerPositionChange(id, nextPosition - 1);
+    setOrderDrafts((drafts) => {
+      const nextDrafts = { ...drafts };
+      delete nextDrafts[id];
+      return nextDrafts;
+    });
+  };
 
   return (
     <>
@@ -2369,7 +2417,7 @@ function ManagersView({
 
       <section className="turn-panel" aria-label="Giro chiamata asta">
         <label>
-          Numero chiamata
+          Turno attuale
           <input
             type="number"
             min="1"
@@ -2425,16 +2473,27 @@ function ManagersView({
             {orderedRows.map((row) => (
               <tr key={row.manager.id} className={row.manager.id === "me" ? "my-manager-row" : ""}>
                 <td data-label="Giro">
-                  <select
-                    value={callOrder.indexOf(row.manager.id)}
-                    onChange={(event) => onCallerPositionChange(row.manager.id, Number(event.target.value))}
+                  <input
+                    className="order-number-input"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={2}
+                    value={orderDrafts[row.manager.id] ?? String(callOrder.indexOf(row.manager.id) + 1)}
+                    onFocus={(event) => event.currentTarget.select()}
+                    onChange={(event) => {
+                      const digitsOnly = event.target.value.replace(/\D/g, "").slice(0, 2);
+                      setOrderDrafts((drafts) => ({ ...drafts, [row.manager.id]: digitsOnly }));
+                    }}
+                    onBlur={(event) => commitCallerPositionDraft(row.manager.id, event.currentTarget.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        commitCallerPositionDraft(row.manager.id, event.currentTarget.value);
+                        event.currentTarget.blur();
+                      }
+                    }}
                     aria-label={`Posizione giro chiamata per ${row.manager.name}`}
-                  >
-                    {callOrder.map((id, index) => {
-                      const manager = managers.find((item) => item.id === id);
-                      return <option key={id} value={index}>{index + 1}. {manager?.name ?? id}</option>;
-                    })}
-                  </select>
+                  />
                 </td>
                 <td data-label="Persona">
                   <input

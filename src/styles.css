@@ -460,6 +460,12 @@ h2 {
   width: 86px;
 }
 
+.managers-table .order-number-input {
+  width: 58px;
+  text-align: center;
+  font-weight: 900;
+}
+
 .managers-table td[data-label="Stima su chiamata"].threat {
   color: #be123c;
   font-weight: 800;
