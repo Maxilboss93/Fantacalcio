@@ -23,7 +23,7 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 
-const model = process.env.OPENAI_MODEL ?? "gpt-5.6";
+const model = process.env.OPENAI_MODEL ?? "gpt-5.6-terra";
 const cacheFile = new URL("./coach-memory.json", import.meta.url);
 const cacheVersion = 1;
 const maxCacheEntries = Number(process.env.COACH_CACHE_MAX_ENTRIES ?? 250);
@@ -66,6 +66,8 @@ function pickStats(stats) {
   return {
     pv: stats.pv ?? "0",
     gol: stats.gol ?? "0",
+    gs: stats.gs ?? "0",
+    rp: stats.rp ?? "0",
     ass: stats.ass ?? "0",
     fm: stats.fm ?? "0"
   };
@@ -269,10 +271,13 @@ export async function handleCoachPayload({ message, snapshot, history, localActi
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
+    const setupHint = process.env.VERCEL
+      ? "Coach AI non configurato: imposta OPENAI_API_KEY nelle Environment Variables di Vercel e fai redeploy."
+      : "Coach AI non configurato: crea un file .env nella cartella webapp con OPENAI_API_KEY=la_tua_chiave, poi riavvia npm run dev:ai.";
     return {
       status: 503,
       body: {
-        reply: "Coach AI non configurato: imposta OPENAI_API_KEY nelle Environment Variables di Vercel e fai redeploy. In locale usa un file .env o la variabile d'ambiente prima di npm run dev:ai.",
+        reply: setupHint,
         configured: false
       }
     };

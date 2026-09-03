@@ -12,15 +12,18 @@ Cockpit live per gestire l'asta:
 - precompilazione dei nomi da evitare da segnali editoriali aggiornati e suggeritore live basato su acquisti, slot, budget e obiettivi di reparto;
 - giro chiamata configurabile nella vista Avversari, con avanzamento automatico e prossimo chiamante mostrato dopo ogni assegnazione;
 - badge infortunio nel listone con tempi di recupero, sconto automatico sul massimale e penalizzazione nei consigli;
-- listone e statistiche 2026/27 riallineati al Fantacalcio.it live del 31/08/2026, con nuovi ingressi e cambi squadra;
+- listone e statistiche 2026/27 riallineati al Fantacalcio.it live del 02/09/2026 dopo la chiusura del mercato estivo;
 - scouting estero per i nuovi arrivi senza storico Serie A recente, con badge `EST`, rendimento 2025/26 e correzione del massimale;
+- badge `TIT %` e note arricchite con titolarita, ballottaggi, fonte, QA/FVM e forma recente;
 - pagina Rosa con acquistati, spesa totale, delta dal massimale, gol, assist, fantamedia e tiratori;
 - Coach AI con cache locale su file, snapshot sintetico e comandi di assegnazione gestiti senza chiamata API quando non serve strategia;
+- autosave locale su backend quando avvii `npm run dev:ai`: lo stato live resta nel browser e viene copiato anche in `server/auction-state.json`;
 - export CSV ed export/import JSON dello stato live;
 - supporto PWA leggero per riaprire l'app dopo il primo caricamento anche con rete instabile;
 - viste portieri, rigoristi, risultati, mercato e fonti.
 - vista Risultati aggiornata con i posticipi del 31/08/2026 e note operative quando voti/tabellini non sono ancora consolidati.
-- vista Mercato con gli ultimi movimenti verificati e lo stato dell'aggiornamento nel listone.
+- vista Mercato con i movimenti del deadline day del 01/09/2026, gli aggiornamenti nel listone e le uscite filtrate.
+- controllo del 03/09/2026 sulle ultime notizie, indisponibili e probabili formazioni live.
 
 ## Sviluppo locale
 
@@ -65,6 +68,8 @@ Impostazioni:
 
 ## Stato live
 
-La versione attuale salva acquisti, prezzi e note in `localStorage`, quindi lo stato resta nel browser usato durante l'asta. Per usare lo stesso stato da piu dispositivi serve aggiungere persistenza remota, per esempio Vercel KV, Supabase o un endpoint serverless.
+La versione attuale salva acquisti, prezzi, avversari e giro chiamata in `localStorage` e, se il server locale e attivo con `npm run dev:ai`, fa anche autosave su `server/auction-state.json`. Il salvataggio server usa una scrittura atomica e mantiene una copia precedente in `server/auction-state.backup.json`.
+
+L'indicatore in alto mostra se il backup server e attivo o se l'app sta lavorando solo col browser. Per usare lo stesso stato da piu dispositivi in contemporanea serve una persistenza remota vera, per esempio Vercel KV, Supabase o un database server-side.
 
 Come paracadute mobile, esporta il JSON dal PC e importalo dallo smartphone se devi cambiare dispositivo durante l'asta.

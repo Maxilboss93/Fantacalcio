@@ -8,3 +8,5 @@ tsconfig.tsbuildinfo
 outputs/
 server/coach-memory.json
 server/coach-memory.json.tmp
+server/auction-state.json
+server/auction-state.backup.json

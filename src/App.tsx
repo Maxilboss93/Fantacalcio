@@ -76,6 +76,14 @@ type CallTurn = {
   order: string[];
   currentCallerId: string;
 };
+type LiveState = {
+  exportedAt?: string;
+  savedAt?: string;
+  version?: number;
+  auction: Record<string, AuctionPick>;
+  managers: ManagerProfile[];
+  callTurn: CallTurn;
+};
 
 const storageKey = "fantacalcio-asta-2026-27-state";
 const managerStorageKey = "fantacalcio-asta-2026-27-managers";
@@ -119,19 +127,46 @@ function loadAuction(): Record<string, AuctionPick> {
   }
 }
 
+function normalizeManagers(input: unknown): ManagerProfile[] {
+  if (!Array.isArray(input)) return defaultManagers;
+  return defaultManagers.map((fallback, index) => ({
+    ...fallback,
+    ...(input[index] ?? {}),
+    id: fallback.id,
+    budget: Number(input[index]?.budget ?? fallback.budget) || fallback.budget,
+    vibe: vibeOptions.includes(input[index]?.vibe) ? input[index].vibe : fallback.vibe
+  }));
+}
+
+function normalizeLiveState(input: unknown): LiveState | null {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return null;
+  const parsed = input as Partial<LiveState>;
+  const nextAuction = parsed.auction ?? input;
+  if (!nextAuction || typeof nextAuction !== "object" || Array.isArray(nextAuction)) return null;
+
+  const managers = normalizeManagers(parsed.managers);
+  const importedOrder = normalizeCallOrder(parsed.callTurn?.order, managers);
+  return {
+    exportedAt: typeof parsed.exportedAt === "string" ? parsed.exportedAt : undefined,
+    savedAt: typeof parsed.savedAt === "string" ? parsed.savedAt : undefined,
+    version: typeof parsed.version === "number" ? parsed.version : undefined,
+    auction: nextAuction as Record<string, AuctionPick>,
+    managers,
+    callTurn: {
+      order: importedOrder,
+      currentCallerId: importedOrder.includes(parsed.callTurn?.currentCallerId ?? "")
+        ? parsed.callTurn?.currentCallerId ?? importedOrder[0]
+        : importedOrder[0]
+    }
+  };
+}
+
 function loadManagers(): ManagerProfile[] {
   try {
     const raw = localStorage.getItem(managerStorageKey);
     if (!raw) return defaultManagers;
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return defaultManagers;
-    return defaultManagers.map((fallback, index) => ({
-      ...fallback,
-      ...(parsed[index] ?? {}),
-      id: fallback.id,
-      budget: Number(parsed[index]?.budget ?? fallback.budget) || fallback.budget,
-      vibe: vibeOptions.includes(parsed[index]?.vibe) ? parsed[index].vibe : fallback.vibe
-    }));
+    return normalizeManagers(parsed);
   } catch {
     return defaultManagers;
   }
@@ -366,6 +401,39 @@ export function App() {
   const [onlyPenalty, setOnlyPenalty] = useState(false);
   const [sortState, setSortState] = useState<SortState>({ key: "priority", direction: "desc" });
   const [selectedGoalkeeper, setSelectedGoalkeeper] = useState<Player | null>(null);
+  const [serverStateReady, setServerStateReady] = useState(false);
+  const [syncStatus, setSyncStatus] = useState("Backup browser attivo");
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadServerState() {
+      try {
+        const response = await fetch("/api/state", { headers: { accept: "application/json" } });
+        if (!response.ok) throw new Error("Backup server non disponibile");
+
+        const data = await response.json();
+        const serverState = normalizeLiveState(data.state);
+        if (!cancelled && serverState) {
+          setAuction(serverState.auction);
+          setManagers(serverState.managers);
+          setCallTurn(serverState.callTurn);
+          setSyncStatus("Backup server caricato");
+        } else if (!cancelled) {
+          setSyncStatus("Backup server pronto");
+        }
+      } catch {
+        if (!cancelled) setSyncStatus("Backup solo browser");
+      } finally {
+        if (!cancelled) setServerStateReady(true);
+      }
+    }
+
+    loadServerState();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(auction));
@@ -380,6 +448,41 @@ export function App() {
     const currentCallerId = order.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : order[0];
     localStorage.setItem(callTurnStorageKey, JSON.stringify({ order, currentCallerId }));
   }, [callTurn, managers]);
+
+  useEffect(() => {
+    if (!serverStateReady) return;
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(async () => {
+      const order = normalizeCallOrder(callTurn.order, managers);
+      const currentCallerId = order.includes(callTurn.currentCallerId) ? callTurn.currentCallerId : order[0];
+      try {
+        const response = await fetch("/api/state", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            state: {
+              exportedAt: new Date().toISOString(),
+              auction,
+              managers,
+              callTurn: { order, currentCallerId }
+            }
+          }),
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error("Salvataggio server fallito");
+        const data = await response.json();
+        setSyncStatus(typeof data.savedAt === "string" ? `Backup server ${new Date(data.savedAt).toLocaleTimeString("it-IT")}` : "Backup server salvato");
+      } catch {
+        if (!controller.signal.aborted) setSyncStatus("Backup solo browser");
+      }
+    }, 450);
+
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeoutId);
+    };
+  }, [auction, callTurn, managers, serverStateReady]);
 
   useEffect(() => {
     const onHashChange = () => setView(viewFromHash());
@@ -1009,7 +1112,7 @@ export function App() {
   }
 
   function exportCsv() {
-    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Scouting", "Note"];
+    const header = ["Ruolo", "Calciatore", "Squadra", "Profilo", "Titolarita %", "Ballottaggio", "Stars", "Max", "Pagato", "Status", "Owner", "Infortunio", "Recupero", "Scouting", "Note"];
     const rows = selectedPlayers.map((player) => {
       const pick = auction[pickKey(player)];
       return [
@@ -1017,6 +1120,8 @@ export function App() {
         player.name,
         player.team,
         player.profile,
+        player.lineup?.startPct ?? "",
+        player.lineup?.ballotWith ?? "",
         starsText(player.stars),
         player.maxBid,
         pick?.paid ?? "",
@@ -1051,21 +1156,13 @@ export function App() {
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result ?? "{}"));
-        const nextAuction = parsed.auction ?? parsed;
-        if (Array.isArray(parsed.managers)) {
-          setManagers(defaultManagers.map((fallback, index) => ({ ...fallback, ...(parsed.managers[index] ?? {}), id: fallback.id })));
-        }
-        if (parsed.callTurn && typeof parsed.callTurn === "object") {
-          const importedOrder = normalizeCallOrder(parsed.callTurn.order);
-          setCallTurn({
-            order: importedOrder,
-            currentCallerId: importedOrder.includes(parsed.callTurn.currentCallerId) ? parsed.callTurn.currentCallerId : importedOrder[0]
-          });
-        }
-        if (!nextAuction || typeof nextAuction !== "object" || Array.isArray(nextAuction)) {
+        const imported = normalizeLiveState(parsed);
+        if (!imported) {
           throw new Error("Invalid auction state");
         }
-        setAuction(nextAuction as Record<string, AuctionPick>);
+        setManagers(imported.managers);
+        setCallTurn(imported.callTurn);
+        setAuction(imported.auction);
         window.alert("Stato asta importato correttamente.");
       } catch {
         window.alert("File JSON non valido: esporta lo stato dalla webapp e riprova.");
@@ -1131,6 +1228,9 @@ export function App() {
             <h1>{view === "cockpit" ? "Chiamate, budget e stop price" : viewLabel(view)}</h1>
           </div>
           <div className="top-actions">
+            <span className={syncStatus === "Backup solo browser" ? "sync-pill warning" : "sync-pill"}>
+              {syncStatus}
+            </span>
             <button className="ghost" onClick={exportState}>
               <Download size={16} /> JSON
             </button>
@@ -1960,6 +2060,20 @@ function PlayerTable({
                         EST
                       </span>
                     ) : null}
+                    {player.lineup?.startPct !== undefined || player.roleBug ? (
+                      <span className="player-signals">
+                        {player.lineup?.startPct !== undefined ? (
+                          <span className={player.lineup.startPct >= 75 ? "lineup-badge safe" : player.lineup.startPct >= 55 ? "lineup-badge warn" : "lineup-badge risk"} title={`${player.lineup.source}${player.lineup.ballotWith ? ` · Ballottaggio con ${player.lineup.ballotWith}` : ""}`}>
+                            TIT {player.lineup.startPct}%
+                          </span>
+                        ) : null}
+                        {player.roleBug ? (
+                          <span className={player.roleBug.kind === "C-attacco" ? "role-bug-badge attack" : "role-bug-badge wide"} title={`${player.roleBug.roleOnPitch}: ${player.roleBug.reason} Fonte: ${player.roleBug.source}`}>
+                            {player.roleBug.label}
+                          </span>
+                        ) : null}
+                      </span>
+                    ) : null}
                     {player.role === "P" ? (
                       <a href={player.url} target="_blank" rel="noreferrer" className="external-player-link" aria-label={`Apri scheda ${player.name}`}>
                         <ExternalLink size={13} />
@@ -2024,6 +2138,11 @@ function PlayerTable({
                   {player.scouting ? (
                     <div className="scouting-note">
                       {player.scouting.lastSeason} {player.scouting.verdict}
+                    </div>
+                  ) : null}
+                  {player.roleBug ? (
+                    <div className="role-bug-note">
+                      {player.roleBug.roleOnPitch}: {player.roleBug.reason}
                     </div>
                   ) : null}
                   <textarea
