@@ -371,16 +371,18 @@ function parseBulkAssignCommands(message: string, managers: ManagerProfile[]): B
   if (lines.length < 2) return { isBulk: false, assignments: [], skippedLines: [] };
 
   const parsedLines = lines.map((line) => {
-    const looksLikeAssignment = /\b(segna|assegna|preso|presa|comprato|comprata|pagato|pagata)\b/.test(normalizeText(line));
-    const detected = looksLikeAssignment && isSimpleAssignCommand(line) ? detectAssignIntent(line, managers) : null;
+    const normalized = normalizeText(line);
+    const looksLikeAssignment = /\b(segna|assegna|preso|presa|comprato|comprata|pagato|pagata)\b/.test(normalized);
+    const looksLikeBulkCommand = looksLikeAssignment && isSimpleAssignCommand(line) && /\b\d{1,3}\b/.test(normalized);
+    const detected = looksLikeBulkCommand ? detectAssignIntent(line, managers) : null;
     return { line, detected, looksLikeAssignment };
   });
-  const isBulk = parsedLines.some((item) => item.looksLikeAssignment);
+  const isBulk = parsedLines.some((item) => item.detected);
 
   return {
     isBulk,
     assignments: parsedLines.map((item) => item.detected).filter((item): item is DetectedAssignment => Boolean(item)),
-    skippedLines: parsedLines.filter((item) => item.looksLikeAssignment && !item.detected).map((item) => item.line)
+    skippedLines: isBulk ? parsedLines.filter((item) => item.looksLikeAssignment && !item.detected).map((item) => item.line) : []
   };
 }
 
@@ -517,7 +519,7 @@ function applyBudgetPressureToEstimate(estimate: number, learnedBonus: number, p
 
 function isSimpleAssignCommand(message: string) {
   const normalized = normalizeText(message);
-  const strategyWords = /\b(rilancio|rilancia|rilanciare|spingo|spingermi|quanto|massimo|max|stop|consiglio|conviene|meglio|rischio|alternativa|chiamo|chiamare|priorita|aspettare)\b/;
+  const strategyWords = /\b(strategia|ottimale|aiutami|vedendo|hanno preso|rilancio|rilancia|rilanciare|spingo|spingermi|quanto|massimo|max|stop|consiglio|conviene|meglio|rischio|alternativa|chiamo|chiamare|priorita|aspettare)\b/;
   return !message.includes("?") && !strategyWords.test(normalized);
 }
 
