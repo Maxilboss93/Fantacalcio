@@ -1033,16 +1033,6 @@ export function App() {
   function updatePick(player: Player, patch: Partial<AuctionPick>) {
     const key = pickKey(player);
     const current = auction[key];
-    const nextOwnerId = patch.ownerId ?? current?.ownerId;
-    const isMine = !nextOwnerId || nextOwnerId === myManager.id;
-    if (patch.status === "Comprato" && current?.status !== "Comprato" && isMine) {
-      const paid = patch.paid ?? current?.paid ?? player.openBid;
-      const allowed = smartMaxBid(player);
-      if (paid > allowed) {
-        window.alert(`${player.name} non e sostenibile a ${formatMoney(paid)} crediti: il piano lascia al massimo ${formatMoney(allowed)} per questo acquisto, proteggendo i reparti successivi.`);
-        return false;
-      }
-    }
     const shouldAdvanceTurn = Boolean(patch.ownerId) || (patch.status === "Comprato" && current?.status !== "Comprato");
     setAuction((previousAuction) => {
       const nextAuction: Record<string, AuctionPick> = {
